@@ -3,9 +3,10 @@ import { Menu, X, Play } from "lucide-react";
 
 interface NavbarProps {
   onGetStarted: () => void;
+  onWatchDemo: () => void;
 }
 
-export default function Navbar({ onGetStarted }: NavbarProps) {
+export default function Navbar({ onGetStarted, onWatchDemo }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -29,7 +30,10 @@ export default function Navbar({ onGetStarted }: NavbarProps) {
           </span>
 
           <div className="flex items-center gap-3">
-            <button className="flex items-center gap-2 bg-[#f97316] hover:bg-[#ea580c] text-black px-4 py-2 rounded-lg text-sm font-bold transition-all duration-300 shadow-[0_4px_15px_rgba(249,115,22,0.3)] whitespace-nowrap">
+            <button 
+              onClick={onWatchDemo}
+              className="flex items-center gap-2 bg-[#f97316] hover:bg-[#ea580c] text-black px-4 py-2 rounded-lg text-sm font-bold transition-all duration-300 shadow-[0_4px_15px_rgba(249,115,22,0.3)] whitespace-nowrap"
+            >
               <Play size={14} fill="black" strokeWidth={0} />
               Live Demo
             </button>
@@ -68,7 +72,10 @@ export default function Navbar({ onGetStarted }: NavbarProps) {
           </div>
 
           <div className="flex flex-col gap-3">
-            <button className="flex items-center justify-center gap-2 bg-[#f97316] text-black py-4 rounded-xl text-md font-bold shadow-lg active:scale-95 transition-transform">
+            <button 
+              onClick={() => { onWatchDemo(); setIsOpen(false); }}
+              className="flex items-center justify-center gap-2 bg-[#f97316] text-black py-4 rounded-xl text-md font-bold shadow-lg active:scale-95 transition-transform"
+            >
               <Play size={18} fill="black" strokeWidth={0} />
               Live Demo
             </button>

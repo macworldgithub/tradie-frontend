@@ -2,9 +2,10 @@ import { Play, ArrowRight, ChevronDown } from "lucide-react";
 
 interface HeroProps {
   onGetStarted: () => void;
+  onWatchDemo: () => void;
 }
 
-export default function Hero({ onGetStarted }: HeroProps) {
+export default function Hero({ onGetStarted, onWatchDemo }: HeroProps) {
   return (
     <section className="relative w-full min-h-screen flex flex-col items-center xl:items-start justify-center pt-24 pb-20 px-6 sm:px-12 xl:px-24 overflow-hidden bg-[#03070b]">
       {/* BACKGROUND ELEMENTS */}
@@ -72,14 +73,17 @@ export default function Hero({ onGetStarted }: HeroProps) {
 
         {/* BUTTONS */}
         <div className="flex flex-col sm:flex-row items-center gap-4 mb-24 w-full sm:w-auto animate-in fade-in slide-in-from-bottom-12 duration-700 delay-200">
-          <button className="w-full sm:w-auto flex items-center justify-center gap-3 bg-orange-500 hover:bg-orange-400 text-black px-8 py-4 rounded-xl text-lg font-black transition-all-shadow duration-300 shadow-[0_10px_30px_rgba(249,115,22,0.3)] hover:scale-[1.02]">
+          <button 
+            onClick={onWatchDemo}
+            className="w-full sm:w-auto flex items-center justify-center gap-3 bg-orange-500 hover:bg-orange-400 text-black px-8 py-4 rounded-xl text-lg font-black transition-all-shadow duration-300 shadow-[0_10px_30px_rgba(249,115,22,0.3)] hover:scale-[1.02]"
+          >
             <Play size={20} strokeWidth={2.5} />
             Watch the Demo
           </button>
 
           <button
             onClick={onGetStarted}
-            className="w-full sm:w-auto flex items-center justify-center gap-3 border border-zinc-800 hover:border-orange-500/50 text-orange-500 px-6 py-3 rounded-xl text-lg font-black transition-all group"
+            className="w-full sm:w-auto flex items-center justify-center gap-3 border border-zinc-800 hover:border-orange-500/50 text-orange-500 px-6 py-4 rounded-xl text-lg font-black transition-all group"
           >
             Get Started
             <ArrowRight

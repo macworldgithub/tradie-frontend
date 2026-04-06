@@ -1,6 +1,10 @@
 import { PhoneCall, Bot, ClipboardList, Send, Play } from "lucide-react";
 
-export default function HowItWorks() {
+interface HowItWorksProps {
+  onGetStarted: () => void;
+}
+
+export default function HowItWorks({ onGetStarted }: HowItWorksProps) {
   const steps = [
     {
       number: "01",
@@ -80,12 +84,15 @@ export default function HowItWorks() {
         </div>
 
         {/* BOTTOM CTA */}
-        <button className="flex items-center gap-3 bg-orange-500 hover:bg-orange-400 text-black px-4 py-3 rounded-2xl text-lg font-black transition-all duration-300 shadow-[0_15px_40px_rgba(249,115,22,0.35)] hover:scale-[1.03] active:scale-95 group">
-          <div className="w-5 h-5 rounded-full bg-black/10 flex items-center justify-center transition-transform group-hover:rotate-12">
-            <Play fill="black" size={16} />
-          </div>
-          See It In Action
-        </button>
+        <div className="mt-20 flex justify-center">
+          <button 
+            onClick={onGetStarted}
+            className="flex items-center gap-3 bg-[#090e14] border border-white/5 hover:border-orange-500/30 text-white px-8 py-4 rounded-2xl text-lg font-black transition-all duration-300 hover:scale-105"
+          >
+            Build Your AI Agent
+            <Play size={18} fill="white" />
+          </button>
+        </div>
       </div>
     </section>
   );
