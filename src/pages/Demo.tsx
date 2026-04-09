@@ -7,7 +7,6 @@ import {
   MapPin,
   Settings,
   Volume2,
-  X,
   ArrowLeft,
 } from "lucide-react";
 
