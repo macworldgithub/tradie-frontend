@@ -21,12 +21,15 @@ export default function VoiceAgent({ onBack }: VoiceAgentProps) {
   const playbackQueueRef = useRef<Float32Array[]>([]);
   const isPlayingRef = useRef(false);
 
+  // Change this to your actual backend URL (e.g., "http://localhost:5000")
+  const BACKEND_URL = "http://localhost:5000";
+
   const CAPTURE_SAMPLE_RATE = 24000; 
   const PLAYBACK_SAMPLE_RATE = 16000;
 
   useEffect(() => {
-    // Initialize Socket.IO
-    const socket = io();
+    // Initialize Socket.IO with backend URL
+    const socket = io(BACKEND_URL);
     socketRef.current = socket;
 
     socket.on('connect', () => {
