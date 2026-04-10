@@ -1,10 +1,11 @@
-import { Zap, Play, ArrowRight } from "lucide-react";
+import { Zap, ArrowRight, Mic } from "lucide-react";
 
 interface MindsetProps {
   onGetStarted: () => void;
+  onWatchDemo: () => void;
 }
 
-export default function Mindset({ onGetStarted }: MindsetProps) {
+export default function Mindset({ onGetStarted, onWatchDemo }: MindsetProps) {
   const principles = [
     "Is it right for the customer?",
     "Is it simple?",
@@ -68,8 +69,11 @@ export default function Mindset({ onGetStarted }: MindsetProps) {
               <ArrowRight size={20} />
             </button>
 
-            <button className="w-full sm:w-auto flex items-center justify-center gap-3 border-2 border-white/10 hover:border-orange-500/50 text-white hover:text-orange-500 px-3 py-3 rounded-2xl text-lg font-black transition-all duration-300 group">
-              <Play size={20} className="group-hover:fill-orange-500/20" />
+            <button 
+              onClick={onWatchDemo}
+              className="w-full sm:w-auto flex items-center justify-center gap-3 border-2 border-white/10 hover:border-orange-500/50 text-white hover:text-orange-500 px-6 py-3 rounded-2xl text-lg font-black transition-all duration-300 group"
+            >
+              <Mic size={20} className="group-hover:text-orange-500" />
               Watch Demo First
             </button>
           </div>

@@ -1,4 +1,4 @@
-import { Play, ArrowRight, ChevronDown } from "lucide-react";
+import { ArrowRight, ChevronDown, Mic } from "lucide-react";
 
 interface HeroProps {
   onGetStarted: () => void;
@@ -77,7 +77,7 @@ export default function Hero({ onGetStarted, onWatchDemo }: HeroProps) {
             onClick={onWatchDemo}
             className="w-full sm:w-auto flex items-center justify-center gap-3 bg-orange-500 hover:bg-orange-400 text-black px-8 py-4 rounded-xl text-lg font-black transition-all-shadow duration-300 shadow-[0_10px_30px_rgba(249,115,22,0.3)] hover:scale-[1.02]"
           >
-            <Play size={20} strokeWidth={2.5} />
+            <Mic size={20} strokeWidth={2.5} />
             Watch the Demo
           </button>
 

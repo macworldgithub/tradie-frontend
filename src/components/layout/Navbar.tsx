@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Menu, X, Play } from "lucide-react";
+import { Menu, X, Mic } from "lucide-react";
 
 interface NavbarProps {
   onGetStarted: () => void;
@@ -34,7 +34,7 @@ export default function Navbar({ onGetStarted, onWatchDemo }: NavbarProps) {
               onClick={onWatchDemo}
               className="flex items-center gap-2 bg-[#f97316] hover:bg-[#ea580c] text-black px-4 py-2 rounded-lg text-sm font-bold transition-all duration-300 shadow-[0_4px_15px_rgba(249,115,22,0.3)] whitespace-nowrap"
             >
-              <Play size={14} fill="black" strokeWidth={0} />
+              <Mic size={14} className="text-black" />
               Live Demo
             </button>
 
@@ -76,7 +76,7 @@ export default function Navbar({ onGetStarted, onWatchDemo }: NavbarProps) {
               onClick={() => { onWatchDemo(); setIsOpen(false); }}
               className="flex items-center justify-center gap-2 bg-[#f97316] text-black py-4 rounded-xl text-md font-bold shadow-lg active:scale-95 transition-transform"
             >
-              <Play size={18} fill="black" strokeWidth={0} />
+              <Mic size={18} fill="black" />
               Live Demo
             </button>
 
