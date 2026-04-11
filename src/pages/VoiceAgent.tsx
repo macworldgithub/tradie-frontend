@@ -20,6 +20,7 @@ export default function VoiceAgent({ onBack }: VoiceAgentProps) {
   const workletNodeRef = useRef<AudioWorkletNode | null>(null);
   const playbackQueueRef = useRef<Float32Array[]>([]);
   const isPlayingRef = useRef(false);
+  const isSessionActiveRef = useRef(false);
 
   // Change this to your actual backend URL (e.g., "http://localhost:5000")
   const BACKEND_URL = "https://www.tradie.omnisuiteai.com";
@@ -156,6 +157,10 @@ export default function VoiceAgent({ onBack }: VoiceAgentProps) {
     await audioContext.audioWorklet.addModule(url);
     URL.revokeObjectURL(url);
 
+    if (audioContext.state === 'suspended') {
+      await audioContext.resume();
+    }
+
     const mediaStream = await navigator.mediaDevices.getUserMedia({
       audio: {
         sampleRate: CAPTURE_SAMPLE_RATE,
@@ -172,7 +177,7 @@ export default function VoiceAgent({ onBack }: VoiceAgentProps) {
     workletNodeRef.current = workletNode;
 
     workletNode.port.onmessage = (e) => {
-      if (!socketRef.current) return;
+      if (!socketRef.current || !isSessionActiveRef.current) return;
       
       const pcm16 = new Uint8Array(e.data);
       let binary = '';
@@ -206,6 +211,7 @@ export default function VoiceAgent({ onBack }: VoiceAgentProps) {
     try {
       setStatus('Connecting...');
       await startMicrophone();
+      isSessionActiveRef.current = true;
       setIsSessionActive(true);
       socketRef.current?.emit('start-session');
     } catch (err) {
@@ -215,6 +221,7 @@ export default function VoiceAgent({ onBack }: VoiceAgentProps) {
   };
 
   const handleEndSession = () => {
+    isSessionActiveRef.current = false;
     setIsSessionActive(false);
     socketRef.current?.emit('end-session');
     stopPlayback();
