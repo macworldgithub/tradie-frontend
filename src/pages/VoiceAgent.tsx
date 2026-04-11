@@ -22,7 +22,7 @@ export default function VoiceAgent({ onBack }: VoiceAgentProps) {
   const isPlayingRef = useRef(false);
 
   // Change this to your actual backend URL (e.g., "http://localhost:5000")
-  const BACKEND_URL = "http://localhost:5000";
+  const BACKEND_URL = "https://www.tradie.omnisuiteai.com";
 
   const CAPTURE_SAMPLE_RATE = 24000; 
   const PLAYBACK_SAMPLE_RATE = 16000;
