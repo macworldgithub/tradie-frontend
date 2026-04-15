@@ -12,27 +12,31 @@ import {
   MessageSquare,
   Plus,
 } from "lucide-react";
+import { authService } from "../services/authService";
+import logo from "../assets/logo.png";
 
 interface SignupProps {
   onBack: () => void;
+  onSuccess?: (user: any, token: string) => void;
 }
 
-export default function Signup({ onBack }: SignupProps) {
+export default function Signup({ onBack, onSuccess }: SignupProps) {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     name: "",
     company: "",
     email: "",
+    password: "",
     acn: "",
     trade: "",
     mobile: "",
-    portMobile: false,
     wantGeo: false,
     portGeo: false,
     geoNumber: "",
     openingTime: "07:00 AM",
     closingTime: "06:00 PM",
     secondarySMS: "",
+    portMobile: false,
   });
 
   const [agreedToTerms, setAgreedToTerms] = useState(false);
@@ -43,6 +47,7 @@ export default function Signup({ onBack }: SignupProps) {
     { id: 3, label: "Number Setup", icon: <Phone size={16} /> },
     { id: 4, label: "Hours & Delivery", icon: <Clock size={16} /> },
     { id: 5, label: "Confirm", icon: <Check size={16} /> },
+    { id: 6, label: "Verify", icon: <Mail size={16} /> },
   ];
 
   const trades = [
@@ -56,10 +61,63 @@ export default function Signup({ onBack }: SignupProps) {
     "General Tradesperson",
   ];
 
-  const nextStep = () => setStep((prev) => Math.min(prev + 1, 6));
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [otp, setOtp] = useState("");
+
+  const nextStep = () => setStep((prev) => Math.min(prev + 1, 7));
   const prevStep = () => {
     if (step === 1) onBack();
     else setStep((prev) => prev - 1);
+  };
+
+  const handleSignup = async () => {
+    setIsSubmitting(true);
+    setError(null);
+    try {
+      const payload = {
+        customerName: formData.name,
+        companyName: formData.company,
+        acn: formData.acn,
+        email: formData.email,
+        password: formData.password,
+        trade: formData.trade,
+        mobileNumber: formData.mobile,
+        wantsGeoNumber: formData.wantGeo,
+        geoNumberType: "NONE",
+        portingNumber: formData.geoNumber,
+        openingHours: `${formData.openingTime}-${formData.closingTime} MON-FRI`,
+        paymentDetails: {}
+      };
+
+      const res = await authService.register(payload);
+      if (res.userId) {
+        setStep(6);
+      } else {
+        setError(res.message || "Failed to register");
+      }
+    } catch (err) {
+      setError("An error occurred during signup");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    setIsSubmitting(true);
+    setError(null);
+    try {
+      const res = await authService.verifyOtp(formData.email, otp);
+      if (res.message === "Email verified successfully") {
+        setStep(7);
+      } else {
+        setError(res.message || "Invalid OTP");
+      }
+    } catch (err) {
+      setError("An error occurred during verification");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -82,12 +140,7 @@ export default function Signup({ onBack }: SignupProps) {
           </button>
 
           <div className="flex items-center gap-2">
-            <span className="text-lg font-black tracking-tighter">JUST</span>
-            <div className="border border-orange-500/50 px-2 py-0.5 rounded-sm">
-              <span className="text-[10px] font-black uppercase tracking-widest text-[#f97316]">
-                Tradie Mobile
-              </span>
-            </div>
+            <img src={logo} alt="Logo" className="h-16 w-auto" />
           </div>
         </div>
 
@@ -97,18 +150,17 @@ export default function Signup({ onBack }: SignupProps) {
       </header>
 
       {/* STEPPER NAVIGATION */}
-      <div className="w-full max-w-3xl mt-12 mb-16 overflow-x-auto no-scrollbar px-6">
+      <div className="w-full max-w-4xl mt-12 mb-16 overflow-x-auto no-scrollbar px-6">
         <div className="flex items-center justify-between min-w-[500px] relative">
           {steps.map((s) => (
             <div
               key={s.id}
-              className={`flex items-center gap-2 pb-4 border-b-2 transition-all cursor-pointer z-10 ${
-                step === s.id
-                  ? "border-orange-500 text-orange-500"
-                  : step > s.id
-                    ? "border-emerald-500 text-emerald-500"
-                    : "border-transparent text-zinc-600"
-              }`}
+              className={`flex items-center gap-2 pb-4 border-b-2 transition-all cursor-pointer z-10 ${step === s.id
+                ? "border-orange-500 text-orange-500"
+                : step > s.id
+                  ? "border-emerald-500 text-emerald-500"
+                  : "border-transparent text-zinc-600"
+                }`}
             >
               {step > s.id ? <Check size={16} /> : s.icon}
               <span className="text-xs font-black uppercase tracking-widest whitespace-nowrap">
@@ -164,6 +216,14 @@ export default function Signup({ onBack }: SignupProps) {
                 placeholder="jon@plumbing.com.au"
                 onChange={(v: string) => handleInputChange("email", v)}
               />
+              <InputField
+                label="Password"
+                type="password"
+                value={formData.password}
+                icon={<FileText size={14} />}
+                placeholder="••••••••"
+                onChange={(v: string) => handleInputChange("password", v)}
+              />
             </div>
           </div>
         )}
@@ -185,11 +245,10 @@ export default function Signup({ onBack }: SignupProps) {
                 <button
                   key={t}
                   onClick={() => setFormData({ ...formData, trade: t })}
-                  className={`flex items-center justify-between p-5 rounded-2xl border-2 transition-all group ${
-                    formData.trade === t
-                      ? "border-orange-500 bg-orange-500/5 text-orange-500"
-                      : "border-white/5 bg-[#090e14] text-zinc-500 hover:border-white/10"
-                  }`}
+                  className={`flex items-center justify-between p-5 rounded-2xl border-2 transition-all group ${formData.trade === t
+                    ? "border-orange-500 bg-orange-500/5 text-orange-500"
+                    : "border-white/5 bg-[#090e14] text-zinc-500 hover:border-white/10"
+                    }`}
                 >
                   <div className="flex items-center gap-4">
                     <Hammer
@@ -374,18 +433,16 @@ export default function Signup({ onBack }: SignupProps) {
 
             <div
               onClick={() => setAgreedToTerms(!agreedToTerms)}
-              className={`bg-[#090e14] border p-4 rounded-2xl flex items-start gap-4 transition-all group cursor-pointer ${
-                agreedToTerms
-                  ? "border-orange-500/50 bg-orange-500/5 shadow-[0_0_20px_rgba(16,185,129,0.1)]"
-                  : "border-white/5 hover:border-white/10"
-              }`}
+              className={`bg-[#090e14] border p-4 rounded-2xl flex items-start gap-4 transition-all group cursor-pointer ${agreedToTerms
+                ? "border-orange-500/50 bg-orange-500/5 shadow-[0_0_20px_rgba(16,185,129,0.1)]"
+                : "border-white/5 hover:border-white/10"
+                }`}
             >
               <div
-                className={`w-6 h-6 rounded-md border-2 flex items-center justify-center shrink-0 transition-all ${
-                  agreedToTerms
-                    ? "bg-orange-500 border-orange-500"
-                    : "border-white/20 group-hover:border-white/40"
-                }`}
+                className={`w-6 h-6 rounded-md border-2 flex items-center justify-center shrink-0 transition-all ${agreedToTerms
+                  ? "bg-orange-500 border-orange-500"
+                  : "border-white/20 group-hover:border-white/40"
+                  }`}
               >
                 {agreedToTerms && (
                   <Check size={16} className="text-black stroke-[4]" />
@@ -404,8 +461,47 @@ export default function Signup({ onBack }: SignupProps) {
           </div>
         )}
 
-        {/* STEP 6: SUCCESS */}
+        {/* STEP 6: VERIFY OTP */}
         {step === 6 && (
+          <div className="space-y-10">
+            <div className="space-y-2 text-center">
+              <h2 className="text-4xl font-black tracking-tighter">
+                Verify Your Email
+              </h2>
+              <p className="text-zinc-500 font-medium tracking-wide">
+                We've sent a 6-digit code to <span className="text-white">{formData.email}</span>
+              </p>
+            </div>
+
+            <div className="flex flex-col items-center space-y-6">
+              <input
+                type="text"
+                maxLength={6}
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+                placeholder="000000"
+                className="w-full max-w-xs bg-[#12181e] border border-white/5 rounded-2xl px-6 py-5 text-center text-4xl font-black tracking-[0.5em] text-orange-500 placeholder-zinc-800 focus:outline-none focus:border-orange-500 transition-all"
+              />
+
+              {error && (
+                <p className="text-red-500 text-sm font-bold animate-in fade-in slide-in-from-top-2">
+                  {error}
+                </p>
+              )}
+
+              <button
+                onClick={handleVerifyOtp}
+                disabled={otp.length !== 6 || isSubmitting}
+                className="w-full max-w-xs flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-400 text-black px-10 py-4 rounded-xl text-lg font-black transition-all shadow-xl shadow-orange-500/10 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isSubmitting ? "Verifying..." : "Verify OTP"}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* STEP 7: SUCCESS */}
+        {step === 7 && (
           <div className="flex flex-col items-center justify-center text-center py-10 space-y-10 animate-in fade-in zoom-in-95 duration-1000">
             {/* SUCCESS ICON */}
             <div className="relative">
@@ -472,7 +568,10 @@ export default function Signup({ onBack }: SignupProps) {
 
             {/* FINAL BUTTONS */}
             <div className="flex flex-col sm:flex-row items-center gap-4 w-full justify-center">
-              <button className="w-full sm:w-auto flex items-center justify-center gap-3 bg-orange-500 hover:bg-orange-400 text-black px-8 py-4 rounded-xl text-lg font-black transition-all group">
+              <button
+                onClick={() => onSuccess && onSuccess({ email: formData.email, name: formData.name }, "dummy-token-after-signup")}
+                className="w-full sm:w-auto flex items-center justify-center gap-3 bg-orange-500 hover:bg-orange-400 text-black px-8 py-4 rounded-xl text-lg font-black transition-all group"
+              >
                 Try the Demo
                 <ArrowLeft className="w-5 h-5 rotate-180 transition-transform group-hover:translate-x-1" />
               </button>
@@ -486,7 +585,7 @@ export default function Signup({ onBack }: SignupProps) {
           </div>
         )}
 
-        {/* GLOBAL ACTIONS - Hidden on Success screen */}
+        {/* GLOBAL ACTIONS - Hidden on OTP and Success screens */}
         {step < 6 && (
           <div className="mt-10 flex items-center justify-between">
             <button
@@ -500,21 +599,33 @@ export default function Signup({ onBack }: SignupProps) {
               Back
             </button>
 
+            {error && (
+              <p className="text-red-500 text-xs font-bold">{error}</p>
+            )}
+
             <button
-              onClick={nextStep}
-              disabled={step === 5 && !agreedToTerms}
-              className={`flex items-center gap-2 px-10 py-3 rounded-2xl text-lg font-black transition-all duration-300 shadow-xl hover:scale-[1.03] active:scale-95 group ${
-                step === 5
-                  ? agreedToTerms
-                    ? "bg-[#10b981] text-white shadow-[0_10px_30px_rgba(16,185,129,0.3)]"
-                    : "bg-[#12181e] text-zinc-700 border border-white/5 cursor-not-allowed opacity-50"
-                  : "bg-orange-500 text-black shadow-orange-500/20 hover:bg-orange-400"
-              }`}
+              onClick={step === 5 ? handleSignup : nextStep}
+              disabled={(step === 5 && (!agreedToTerms || isSubmitting)) || isSubmitting}
+              className={`flex items-center gap-2 px-10 py-3 rounded-2xl text-lg font-black transition-all duration-300 shadow-xl hover:scale-[1.03] active:scale-95 group ${step === 5
+                ? agreedToTerms
+                  ? "bg-orange-500 text-black shadow-[0_10px_30px_rgba(249,115,22,0.3)]"
+                  : "bg-[#12181e] text-zinc-700 border border-white/5 cursor-not-allowed opacity-50"
+                : "bg-orange-500 text-black shadow-orange-500/20 hover:bg-orange-400"
+                }`}
             >
-              {step === 5 ? <Check size={20} className="stroke-[3]" /> : null}
-              {step === 5 ? "Complete Sign Up" : "Next"}
-              {step !== 5 && (
-                <ArrowLeft className="w-5 h-5 rotate-180 transition-transform group-hover:translate-x-1" />
+              {isSubmitting ? (
+                <span className="flex items-center gap-2">
+                  <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                  Processing...
+                </span>
+              ) : (
+                <>
+                  {step === 5 ? <Check size={20} className="stroke-[3]" /> : null}
+                  {step === 5 ? "Complete Sign Up" : "Next"}
+                  {step !== 5 && (
+                    <ArrowLeft className="w-5 h-5 rotate-180 transition-transform group-hover:translate-x-1" />
+                  )}
+                </>
               )}
             </button>
           </div>
@@ -531,6 +642,7 @@ function InputField({
   placeholder,
   highlight = false,
   subLabel,
+  type = "text",
   onChange,
 }: any) {
   return (
@@ -542,15 +654,14 @@ function InputField({
         </label>
       </div>
       <input
-        type="text"
+        type={type}
         value={value}
         onChange={(e) => onChange && onChange(e.target.value)}
         placeholder={placeholder}
-        className={`w-full bg-[#12181e] border rounded-xl px-5 py-4 text-white placeholder-zinc-700 focus:outline-none focus:border-orange-500 transition-all ${
-          highlight
-            ? "border-orange-500/30 shadow-[0_0_20px_rgba(249,115,22,0.05)]"
-            : "border-white/5"
-        }`}
+        className={`w-full bg-[#12181e] border rounded-xl px-5 py-4 text-white placeholder-zinc-700 focus:outline-none focus:border-orange-500 transition-all ${highlight
+          ? "border-orange-500/30 shadow-[0_0_20px_rgba(249,115,22,0.05)]"
+          : "border-white/5"
+          }`}
       />
       {subLabel && (
         <p className="text-zinc-600 text-[10px] font-medium leading-relaxed">
@@ -565,9 +676,8 @@ function CheckboxField({ checked, label, sub }: any) {
   return (
     <div className="bg-[#090e14] border border-white/5 p-6 rounded-2xl flex items-center gap-5 transition-all hover:border-white/10 group cursor-pointer">
       <div
-        className={`w-6 h-6 rounded-md flex items-center justify-center shrink-0 border-2 transition-colors ${
-          checked ? "bg-orange-500 border-orange-500" : "border-white/10"
-        }`}
+        className={`w-6 h-6 rounded-md flex items-center justify-center shrink-0 border-2 transition-colors ${checked ? "bg-orange-500 border-orange-500" : "border-white/10"
+          }`}
       >
         {checked && <Check size={16} className="text-black" />}
       </div>
