@@ -82,6 +82,7 @@ function App() {
           onBack={() => setView('landing')} 
           onSuccess={handleLoginSuccess}
           onForgotPassword={() => setView('forgot-password')}
+          onSignup={() => setView('signup')}
         />
       )}
 

@@ -7,9 +7,10 @@ interface LoginProps {
   onBack: () => void;
   onSuccess: (user: any, token: string) => void;
   onForgotPassword: () => void;
+  onSignup: () => void;
 }
 
-export default function Login({ onBack, onSuccess, onForgotPassword }: LoginProps) {
+export default function Login({ onBack, onSuccess, onForgotPassword, onSignup }: LoginProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -143,7 +144,7 @@ export default function Login({ onBack, onSuccess, onForgotPassword }: LoginProp
           <p className="text-center text-zinc-500 text-xs font-medium">
             Don't have an account?{" "}
             <button
-              onClick={onBack}
+              onClick={onSignup}
               className="text-orange-500 font-bold hover:underline"
             >
               Sign up now
