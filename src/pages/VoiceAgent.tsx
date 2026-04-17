@@ -13,19 +13,19 @@ export default function VoiceAgent({ onBack }: VoiceAgentProps) {
   const [agentTranscript, setAgentTranscript] = useState("");
   const [userTranscript, setUserTranscript] = useState("");
   const [bookingResult, setBookingResult] = useState<{ name: string; service_type: string; urgency: string } | null>(null);
-  
+
   const socketRef = useRef<Socket | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const mediaStreamRef = useRef<MediaStream | null>(null);
   const workletNodeRef = useRef<AudioWorkletNode | null>(null);
   const playbackQueueRef = useRef<Float32Array[]>([]);
   const isPlayingRef = useRef(false);
+  const currentSourceRef = useRef<AudioBufferSourceNode | null>(null);
   const isSessionActiveRef = useRef(false);
 
-  // Change this to your actual backend URL (e.g., "http://localhost:5000")
   const BACKEND_URL = "https://www.tradie.omnisuiteai.com";
 
-  const CAPTURE_SAMPLE_RATE = 24000; 
+  const CAPTURE_SAMPLE_RATE = 24000;
   const PLAYBACK_SAMPLE_RATE = 16000;
 
   useEffect(() => {
@@ -44,11 +44,13 @@ export default function VoiceAgent({ onBack }: VoiceAgentProps) {
     });
 
     socket.on('audio-delta', (data) => {
+      if (!isSessionActiveRef.current) return;
       queueAudioChunk(data.delta);
     });
 
     let accumulatedAgentText = '';
     socket.on('transcript-delta', (data) => {
+      if (!isSessionActiveRef.current) return;
       accumulatedAgentText += data.delta;
       setAgentTranscript(accumulatedAgentText);
     });
@@ -58,10 +60,12 @@ export default function VoiceAgent({ onBack }: VoiceAgentProps) {
     });
 
     socket.on('user-transcript', (data) => {
+      if (!isSessionActiveRef.current) return;
       setUserTranscript(data.transcript);
     });
 
     socket.on('speech-started', () => {
+      if (!isSessionActiveRef.current) return;
       stopPlayback();
       setOrbState('listening');
       setStatus('Listening...');
@@ -101,10 +105,12 @@ export default function VoiceAgent({ onBack }: VoiceAgentProps) {
   };
 
   const playNextChunk = () => {
-    if (playbackQueueRef.current.length === 0 || !audioContextRef.current) {
+    if (playbackQueueRef.current.length === 0 || !audioContextRef.current || !isSessionActiveRef.current) {
       isPlayingRef.current = false;
-      setOrbState('listening');
-      setStatus('Listening...');
+      if (isSessionActiveRef.current) {
+        setOrbState('listening');
+        setStatus('Listening...');
+      }
       return;
     }
 
@@ -114,20 +120,33 @@ export default function VoiceAgent({ onBack }: VoiceAgentProps) {
 
     const samples = playbackQueueRef.current.shift()!;
     const buffer = audioContextRef.current.createBuffer(1, samples.length, PLAYBACK_SAMPLE_RATE);
-    
-    // Using getChannelData().set() to avoid TS Float32Array compatibility issues
+
     buffer.getChannelData(0).set(samples);
 
     const source = audioContextRef.current.createBufferSource();
+    currentSourceRef.current = source;
     source.buffer = buffer;
     source.connect(audioContextRef.current.destination);
-    source.onended = () => playNextChunk();
+    source.onended = () => {
+      currentSourceRef.current = null;
+      if (isSessionActiveRef.current) {
+        playNextChunk();
+      }
+    };
     source.start();
   };
 
   const stopPlayback = () => {
     playbackQueueRef.current = [];
     isPlayingRef.current = false;
+    if (currentSourceRef.current) {
+      try {
+        currentSourceRef.current.stop();
+      } catch (e) {
+        // Source might have already stopped or not started
+      }
+      currentSourceRef.current = null;
+    }
   };
 
   const startMicrophone = async () => {
@@ -178,7 +197,7 @@ export default function VoiceAgent({ onBack }: VoiceAgentProps) {
 
     workletNode.port.onmessage = (e) => {
       if (!socketRef.current || !isSessionActiveRef.current) return;
-      
+
       const pcm16 = new Uint8Array(e.data);
       let binary = '';
       for (let i = 0; i < pcm16.length; i++) {
@@ -228,6 +247,8 @@ export default function VoiceAgent({ onBack }: VoiceAgentProps) {
     stopMicrophone();
     setOrbState(null);
     setStatus('Call ended');
+    setAgentTranscript("");
+    setUserTranscript("");
   };
 
   return (
@@ -262,7 +283,7 @@ export default function VoiceAgent({ onBack }: VoiceAgentProps) {
       {/* MAIN CONTENT */}
       <main className="flex-1 flex flex-col items-center justify-center p-6 relative overflow-y-auto">
         <div className="w-full max-w-lg bg-[#090e14]/40 backdrop-blur-2xl border border-white/10 rounded-[40px] p-8 md:p-12 shadow-2xl space-y-10 text-center">
-          
+
           <div className="space-y-4">
             <h1 className="text-3xl md:text-4xl font-black tracking-tight bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent">
               AI Voice Assistant
@@ -274,42 +295,37 @@ export default function VoiceAgent({ onBack }: VoiceAgentProps) {
 
           <div className="flex flex-col items-center space-y-8">
             {/* STATUS BADGE */}
-            <div className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${
-              isSessionActive 
-                ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.1)]' 
-                : 'bg-orange-500/10 text-orange-400 border border-orange-500/20'
-            }`}>
+            <div className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${isSessionActive
+              ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.1)]'
+              : 'bg-orange-500/10 text-orange-400 border border-orange-500/20'
+              }`}>
               {status}
             </div>
 
             {/* THE ORB */}
             <div className="relative group">
-              <div className={`w-32 h-32 md:w-40 md:h-40 rounded-full flex items-center justify-center transition-all duration-700 relative z-10 ${
-                orbState === 'listening' ? 'bg-emerald-500 scale-105 shadow-[0_0_50px_rgba(16,185,129,0.4)]' :
+              <div className={`w-32 h-32 md:w-40 md:h-40 rounded-full flex items-center justify-center transition-all duration-700 relative z-10 ${orbState === 'listening' ? 'bg-emerald-500 scale-105 shadow-[0_0_50px_rgba(16,185,129,0.4)]' :
                 orbState === 'speaking' ? 'bg-orange-500 scale-110 shadow-[0_0_60px_rgba(249,115,22,0.5)]' :
-                'bg-zinc-800 scale-100 shadow-xl border border-white/5'
-              }`}>
+                  'bg-zinc-800 scale-100 shadow-xl border border-white/5'
+                }`}>
                 <Mic size={40} className={`text-white transition-opacity duration-300 ${isSessionActive ? 'opacity-100' : 'opacity-40'}`} />
-                
+
                 {/* PULSE RINGS */}
                 {isSessionActive && (
                   <>
-                    <div className={`absolute inset-0 rounded-full border-2 animate-ping opacity-20 ${
-                      orbState === 'speaking' ? 'border-orange-400' : 'border-emerald-400'
-                    }`} />
-                    <div className={`absolute -inset-4 rounded-full border border-white/5 ${
-                      orbState === 'speaking' ? 'animate-pulse' : ''
-                    }`} />
+                    <div className={`absolute inset-0 rounded-full border-2 animate-ping opacity-20 ${orbState === 'speaking' ? 'border-orange-400' : 'border-emerald-400'
+                      }`} />
+                    <div className={`absolute -inset-4 rounded-full border border-white/5 ${orbState === 'speaking' ? 'animate-pulse' : ''
+                      }`} />
                   </>
                 )}
               </div>
-              
+
               {/* ORB GLOW EFFECT */}
-              <div className={`absolute inset-0 blur-3xl opacity-20 -z-10 transition-all duration-700 ${
-                orbState === 'listening' ? 'bg-emerald-500 scale-150' :
+              <div className={`absolute inset-0 blur-3xl opacity-20 -z-10 transition-all duration-700 ${orbState === 'listening' ? 'bg-emerald-500 scale-150' :
                 orbState === 'speaking' ? 'bg-orange-500 scale-150' :
-                'bg-transparent'
-              }`} />
+                  'bg-transparent'
+                }`} />
             </div>
 
             {/* CONTROLS */}
@@ -344,7 +360,7 @@ export default function VoiceAgent({ onBack }: VoiceAgentProps) {
                   </div>
                 </div>
               )}
-              
+
               {userTranscript && (
                 <div className="space-y-2">
                   <span className="text-[10px] font-black uppercase tracking-widest text-emerald-400/60 ml-2">You</span>
