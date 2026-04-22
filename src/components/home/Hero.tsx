@@ -58,7 +58,7 @@ export default function Hero({ onGetStarted, onWatchDemo }: HeroProps) {
         </div>
 
         {/* MAIN HEADLINE */}
-        <h1 className="text-4xl md:text-6xl font-black leading-[1.05] tracking-tight text-white mb-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
+        <h1 className="text-3xl md:text-6xl font-black leading-[1.05] tracking-tight text-white mb-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
           Never miss a <br />
           <span className="text-orange-500">customer call</span> <br />
           again.
@@ -73,7 +73,7 @@ export default function Hero({ onGetStarted, onWatchDemo }: HeroProps) {
 
         {/* BUTTONS */}
         <div className="flex flex-col sm:flex-row items-center gap-4 mb-24 w-full sm:w-auto animate-in fade-in slide-in-from-bottom-12 duration-700 delay-200">
-          <button 
+          <button
             onClick={onWatchDemo}
             className="w-full sm:w-auto flex items-center justify-center gap-3 bg-orange-500 hover:bg-orange-400 text-black px-8 py-4 rounded-xl text-lg font-black transition-all-shadow duration-300 shadow-[0_10px_30px_rgba(249,115,22,0.3)] hover:scale-[1.02]"
           >
@@ -93,8 +93,8 @@ export default function Hero({ onGetStarted, onWatchDemo }: HeroProps) {
           </button>
         </div>
 
-        {/* STATS BAR (Divider & 3 items) */}
-        <div className="w-full max-w-2xl pt-12 border-t border-white/5 grid grid-cols-1 sm:grid-cols-3 gap-12 sm:gap-4 animate-in fade-in zoom-in-95 duration-1000 delay-300">
+        {/* STATS BAR (Divider & 4 items) */}
+        <div className="w-full max-w-3xl pt-12 border-t border-white/5 grid grid-cols-2 sm:grid-cols-4 gap-8 sm:gap-4 animate-in fade-in zoom-in-95 duration-1000 delay-300">
           <div className="flex flex-col space-y-2">
             <span className="text-5xl font-black text-orange-500">1 in 3</span>
             <span className="text-[12px] font-bold leading-tight text-zinc-600 max-w-[120px]">
@@ -108,7 +108,13 @@ export default function Hero({ onGetStarted, onWatchDemo }: HeroProps) {
             </span>
           </div>
           <div className="flex flex-col space-y-2">
-            <span className="text-4xl font-black text-emerald-500">0</span>
+            <span className="text-5xl font-black text-orange-500">$70k</span>
+            <span className="text-[12px] font-bold leading-tight text-zinc-600 max-w-[120px]">
+              lost per year in <br /> missed business
+            </span>
+          </div>
+          <div className="flex flex-col space-y-2">
+            <span className="text-5xl font-black text-emerald-500">0</span>
             <span className="text-[12px] font-bold leading-tight text-zinc-600 max-w-[120px]">
               calls missed <br /> with Bele.Ai
             </span>

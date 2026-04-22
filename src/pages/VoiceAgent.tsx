@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { io, Socket } from "socket.io-client";
-import { ArrowLeft, Mic, PhoneOff, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, Mic, PhoneOff } from "lucide-react";
 
 interface VoiceAgentProps {
   onBack: () => void;
@@ -12,7 +12,7 @@ export default function VoiceAgent({ onBack }: VoiceAgentProps) {
   const [orbState, setOrbState] = useState<null | 'listening' | 'speaking'>(null);
   const [agentTranscript, setAgentTranscript] = useState("");
   const [userTranscript, setUserTranscript] = useState("");
-  const [bookingResult, setBookingResult] = useState<{ name: string; service_type: string; urgency: string } | null>(null);
+
 
   const socketRef = useRef<Socket | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -73,9 +73,7 @@ export default function VoiceAgent({ onBack }: VoiceAgentProps) {
       accumulatedAgentText = '';
     });
 
-    socket.on('booking-saved', (data) => {
-      setBookingResult(data);
-    });
+
 
     socket.on('realtime-error', (data) => {
       console.error('Realtime error:', data.error);
@@ -229,6 +227,7 @@ export default function VoiceAgent({ onBack }: VoiceAgentProps) {
   const handleStartSession = async () => {
     try {
       setStatus('Connecting...');
+
       await startMicrophone();
       isSessionActiveRef.current = true;
       setIsSessionActive(true);
@@ -249,6 +248,7 @@ export default function VoiceAgent({ onBack }: VoiceAgentProps) {
     setStatus('Call ended');
     setAgentTranscript("");
     setUserTranscript("");
+
   };
 
   return (
@@ -372,22 +372,7 @@ export default function VoiceAgent({ onBack }: VoiceAgentProps) {
             </div>
           )}
 
-          {/* BOOKING SUCCESS */}
-          {bookingResult && (
-            <div className="bg-emerald-500/10 border border-emerald-500/20 p-6 rounded-3xl animate-in zoom-in-95 duration-500">
-              <div className="flex items-center gap-4 text-left">
-                <div className="bg-emerald-500/20 p-3 rounded-2xl">
-                  <CheckCircle2 className="text-emerald-500" size={24} />
-                </div>
-                <div>
-                  <h4 className="text-sm font-black text-emerald-400 uppercase tracking-widest">Booking Saved</h4>
-                  <p className="text-xs text-zinc-500 mt-1 font-medium">
-                    {bookingResult.name} — {bookingResult.service_type} ({bookingResult.urgency})
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
+
         </div>
       </main>
 
