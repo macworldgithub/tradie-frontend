@@ -357,40 +357,6 @@ export default function VoiceAgent({ onBack }: VoiceAgentProps) {
             </div>
           </div>
 
-          {/* BOOKING CONFIRMATION */}
-          {bookingData && (
-            <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-3xl p-6 text-left space-y-3 animate-in fade-in slide-in-from-bottom-4 duration-700">
-              <div className="flex items-center gap-3 text-emerald-500">
-                <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                  <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                </div>
-                <span className="text-[10px] font-black uppercase tracking-[0.2em]">Booking Confirmed</span>
-              </div>
-              
-              <div className="space-y-1">
-                <p className="text-zinc-400 text-xs font-medium">Customer Name</p>
-                <p className="text-white font-bold">{bookingData.name}</p>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4 pt-2">
-                <div className="space-y-1">
-                  <p className="text-zinc-400 text-xs font-medium">Service Type</p>
-                  <p className="text-white text-sm font-semibold">{bookingData.service_type}</p>
-                </div>
-                <div className="space-y-1">
-                  <p className="text-zinc-400 text-xs font-medium">Urgency</p>
-                  <span className={`inline-block px-2 py-0.5 rounded-md text-[9px] font-black uppercase ${
-                    bookingData.urgency.toLowerCase().includes('high') || bookingData.urgency.toLowerCase().includes('emergency')
-                      ? 'bg-rose-500/20 text-rose-500' 
-                      : 'bg-emerald-500/20 text-emerald-500'
-                  }`}>
-                    {bookingData.urgency}
-                  </span>
-                </div>
-              </div>
-            </div>
-          )}
-
           {/* TRANSCRIPTS */}
           {(userTranscript || agentTranscript) && (
             <div className="space-y-4 pt-10 border-t border-white/5 text-left">
