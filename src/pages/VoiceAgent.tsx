@@ -12,11 +12,6 @@ export default function VoiceAgent({ onBack }: VoiceAgentProps) {
   const [orbState, setOrbState] = useState<null | 'listening' | 'speaking'>(null);
   const [agentTranscript, setAgentTranscript] = useState("");
   const [userTranscript, setUserTranscript] = useState("");
-  const [bookingData, setBookingData] = useState<{
-    name: string;
-    service_type: string;
-    urgency: string;
-  } | null>(null);
 
 
   const socketRef = useRef<Socket | null>(null);
@@ -79,7 +74,7 @@ export default function VoiceAgent({ onBack }: VoiceAgentProps) {
     });
 
     socket.on('booking-saved', (data) => {
-      setBookingData(data);
+      console.log('Booking Confirmed Silently:', data);
     });
 
 
@@ -256,7 +251,6 @@ export default function VoiceAgent({ onBack }: VoiceAgentProps) {
     setStatus('Call ended');
     setAgentTranscript("");
     setUserTranscript("");
-    setBookingData(null);
   };
 
   return (
