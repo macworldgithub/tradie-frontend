@@ -65,7 +65,18 @@ export default function Signup({ onBack, onSuccess }: SignupProps) {
   const [error, setError] = useState<string | null>(null);
   const [otp, setOtp] = useState("");
 
-  const nextStep = () => setStep((prev) => Math.min(prev + 1, 7));
+  // const nextStep = () => setStep((prev) => Math.min(prev + 1, 7));
+  const nextStep = () => {
+    setError(null);
+
+    // STEP 3 VALIDATION ONLY
+    if (step === 3 && !formData.mobile.trim()) {
+      setError("Mobile number is required");
+      return;
+    }
+
+    setStep((prev) => Math.min(prev + 1, 7));
+  };
   const prevStep = () => {
     if (step === 1) onBack();
     else setStep((prev) => prev - 1);
@@ -283,7 +294,7 @@ export default function Signup({ onBack, onSuccess }: SignupProps) {
             </div>
             <div className="space-y-4">
               <InputField
-                label="Mobile Number"
+                label="Mobile Number *"
                 value={formData.mobile}
                 icon={<Phone size={14} />}
                 placeholder="0412 345 678"
