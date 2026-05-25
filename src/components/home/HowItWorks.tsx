@@ -25,7 +25,7 @@ export default function HowItWorks({ onGetStarted }: HowItWorksProps) {
       icon: <ClipboardList size={24} className="text-orange-500" />,
       title: "Qualifies & Captures",
       description:
-        "Detects their number via CLI, captures name, address, and reason — then checks if it's the right trade.",
+        "Detects their number, captures name, address, and reason — then checks if it's the right trade.",
     },
     {
       number: "04",
@@ -85,7 +85,7 @@ export default function HowItWorks({ onGetStarted }: HowItWorksProps) {
 
         {/* BOTTOM CTA */}
         <div className="mt-20 flex justify-center">
-          <button 
+          <button
             onClick={onGetStarted}
             className="flex items-center gap-3 bg-[#090e14] border border-white/5 hover:border-orange-500/30 text-white px-8 py-4 rounded-2xl text-lg font-black transition-all duration-300 hover:scale-105"
           >
