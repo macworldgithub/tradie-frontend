@@ -298,7 +298,7 @@ export default function Signup({ onBack, onSuccess }: SignupProps) {
                 <CheckboxField
                   checked={formData.portMobile}
                   label="Port this mobile number?"
-                  sub="CAT-A port typically takes 24-48 hours"
+                  sub="Typically takes 24-48 hours"
                 />
               </div>
 
@@ -354,7 +354,7 @@ export default function Signup({ onBack, onSuccess }: SignupProps) {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <InputField
                 label="Opening Time"
                 value={formData.openingTime}
@@ -369,7 +369,7 @@ export default function Signup({ onBack, onSuccess }: SignupProps) {
                 placeholder="06:00 PM"
                 onChange={(v: string) => handleInputChange("closingTime", v)}
               />
-            </div>
+            </div> */}
 
             <InputField
               label="Secondary SMS Delivery (optional)"

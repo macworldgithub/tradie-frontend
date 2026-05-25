@@ -17,7 +17,7 @@ export default function Solution() {
     },
     {
       icon: <Fingerprint size={20} />,
-      title: "CLI Detection",
+      title: "Number Detection",
       description: "Auto-detects caller number",
     },
     {

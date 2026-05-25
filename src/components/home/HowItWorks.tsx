@@ -25,7 +25,7 @@ export default function HowItWorks({ onGetStarted }: HowItWorksProps) {
       icon: <ClipboardList size={24} className="text-orange-500" />,
       title: "Qualifies & Captures",
       description:
-        "Detects their number via CLI, captures name, address, and reason — then checks if it's the right trade.",
+        "Detects their number, captures name, address, and reason — then checks if it's the right trade.",
     },
     {
       number: "04",
