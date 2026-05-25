@@ -17,7 +17,7 @@ export default function Footer() {
         {/* RIGHT: Attribution */}
         <div className="text-center md:text-right">
           <p className="text-[8px] md:text-[10px] font-black text-zinc-500 uppercase tracking-[0.1em] leading-relaxed">
-            Powered by Bele.Ai — Revolutionising utilities Through{" "}
+            Powered by Mia.Ai — Revolutionising utilities Through{" "}
             <br className="sm:hidden" /> Simplicity and Automation
           </p>
         </div>

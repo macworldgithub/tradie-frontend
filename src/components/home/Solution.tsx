@@ -50,7 +50,7 @@ export default function Solution() {
           <div className="relative rounded-[2rem] overflow-hidden shadow-2xl border border-white/5 h-[350px] sm:min-h-[450px] lg:min-h-[550px]">
             <img
               src={solutionIllustration}
-              alt="Bele.Ai Solution Illustration"
+              alt="Mia.Ai Solution Illustration"
               className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
             />
             {/* Dark Overlay for bottom text stability */}
@@ -75,13 +75,13 @@ export default function Solution() {
               The Solution
             </span>
             <h2 className="text-3xl md:text-5xl font-black leading-[1.1] tracking-tighter text-white">
-              Bele.Ai answers <br />
+              Mia.Ai answers <br />
               <span className="text-[#f97316]">so you don't have to.</span>
             </h2>
           </div>
 
           <p className="text-zinc-400 text-base md:text-md font-medium leading-relaxed max-w-3xl">
-            When a customer calls and you can't answer, Bele.Ai picks up after 3
+            When a customer calls and you can't answer, Mia.Ai picks up after 3
             rings. It greets the caller professionally, qualifies the job,
             captures all their details, and sends you an SMS instantly.
           </p>

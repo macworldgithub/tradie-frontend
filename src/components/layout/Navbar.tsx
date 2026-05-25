@@ -10,7 +10,13 @@ interface NavbarProps {
   onLogout?: () => void;
 }
 
-export default function Navbar({ onGetStarted, onWatchDemo, onLogin, isLoggedIn, onLogout }: NavbarProps) {
+export default function Navbar({
+  onGetStarted,
+  onWatchDemo,
+  onLogin,
+  isLoggedIn,
+  onLogout,
+}: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -24,7 +30,7 @@ export default function Navbar({ onGetStarted, onWatchDemo, onLogin, isLoggedIn,
         {/* RIGHT (Desktop) - Shows only on LG screens (1024px) and above */}
         <div className="hidden lg:flex items-center gap-6">
           <span className="text-[10px] text-zinc-500 font-bold tracking-[0.15em] uppercase whitespace-nowrap">
-            POWERED BY BELE.AI
+            POWERED BY Mia.Ai
           </span>
 
           <div className="flex items-center gap-3">
@@ -77,13 +83,16 @@ export default function Navbar({ onGetStarted, onWatchDemo, onLogin, isLoggedIn,
               POWERED BY
             </span>
             <span className="text-xs text-zinc-200 font-black tracking-widest leading-none">
-              BELE.AI
+              Mia.Ai
             </span>
           </div>
 
           <div className="flex flex-col gap-3">
             <button
-              onClick={() => { onWatchDemo(); setIsOpen(false); }}
+              onClick={() => {
+                onWatchDemo();
+                setIsOpen(false);
+              }}
               className="flex items-center justify-center gap-2 bg-[#f97316] text-black py-4 rounded-xl text-md font-bold shadow-lg active:scale-95 transition-transform"
             >
               <Mic size={18} fill="black" />
@@ -93,7 +102,10 @@ export default function Navbar({ onGetStarted, onWatchDemo, onLogin, isLoggedIn,
             {isLoggedIn ? (
               <div className="flex flex-col gap-3">
                 <button
-                  onClick={() => { onLogout && onLogout(); setIsOpen(false); }}
+                  onClick={() => {
+                    onLogout && onLogout();
+                    setIsOpen(false);
+                  }}
                   className="flex items-center justify-center gap-2 bg-red-500/10 border border-red-500/20 w-full p-4 rounded-xl text-red-500 font-bold hover:bg-red-500 hover:text-white transition-all"
                 >
                   <LogOut size={18} />
@@ -103,14 +115,20 @@ export default function Navbar({ onGetStarted, onWatchDemo, onLogin, isLoggedIn,
             ) : (
               <>
                 <button
-                  onClick={() => { onLogin && onLogin(); setIsOpen(false); }}
+                  onClick={() => {
+                    onLogin && onLogin();
+                    setIsOpen(false);
+                  }}
                   className="border border-white/10 w-full p-4 rounded-xl text-white font-bold hover:bg-white/5 transition-all"
                 >
                   Log In
                 </button>
 
                 <button
-                  onClick={() => { onGetStarted(); setIsOpen(false); }}
+                  onClick={() => {
+                    onGetStarted();
+                    setIsOpen(false);
+                  }}
                   className="bg-[#12181e] border border-white/5 w-full p-4 rounded-xl text-orange-500 font-bold hover:bg-orange-500 hover:text-black transition-all"
                 >
                   Sign Up

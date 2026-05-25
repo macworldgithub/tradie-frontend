@@ -104,10 +104,10 @@ export default function Demo({ onBack }: DemoProps) {
             {/* HEADERS */}
             <div className="space-y-4">
               <h1 className="text-xl md:text-3xl font-black tracking-tight text-white leading-tight">
-                Experience Bele.Ai in Action
+                Experience Mia.Ai in Action
               </h1>
               <p className="text-zinc-500 text-sm max-w-md mx-auto leading-relaxed font-medium">
-                Watch how Bele.Ai handles a missed call, captures the lead, and
+                Watch how Mia.Ai handles a missed call, captures the lead, and
                 sends a real SMS to your phone.
               </p>
             </div>
@@ -154,8 +154,8 @@ export default function Demo({ onBack }: DemoProps) {
 
             {/* FOOTNOTE */}
             <p className="text-[10px] text-zinc-600 leading-relaxed font-bold max-w-sm uppercase tracking-wider">
-              Business hours: Tradie gets 3 rings to answer. After hours:
-              Bele.Ai picks up automatically.
+              Business hours: Tradie gets 3 rings to answer. After hours: Mia.Ai
+              picks up automatically.
             </p>
           </div>
         </div>
@@ -233,7 +233,7 @@ export default function Demo({ onBack }: DemoProps) {
             <div className="flex items-center gap-6">
               <span>00:00</span>
               <span>RINGS: {rings}/3</span>
-              <span className="text-orange-500 opacity-60">BELE.AI</span>
+              <span className="text-orange-500 opacity-60">Mia.Ai</span>
             </div>
           </div>
         </aside>

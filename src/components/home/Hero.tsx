@@ -116,7 +116,7 @@ export default function Hero({ onGetStarted, onWatchDemo }: HeroProps) {
           <div className="flex flex-col space-y-2">
             <span className="text-5xl font-black text-emerald-500">0</span>
             <span className="text-[12px] font-bold leading-tight text-zinc-600 max-w-[120px]">
-              calls missed <br /> with Bele.Ai
+              calls missed <br /> with Mia.Ai
             </span>
           </div>
         </div>

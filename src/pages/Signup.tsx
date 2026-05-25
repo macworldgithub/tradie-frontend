@@ -87,7 +87,7 @@ export default function Signup({ onBack, onSuccess }: SignupProps) {
         geoNumberType: "NONE",
         portingNumber: formData.geoNumber,
         openingHours: `${formData.openingTime}-${formData.closingTime} MON-FRI`,
-        paymentDetails: {}
+        paymentDetails: {},
       };
 
       const res = await authService.register(payload);
@@ -155,12 +155,13 @@ export default function Signup({ onBack, onSuccess }: SignupProps) {
           {steps.map((s) => (
             <div
               key={s.id}
-              className={`flex items-center gap-2 pb-4 border-b-2 transition-all cursor-pointer z-10 ${step === s.id
-                ? "border-orange-500 text-orange-500"
-                : step > s.id
-                  ? "border-emerald-500 text-emerald-500"
-                  : "border-transparent text-zinc-600"
-                }`}
+              className={`flex items-center gap-2 pb-4 border-b-2 transition-all cursor-pointer z-10 ${
+                step === s.id
+                  ? "border-orange-500 text-orange-500"
+                  : step > s.id
+                    ? "border-emerald-500 text-emerald-500"
+                    : "border-transparent text-zinc-600"
+              }`}
             >
               {step > s.id ? <Check size={16} /> : s.icon}
               <span className="text-xs font-black uppercase tracking-widest whitespace-nowrap">
@@ -236,7 +237,7 @@ export default function Signup({ onBack, onSuccess }: SignupProps) {
                 What Trade Are You?
               </h2>
               <p className="text-zinc-500 font-medium tracking-wide">
-                This helps Bele.Ai qualify callers and check they need the right
+                This helps Mia.Ai qualify callers and check they need the right
                 trade.
               </p>
             </div>
@@ -245,10 +246,11 @@ export default function Signup({ onBack, onSuccess }: SignupProps) {
                 <button
                   key={t}
                   onClick={() => setFormData({ ...formData, trade: t })}
-                  className={`flex items-center justify-between p-5 rounded-2xl border-2 transition-all group ${formData.trade === t
-                    ? "border-orange-500 bg-orange-500/5 text-orange-500"
-                    : "border-white/5 bg-[#090e14] text-zinc-500 hover:border-white/10"
-                    }`}
+                  className={`flex items-center justify-between p-5 rounded-2xl border-2 transition-all group ${
+                    formData.trade === t
+                      ? "border-orange-500 bg-orange-500/5 text-orange-500"
+                      : "border-white/5 bg-[#090e14] text-zinc-500 hover:border-white/10"
+                  }`}
                 >
                   <div className="flex items-center gap-4">
                     <Hammer
@@ -347,7 +349,7 @@ export default function Signup({ onBack, onSuccess }: SignupProps) {
                 Working Hours & Delivery
               </h2>
               <p className="text-zinc-500 font-medium tracking-wide">
-                Set your business hours so Bele.Ai can greet callers differently
+                Set your business hours so Mia.Ai can greet callers differently
                 after hours.
               </p>
             </div>
@@ -433,16 +435,18 @@ export default function Signup({ onBack, onSuccess }: SignupProps) {
 
             <div
               onClick={() => setAgreedToTerms(!agreedToTerms)}
-              className={`bg-[#090e14] border p-4 rounded-2xl flex items-start gap-4 transition-all group cursor-pointer ${agreedToTerms
-                ? "border-orange-500/50 bg-orange-500/5 shadow-[0_0_20px_rgba(16,185,129,0.1)]"
-                : "border-white/5 hover:border-white/10"
-                }`}
+              className={`bg-[#090e14] border p-4 rounded-2xl flex items-start gap-4 transition-all group cursor-pointer ${
+                agreedToTerms
+                  ? "border-orange-500/50 bg-orange-500/5 shadow-[0_0_20px_rgba(16,185,129,0.1)]"
+                  : "border-white/5 hover:border-white/10"
+              }`}
             >
               <div
-                className={`w-6 h-6 rounded-md border-2 flex items-center justify-center shrink-0 transition-all ${agreedToTerms
-                  ? "bg-orange-500 border-orange-500"
-                  : "border-white/20 group-hover:border-white/40"
-                  }`}
+                className={`w-6 h-6 rounded-md border-2 flex items-center justify-center shrink-0 transition-all ${
+                  agreedToTerms
+                    ? "bg-orange-500 border-orange-500"
+                    : "border-white/20 group-hover:border-white/40"
+                }`}
               >
                 {agreedToTerms && (
                   <Check size={16} className="text-black stroke-[4]" />
@@ -454,7 +458,7 @@ export default function Signup({ onBack, onSuccess }: SignupProps) {
                 </p>
                 <p className="text-zinc-500 text-[10px] leading-relaxed">
                   Including payment terms, porting authorisation (if
-                  applicable), and Bele.Ai service agreement.
+                  applicable), and Mia.Ai service agreement.
                 </p>
               </div>
             </div>
@@ -469,7 +473,8 @@ export default function Signup({ onBack, onSuccess }: SignupProps) {
                 Verify Your Email
               </h2>
               <p className="text-zinc-500 font-medium tracking-wide">
-                We've sent a 6-digit code to <span className="text-white">{formData.email}</span>
+                We've sent a 6-digit code to{" "}
+                <span className="text-white">{formData.email}</span>
               </p>
             </div>
 
@@ -521,7 +526,7 @@ export default function Signup({ onBack, onSuccess }: SignupProps) {
                   {formData.email}
                 </span>{" "}
                 <br />
-                and your Bele.Ai agent would be activated immediately.
+                and your Mia.Ai agent would be activated immediately.
               </p>
             </div>
 
@@ -569,7 +574,13 @@ export default function Signup({ onBack, onSuccess }: SignupProps) {
             {/* FINAL BUTTONS */}
             <div className="flex flex-col sm:flex-row items-center gap-4 w-full justify-center">
               <button
-                onClick={() => onSuccess && onSuccess({ email: formData.email, name: formData.name }, "dummy-token-after-signup")}
+                onClick={() =>
+                  onSuccess &&
+                  onSuccess(
+                    { email: formData.email, name: formData.name },
+                    "dummy-token-after-signup",
+                  )
+                }
                 className="w-full sm:w-auto flex items-center justify-center gap-3 bg-orange-500 hover:bg-orange-400 text-black px-8 py-4 rounded-xl text-lg font-black transition-all group"
               >
                 Try the Demo
@@ -599,19 +610,20 @@ export default function Signup({ onBack, onSuccess }: SignupProps) {
               Back
             </button>
 
-            {error && (
-              <p className="text-red-500 text-xs font-bold">{error}</p>
-            )}
+            {error && <p className="text-red-500 text-xs font-bold">{error}</p>}
 
             <button
               onClick={step === 5 ? handleSignup : nextStep}
-              disabled={(step === 5 && (!agreedToTerms || isSubmitting)) || isSubmitting}
-              className={`flex items-center gap-2 px-10 py-3 rounded-2xl text-lg font-black transition-all duration-300 shadow-xl hover:scale-[1.03] active:scale-95 group ${step === 5
-                ? agreedToTerms
-                  ? "bg-orange-500 text-black shadow-[0_10px_30px_rgba(249,115,22,0.3)]"
-                  : "bg-[#12181e] text-zinc-700 border border-white/5 cursor-not-allowed opacity-50"
-                : "bg-orange-500 text-black shadow-orange-500/20 hover:bg-orange-400"
-                }`}
+              disabled={
+                (step === 5 && (!agreedToTerms || isSubmitting)) || isSubmitting
+              }
+              className={`flex items-center gap-2 px-10 py-3 rounded-2xl text-lg font-black transition-all duration-300 shadow-xl hover:scale-[1.03] active:scale-95 group ${
+                step === 5
+                  ? agreedToTerms
+                    ? "bg-orange-500 text-black shadow-[0_10px_30px_rgba(249,115,22,0.3)]"
+                    : "bg-[#12181e] text-zinc-700 border border-white/5 cursor-not-allowed opacity-50"
+                  : "bg-orange-500 text-black shadow-orange-500/20 hover:bg-orange-400"
+              }`}
             >
               {isSubmitting ? (
                 <span className="flex items-center gap-2">
@@ -620,7 +632,9 @@ export default function Signup({ onBack, onSuccess }: SignupProps) {
                 </span>
               ) : (
                 <>
-                  {step === 5 ? <Check size={20} className="stroke-[3]" /> : null}
+                  {step === 5 ? (
+                    <Check size={20} className="stroke-[3]" />
+                  ) : null}
                   {step === 5 ? "Complete Sign Up" : "Next"}
                   {step !== 5 && (
                     <ArrowLeft className="w-5 h-5 rotate-180 transition-transform group-hover:translate-x-1" />
@@ -658,10 +672,11 @@ function InputField({
         value={value}
         onChange={(e) => onChange && onChange(e.target.value)}
         placeholder={placeholder}
-        className={`w-full bg-[#12181e] border rounded-xl px-5 py-4 text-white placeholder-zinc-700 focus:outline-none focus:border-orange-500 transition-all ${highlight
-          ? "border-orange-500/30 shadow-[0_0_20px_rgba(249,115,22,0.05)]"
-          : "border-white/5"
-          }`}
+        className={`w-full bg-[#12181e] border rounded-xl px-5 py-4 text-white placeholder-zinc-700 focus:outline-none focus:border-orange-500 transition-all ${
+          highlight
+            ? "border-orange-500/30 shadow-[0_0_20px_rgba(249,115,22,0.05)]"
+            : "border-white/5"
+        }`}
       />
       {subLabel && (
         <p className="text-zinc-600 text-[10px] font-medium leading-relaxed">
@@ -676,8 +691,9 @@ function CheckboxField({ checked, label, sub }: any) {
   return (
     <div className="bg-[#090e14] border border-white/5 p-6 rounded-2xl flex items-center gap-5 transition-all hover:border-white/10 group cursor-pointer">
       <div
-        className={`w-6 h-6 rounded-md flex items-center justify-center shrink-0 border-2 transition-colors ${checked ? "bg-orange-500 border-orange-500" : "border-white/10"
-          }`}
+        className={`w-6 h-6 rounded-md flex items-center justify-center shrink-0 border-2 transition-colors ${
+          checked ? "bg-orange-500 border-orange-500" : "border-white/10"
+        }`}
       >
         {checked && <Check size={16} className="text-black" />}
       </div>

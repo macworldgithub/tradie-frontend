@@ -16,9 +16,9 @@ export default function HowItWorks({ onGetStarted }: HowItWorksProps) {
     {
       number: "02",
       icon: <Bot size={24} className="text-orange-500" />,
-      title: "Bele.Ai Picks Up",
+      title: "Mia.Ai Picks Up",
       description:
-        "If you don't answer, Bele.Ai answers with a professional greeting using your business name.",
+        "If you don't answer, Mia.Ai answers with a professional greeting using your business name.",
     },
     {
       number: "03",
@@ -85,7 +85,7 @@ export default function HowItWorks({ onGetStarted }: HowItWorksProps) {
 
         {/* BOTTOM CTA */}
         <div className="mt-20 flex justify-center">
-          <button 
+          <button
             onClick={onGetStarted}
             className="flex items-center gap-3 bg-[#090e14] border border-white/5 hover:border-orange-500/30 text-white px-8 py-4 rounded-2xl text-lg font-black transition-all duration-300 hover:scale-105"
           >
