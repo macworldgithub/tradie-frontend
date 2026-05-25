@@ -45,7 +45,7 @@ export default function Signup({ onBack, onSuccess }: SignupProps) {
     { id: 1, label: "Your Details", icon: <User size={16} /> },
     { id: 2, label: "Your Trade", icon: <Hammer size={16} /> },
     { id: 3, label: "Number Setup", icon: <Phone size={16} /> },
-    { id: 4, label: "Hours & Delivery", icon: <Clock size={16} /> },
+    { id: 4, label: "Delivery", icon: <Clock size={16} /> },
     { id: 5, label: "Confirm", icon: <Check size={16} /> },
     { id: 6, label: "Verify", icon: <Mail size={16} /> },
   ];
@@ -356,13 +356,11 @@ export default function Signup({ onBack, onSuccess }: SignupProps) {
         {step === 4 && (
           <div className="space-y-10">
             <div className="space-y-2">
-              <h2 className="text-3xl font-black tracking-tighter">
-                Working Hours & Delivery
-              </h2>
-              <p className="text-zinc-500 font-medium tracking-wide">
+              <h2 className="text-3xl font-black tracking-tighter">Delivery</h2>
+              {/* <p className="text-zinc-500 font-medium tracking-wide">
                 Set your business hours so Mia.Ai can greet callers differently
                 after hours.
-              </p>
+              </p> */}
             </div>
 
             {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
