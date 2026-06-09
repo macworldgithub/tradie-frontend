@@ -22,6 +22,7 @@ interface SignupProps {
 
 export default function Signup({ onBack, onSuccess }: SignupProps) {
   const [step, setStep] = useState(1);
+  const [emailError, setEmailError] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     company: "",
@@ -66,17 +67,32 @@ export default function Signup({ onBack, onSuccess }: SignupProps) {
   const [otp, setOtp] = useState("");
 
   // const nextStep = () => setStep((prev) => Math.min(prev + 1, 7));
-  const nextStep = () => {
-    setError(null);
+const nextStep = () => {
+  setError(null);
 
-    // STEP 3 VALIDATION ONLY
-    if (step === 3 && !formData.mobile.trim()) {
-      setError("Mobile number is required");
+  if (step === 1) {
+    if (!formData.email.trim()) {
+      setError("Email is required");
+      setEmailError("Email is required");
       return;
     }
 
-    setStep((prev) => Math.min(prev + 1, 7));
-  };
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(formData.email)) {
+      setError("Please enter a valid email address");
+      setEmailError("Please enter a valid email address");
+      return;
+    }
+  }
+
+  if (step === 3 && !formData.mobile.trim()) {
+    setError("Mobile number is required");
+    return;
+  }
+
+  setStep((prev) => Math.min(prev + 1, 7));
+};
   const prevStep = () => {
     if (step === 1) onBack();
     else setStep((prev) => prev - 1);
@@ -221,13 +237,26 @@ export default function Signup({ onBack, onSuccess }: SignupProps) {
                 highlight
                 onChange={(v: string) => handleInputChange("acn", v)}
               />
-              <InputField
-                label="Email"
-                value={formData.email}
-                icon={<Mail size={14} />}
-                placeholder="jon@plumbing.com.au"
-                onChange={(v: string) => handleInputChange("email", v)}
-              />
+             <InputField
+  label="Email *"
+  value={formData.email}
+  icon={<Mail size={14} />}
+  placeholder="jon@plumbing.com.au"
+  error={emailError}
+  onChange={(v: string) => {
+    handleInputChange("email", v);
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!v.trim()) {
+      setEmailError("Email is required");
+    } else if (!emailRegex.test(v)) {
+      setEmailError("Please enter a valid email address");
+    } else {
+      setEmailError("");
+    }
+  }}
+/>
               <InputField
                 label="Password"
                 type="password"
@@ -666,6 +695,7 @@ function InputField({
   highlight = false,
   subLabel,
   type = "text",
+  error,
   onChange,
 }: any) {
   return (
@@ -681,12 +711,19 @@ function InputField({
         value={value}
         onChange={(e) => onChange && onChange(e.target.value)}
         placeholder={placeholder}
-        className={`w-full bg-[#12181e] border rounded-xl px-5 py-4 text-white placeholder-zinc-700 focus:outline-none focus:border-orange-500 transition-all ${
-          highlight
-            ? "border-orange-500/30 shadow-[0_0_20px_rgba(249,115,22,0.05)]"
-            : "border-white/5"
-        }`}
+      className={`w-full bg-[#12181e] border rounded-xl px-5 py-4 text-white placeholder-zinc-700 focus:outline-none transition-all ${
+  error
+    ? "border-red-500"
+    : highlight
+      ? "border-orange-500/30 shadow-[0_0_20px_rgba(249,115,22,0.05)]"
+      : "border-white/5"
+}`}
       />
+      {error && (
+  <p className="text-red-500 text-xs font-medium">
+    {error}
+  </p>
+)}
       {subLabel && (
         <p className="text-zinc-600 text-[10px] font-medium leading-relaxed">
           {subLabel}
