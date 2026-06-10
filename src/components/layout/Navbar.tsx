@@ -21,10 +21,10 @@ export default function Navbar({
 
   return (
     <nav className="w-full bg-[#03070b] text-white border-b border-white/5 sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto max-md:px-6 md:px-0 lg:px-2 py-4 flex items-center justify-between">
         {/* LEFT: Logo Section */}
         <div className="flex items-center gap-3">
-          <img src={logo} alt="Logo" className="h-16 w-auto" />
+          <img src={logo} alt="Logo" className="h-28 w-auto" />
         </div>
 
         {/* RIGHT (Desktop) - Shows only on LG screens (1024px) and above */}

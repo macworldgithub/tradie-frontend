@@ -7,7 +7,7 @@ interface HeroProps {
 
 export default function Hero({ onGetStarted, onWatchDemo }: HeroProps) {
   return (
-    <section className="relative w-full min-h-screen flex flex-col items-center xl:items-start justify-center pt-24 pb-20 px-6 sm:px-12 xl:px-24 overflow-hidden bg-[#03070b]">
+    <section className="relative w-full pt-12 flex flex-col items-center xl:items-start justify-center pb-20 px-6 sm:px-12 xl:px-24 overflow-hidden bg-[#03070b]">
       {/* BACKGROUND ELEMENTS */}
       {/* Network nodes/lines could be an SVG or image, using a placeholder/simulated look for now */}
       <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1/2 h-full opacity-20 pointer-events-none -z-10">
@@ -35,7 +35,7 @@ export default function Hero({ onGetStarted, onWatchDemo }: HeroProps) {
         </svg>
       </div>
 
-      {/* Large Hammer Silhouette (Low Opacity) */}
+      {/* Large Hammer Silhouette (Low Opacity) */} 
       <div className="absolute left-[40%] top-1/2 -translate-y-1/2 opacity-[0.03] pointer-events-none -z-20 scale-150 rotate-12">
         <svg
           width="400"
@@ -48,13 +48,13 @@ export default function Hero({ onGetStarted, onWatchDemo }: HeroProps) {
         </svg>
       </div>
 
-      <div className="max-w-7xl w-full flex flex-col items-center xl:items-start text-center xl:text-left z-10">
+      <div className="max-w-7xl w-full flex flex-col items-center xl:items-start px-6 sm:px-12 lg:px-52  text-center xl:text-left z-10">
         {/* BADGE */}
         <div className="inline-flex items-center gap-2 bg-[#12181e] border border-white/5 px-4 py-2 rounded-full mb-8">
           <div className="w-1.5 h-1.5 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.8)]" />
           <span className="text-[10px] font-black uppercase tracking-widest text-[#f97316]">
             AI-Powered Call Answering for Tradies
-          </span>
+          </span>+
         </div>
 
         {/* MAIN HEADLINE */}
@@ -94,7 +94,7 @@ export default function Hero({ onGetStarted, onWatchDemo }: HeroProps) {
         </div>
 
         {/* STATS BAR (Divider & 4 items) */}
-        <div className="w-full max-w-3xl pt-12 border-t border-white/5 grid grid-cols-2 sm:grid-cols-4 gap-8 sm:gap-4 animate-in fade-in zoom-in-95 duration-1000 delay-300">
+        <div className="w-full max-w-3xl pt-8 border-t border-white/5 grid grid-cols-2 sm:grid-cols-4 gap-8 sm:gap-4 animate-in fade-in zoom-in-95 duration-1000 delay-300">
           <div className="flex flex-col space-y-2">
             <span className="text-5xl font-black text-orange-500">1 in 3</span>
             <span className="text-[12px] font-bold leading-tight text-zinc-600 max-w-[120px]">
@@ -123,9 +123,9 @@ export default function Hero({ onGetStarted, onWatchDemo }: HeroProps) {
       </div>
 
       {/* SCROLL INDICATOR */}
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 hidden xl:flex text-zinc-700 animate-bounce">
+      {/* <div className="absolute bottom-10 left-1/2 -translate-x-1/2 hidden xl:flex text-zinc-700 animate-bounce">
         <ChevronDown size={28} />
-      </div>
+      </div> */}
     </section>
   );
 }

@@ -43,7 +43,7 @@ export default function ForgotPassword({ onBack }: ForgotPasswordProps) {
             <ArrowLeft
               size={18}
               className="group-hover:-translate-x-1 transition-transform"
-            />
+            /> 
           </button>
 
           <div className="flex items-center gap-2">

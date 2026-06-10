@@ -31,7 +31,7 @@ export default function Signup({ onBack, onSuccess }: SignupProps) {
     acn: "",
     trade: "",
     mobile: "",
-    wantGeo: false,
+    // wantGeo: false,
     portGeo: false,
     geoNumber: "",
     openingTime: "07:00 AM",
@@ -78,7 +78,6 @@ const nextStep = () => {
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
     if (!emailRegex.test(formData.email)) {
       setError("Please enter a valid email address");
       setEmailError("Please enter a valid email address");
@@ -86,9 +85,14 @@ const nextStep = () => {
     }
   }
 
-  if (step === 3 && !formData.mobile.trim()) {
-    setError("Mobile number is required");
-    return;
+  if (step === 3) {
+    const hasMobile = formData.mobile.trim().length > 0;
+    const hasGeo = formData.portGeo && formData.geoNumber.trim().length > 0;
+
+    if (!hasMobile && !hasGeo) {
+      setError("Please provide either a Mobile Number or an Existing Geo Number");
+      return;
+    }
   }
 
   setStep((prev) => Math.min(prev + 1, 7));
@@ -102,20 +106,20 @@ const nextStep = () => {
     setIsSubmitting(true);
     setError(null);
     try {
-      const payload = {
-        customerName: formData.name,
-        companyName: formData.company,
-        acn: formData.acn,
-        email: formData.email,
-        password: formData.password,
-        trade: formData.trade,
-        mobileNumber: formData.mobile,
-        wantsGeoNumber: formData.wantGeo,
-        geoNumberType: "NONE",
-        portingNumber: formData.geoNumber,
-        openingHours: `${formData.openingTime}-${formData.closingTime} MON-FRI`,
-        paymentDetails: {},
-      };
+   const payload = {
+      customerName: formData.name,
+      companyName: formData.company,
+      acn: formData.acn,
+      email: formData.email,
+      password: formData.password,
+      trade: formData.trade,
+      mobileNumber: formData.mobile,
+      wantsGeoNumber: formData.portGeo,           // ← Updated logic
+      geoNumberType: formData.portGeo ? "PORT" : "NONE",
+      portingNumber: formData.geoNumber,
+      openingHours: `${formData.openingTime}-${formData.closingTime} MON-FRI`,
+      paymentDetails: {},
+    };
 
       const res = await authService.register(payload);
       if (res.userId) {
@@ -165,7 +169,7 @@ const nextStep = () => {
               className="group-hover:-translate-x-1 transition-transform"
             />
           </button>
-
+             
           <div className="flex items-center gap-2">
             <img src={logo} alt="Logo" className="h-16 w-auto" />
           </div>
@@ -311,76 +315,80 @@ const nextStep = () => {
         )}
 
         {/* STEP 3: NUMBER SETUP */}
-        {step === 3 && (
-          <div className="space-y-6">
-            <div className="space-y-2">
-              <h2 className="text-3xl font-black tracking-tighter">
-                Number Setup
-              </h2>
-              <p className="text-zinc-500 font-medium tracking-wide">
-                Your mobile number and optional geographic (landline) number.
-              </p>
-            </div>
-            <div className="space-y-4">
-              <InputField
-                label="Mobile Number *"
-                value={formData.mobile}
-                icon={<Phone size={14} />}
-                placeholder="0412 345 678"
-                onChange={(v: string) => handleInputChange("mobile", v)}
-              />
+        {/* STEP 3: NUMBER SETUP */}
+{/* STEP 3: NUMBER SETUP */}
+{step === 3 && (
+  <div className="space-y-6">
+    <div className="space-y-2">
+      <h2 className="text-3xl font-black tracking-tighter">Number Setup</h2>
+      <p className="text-zinc-500 font-medium tracking-wide">
+        Your mobile number and optional geographic (landline) number.
+      </p>
+    </div>
 
-              <div
-                onClick={() =>
-                  setFormData({ ...formData, portMobile: !formData.portMobile })
-                }
-              >
-                <CheckboxField
-                  checked={formData.portMobile}
-                  label="Port this mobile number?"
-                  sub="Typically takes 24-48 hours"
-                />
-              </div>
+    <div className="space-y-6">
+      {/* Mobile Number */}
+      <InputField
+        label="Mobile Number *"
+        value={formData.mobile}
+        icon={<Phone size={14} />}
+        placeholder="0412 345 678"
+        onChange={(v: string) => handleInputChange("mobile", v)}
+        disabled={formData.portGeo}   // ← Disabled when Geo is selected
+      />
 
-              <div className="border-t border-white/5" />
+      <div
+        onClick={() => {
+          setFormData((prev) => ({
+            ...prev,
+            portMobile: !prev.portMobile,
+            portGeo: false,
+          }));
+        }}
+      >
+        <CheckboxField
+          checked={formData.portMobile}
+          label="Port this mobile number?"
+          sub="Typically takes 24-48 hours"
+        />
+      </div>
 
-              <div
-                onClick={() =>
-                  setFormData({ ...formData, wantGeo: !formData.wantGeo })
-                }
-              >
-                <CheckboxField
-                  checked={formData.wantGeo}
-                  label="Do you want a Geo (landline) number?"
-                  sub="e.g. 02 XXXX XXXX for a local presence"
-                />
-              </div>
+      <div className="border-t border-white/5 pt-4" />
 
-              {formData.wantGeo && (
-                <div className="pl-4 space-y-4 border-l-2 border-orange-500/20 animate-in slide-in-from-left-4 pt-1">
-                  <div
-                    onClick={() =>
-                      setFormData({ ...formData, portGeo: !formData.portGeo })
-                    }
-                  >
-                    <CheckboxField
-                      checked={formData.portGeo}
-                      label="Port an existing Geo number"
-                    />
-                  </div>
-                  <InputField
-                    label="Existing Geo Number"
-                    value={formData.geoNumber}
-                    icon={<Plus size={14} />}
-                    placeholder="02 XXXX XXXX"
-                    onChange={(v: string) => handleInputChange("geoNumber", v)}
-                  />
-                </div>
-              )}
-            </div>
+      {/* Geo Number Section */}
+      <div className="space-y-4">
+        <div
+          onClick={() => {
+            setFormData((prev) => ({
+              ...prev,
+              portGeo: !prev.portGeo,
+              portMobile: false,
+              // Optional: clear mobile when switching to Geo
+              // mobile: prev.portGeo ? prev.mobile : prev.mobile,
+            }));
+          }}
+        >
+          <CheckboxField
+            checked={formData.portGeo}
+            label="Port an existing Geo number"
+          />
+        </div>
+
+        {formData.portGeo && (
+          <div className="pl-4 space-y-4 border-l-2 border-orange-500/20 animate-in slide-in-from-left-4 pt-1">
+            <InputField
+              label="Existing Geo Number"
+              value={formData.geoNumber}
+              icon={<Plus size={14} />}
+              placeholder="02 XXXX XXXX"
+              onChange={(v: string) => handleInputChange("geoNumber", v)}
+            />
           </div>
         )}
-
+      </div>
+    </div>
+  </div>
+)}
         {/* STEP 4: HOURS & DELIVERY */}
         {step === 4 && (
           <div className="space-y-10">
@@ -697,6 +705,7 @@ function InputField({
   type = "text",
   error,
   onChange,
+  disabled = false,
 }: any) {
   return (
     <div className="space-y-3">
@@ -711,6 +720,7 @@ function InputField({
         value={value}
         onChange={(e) => onChange && onChange(e.target.value)}
         placeholder={placeholder}
+        disabled={disabled}
       className={`w-full bg-[#12181e] border rounded-xl px-5 py-4 text-white placeholder-zinc-700 focus:outline-none transition-all ${
   error
     ? "border-red-500"

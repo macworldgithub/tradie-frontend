@@ -15,8 +15,8 @@ export default function Mindset({ onGetStarted, onWatchDemo }: MindsetProps) {
   return (
     <section className="bg-[#03070b] py-24 px-6 sm:px-12 lg:px-24">
       <div className="max-w-4xl mx-auto flex flex-col items-center">
-        {/* MINDSET HEADER */}
-        <div className="text-center space-y-4 mb-12">
+
+        {/* <div className="text-center space-y-4 mb-12">
           <span className="text-[10px] sm:text-[11px] font-black tracking-[0.2em] text-zinc-500 uppercase">
             Our Mindset
           </span>
@@ -25,7 +25,6 @@ export default function Mindset({ onGetStarted, onWatchDemo }: MindsetProps) {
           </h2>
         </div>
 
-        {/* PRINCIPLES LIST */}
         <div className="w-full max-w-2xl space-y-4 mb-12">
           {principles.map((principle, index) => (
             <div
@@ -40,14 +39,14 @@ export default function Mindset({ onGetStarted, onWatchDemo }: MindsetProps) {
               </p>
             </div>
           ))}
-        </div>
+        </div> */}
 
         {/* MISSION STATEMENT */}
-        <p className="text-zinc-500 text-center text-sm sm:text-base leading-relaxed max-w-2xl mb-32">
+        {/* <p className="text-zinc-500 text-center text-sm sm:text-base leading-relaxed max-w-2xl mb-32">
           Our mission is to revolutionise utilities through simplicity and
           automation. Just Tradie Mobile is built for tradies who want to focus
           on the job — not the phone.
-        </p>
+        </p> */}
 
         {/* FINAL CTA SECTION */}
         <div className="text-center space-y-10">

@@ -37,7 +37,7 @@ export default function HowItWorks({ onGetStarted }: HowItWorksProps) {
   ];
 
   return (
-    <section className="bg-[#03070b] py-24 px-6 sm:px-12 lg:px-24 border-t border-white/5">
+    <section className="bg-[#03070b] pt-24 px-6 sm:px-12 lg:px-24 border-t border-white/5">
       <div className="max-w-7xl mx-auto flex flex-col items-center">
         {/* HEADER */}
         <div className="text-center space-y-4 mb-20 max-w-2xl">
@@ -84,7 +84,7 @@ export default function HowItWorks({ onGetStarted }: HowItWorksProps) {
         </div>
 
         {/* BOTTOM CTA */}
-        <div className="mt-20 flex justify-center">
+        <div className="mt-10 flex justify-center">
           <button
             onClick={onGetStarted}
             className="flex items-center gap-3 bg-[#090e14] border border-white/5 hover:border-orange-500/30 text-white px-8 py-4 rounded-2xl text-lg font-black transition-all duration-300 hover:scale-105"
