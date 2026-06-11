@@ -20,7 +20,7 @@ function App() {
 
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
-    const savedToken = localStorage.getItem('token');
+  const savedToken = localStorage.getItem('token');
     if (savedUser && savedToken) {
       setUser(JSON.parse(savedUser));
       setToken(savedToken);

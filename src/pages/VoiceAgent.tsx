@@ -1,265 +1,90 @@
-import { useState, useEffect, useRef } from "react";
-import { io, Socket } from "socket.io-client";
-import { ArrowLeft, Mic, PhoneOff } from "lucide-react";
+import { useState } from "react";
+import { ArrowLeft, User, Phone, Mail, Bell, MapPin, CheckCircle } from "lucide-react";
+import axios from "axios";
 
-interface VoiceAgentProps {
+
+interface TradieFormProps {
   onBack: () => void;
 }
 
-export default function VoiceAgent({ onBack }: VoiceAgentProps) {
-  const [isSessionActive, setIsSessionActive] = useState(false);
-  const [status, setStatus] = useState("Ready");
-  const [orbState, setOrbState] = useState<null | "listening" | "speaking">(
-    null,
-  );
-  const [agentTranscript, setAgentTranscript] = useState("");
-  const [userTranscript, setUserTranscript] = useState("");
+export default function TradieForm({ onBack }: TradieFormProps) {
+const [formData, setFormData] = useState({
+  name: "",
+  phoneNumber: "",
+  email: "",
+  notificationPreference: "email",
+  callMode: "geo",
+});
 
-  const socketRef = useRef<Socket | null>(null);
-  const audioContextRef = useRef<AudioContext | null>(null);
-  const mediaStreamRef = useRef<MediaStream | null>(null);
-  const workletNodeRef = useRef<AudioWorkletNode | null>(null);
-  const playbackQueueRef = useRef<Float32Array[]>([]);
-  const isPlayingRef = useRef(false);
-  const currentSourceRef = useRef<AudioBufferSourceNode | null>(null);
-  const isSessionActiveRef = useRef(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
+  const [message, setMessage] = useState("");
 
-  const BACKEND_URL = "https://www.tradie.omnisuiteai.com";
-
-  const CAPTURE_SAMPLE_RATE = 24000;
-  const PLAYBACK_SAMPLE_RATE = 16000;
-
-  useEffect(() => {
-    // Initialize Socket.IO with backend URL
-    const socket = io(BACKEND_URL);
-    socketRef.current = socket;
-
-    socket.on("connect", () => {
-      console.log("Connected to server");
-    });
-
-    socket.on("session-started", (data) => {
-      console.log("Session started:", data.sessionId);
-      setStatus("Connected — Listening...");
-      setOrbState("listening");
-    });
-
-    socket.on("audio-delta", (data) => {
-      if (!isSessionActiveRef.current) return;
-      queueAudioChunk(data.delta);
-    });
-
-    let accumulatedAgentText = "";
-    socket.on("transcript-delta", (data) => {
-      if (!isSessionActiveRef.current) return;
-      accumulatedAgentText += data.delta;
-      setAgentTranscript(accumulatedAgentText);
-    });
-
-    socket.on("transcript-done", () => {
-      accumulatedAgentText = "";
-    });
-
-    socket.on("user-transcript", (data) => {
-      if (!isSessionActiveRef.current) return;
-      setUserTranscript(data.transcript);
-    });
-
-    socket.on("speech-started", () => {
-      if (!isSessionActiveRef.current) return;
-      stopPlayback();
-      setOrbState("listening");
-      setStatus("Listening...");
-      setAgentTranscript("");
-      accumulatedAgentText = "";
-    });
-
-    socket.on("booking-saved", (data) => {
-      console.log("Booking Confirmed Silently:", data);
-    });
-
-    socket.on("realtime-error", (data) => {
-      console.error("Realtime error:", data.error);
-      setStatus("Error: " + (data.error?.message || "Unknown"));
-    });
-
-    socket.on("session-closed", () => {
-      handleEndSession();
-    });
-
-    return () => {
-      socket.disconnect();
-      stopMicrophone();
-    };
-  }, []);
-
-  const queueAudioChunk = (base64: string) => {
-    const raw = atob(base64);
-    const bytes = new Uint8Array(raw.length);
-    for (let i = 0; i < raw.length; i++) bytes[i] = raw.charCodeAt(i);
-    const pcm16 = new Int16Array(bytes.buffer);
-    const float32 = new Float32Array(pcm16.length);
-    for (let i = 0; i < pcm16.length; i++) float32[i] = pcm16[i] / 32768;
-
-    playbackQueueRef.current.push(float32);
-    if (!isPlayingRef.current) playNextChunk();
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const playNextChunk = () => {
-    if (
-      playbackQueueRef.current.length === 0 ||
-      !audioContextRef.current ||
-      !isSessionActiveRef.current
-    ) {
-      isPlayingRef.current = false;
-      if (isSessionActiveRef.current) {
-        setOrbState("listening");
-        setStatus("Listening...");
-      }
-      return;
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  setIsSubmitting(true);
+  setSubmitStatus("idle");
+  setMessage("");
+
+  try {
+    const BASE_URL = "https://www.tradie.omnisuiteai.com";
+
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      throw new Error("Authentication token not found");
     }
 
-    isPlayingRef.current = true;
-    setOrbState("speaking");
-    setStatus("Agent speaking...");
-
-    const samples = playbackQueueRef.current.shift()!;
-    const buffer = audioContextRef.current.createBuffer(
-      1,
-      samples.length,
-      PLAYBACK_SAMPLE_RATE,
+    const response = await axios.post(
+      `${BASE_URL}/tradies`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
     );
 
-    buffer.getChannelData(0).set(samples);
+    console.log("Tradie Registration Success:", response.data);
 
-    const source = audioContextRef.current.createBufferSource();
-    currentSourceRef.current = source;
-    source.buffer = buffer;
-    source.connect(audioContextRef.current.destination);
-    source.onended = () => {
-      currentSourceRef.current = null;
-      if (isSessionActiveRef.current) {
-        playNextChunk();
-      }
-    };
-    source.start();
-  };
+    setSubmitStatus("success");
+    setMessage("Tradie registered successfully! 🎉");
 
-  const stopPlayback = () => {
-    playbackQueueRef.current = [];
-    isPlayingRef.current = false;
-    if (currentSourceRef.current) {
-      try {
-        currentSourceRef.current.stop();
-      } catch (e) {
-        // Source might have already stopped or not started
-      }
-      currentSourceRef.current = null;
-    }
-  };
+    setTimeout(() => {
+   setFormData({
+  name: "",
+  phoneNumber: "",
+  email: "",
+  notificationPreference: "email",
+  callMode: "geo",
+});
 
-  const startMicrophone = async () => {
-    const audioContext = new AudioContext({ sampleRate: CAPTURE_SAMPLE_RATE });
-    audioContextRef.current = audioContext;
+      setSubmitStatus("idle");
+      setMessage("");
+    }, 3000);
+  } catch (error: any) {
+    console.error(
+      "Tradie Registration Error:",
+      error.response?.data || error.message
+    );
 
-    const processorCode = `
-      class PCMProcessor extends AudioWorkletProcessor {
-          process(inputs) {
-              const input = inputs[0];
-              if (input && input[0]) {
-                  const float32 = input[0];
-                  const pcm16 = new Int16Array(float32.length);
-                  for (let i = 0; i < float32.length; i++) {
-                      const s = Math.max(-1, Math.min(1, float32[i]));
-                      pcm16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
-                  }
-                  this.port.postMessage(pcm16.buffer, [pcm16.buffer]);
-              }
-              return true;
-          }
-      }
-      registerProcessor('pcm-processor', PCMProcessor);
-    `;
-    const blob = new Blob([processorCode], { type: "application/javascript" });
-    const url = URL.createObjectURL(blob);
-    await audioContext.audioWorklet.addModule(url);
-    URL.revokeObjectURL(url);
+    setSubmitStatus("error");
 
-    if (audioContext.state === "suspended") {
-      await audioContext.resume();
-    }
-
-    const mediaStream = await navigator.mediaDevices.getUserMedia({
-      audio: {
-        sampleRate: CAPTURE_SAMPLE_RATE,
-        channelCount: 1,
-        echoCancellation: true,
-        noiseSuppression: true,
-        autoGainControl: true,
-      },
-    });
-    mediaStreamRef.current = mediaStream;
-
-    const source = audioContext.createMediaStreamSource(mediaStream);
-    const workletNode = new AudioWorkletNode(audioContext, "pcm-processor");
-    workletNodeRef.current = workletNode;
-
-    workletNode.port.onmessage = (e) => {
-      if (!socketRef.current || !isSessionActiveRef.current) return;
-
-      const pcm16 = new Uint8Array(e.data);
-      let binary = "";
-      for (let i = 0; i < pcm16.length; i++) {
-        binary += String.fromCharCode(pcm16[i]);
-      }
-      const base64 = btoa(binary);
-      socketRef.current.emit("audio-chunk", { audio: base64 });
-    };
-
-    source.connect(workletNode);
-    workletNode.connect(audioContext.destination);
-  };
-
-  const stopMicrophone = () => {
-    if (workletNodeRef.current) {
-      workletNodeRef.current.disconnect();
-      workletNodeRef.current = null;
-    }
-    if (mediaStreamRef.current) {
-      mediaStreamRef.current.getTracks().forEach((t) => t.stop());
-      mediaStreamRef.current = null;
-    }
-    if (audioContextRef.current) {
-      audioContextRef.current.close();
-      audioContextRef.current = null;
-    }
-  };
-
-  const handleStartSession = async () => {
-    try {
-      setStatus("Connecting...");
-
-      await startMicrophone();
-      isSessionActiveRef.current = true;
-      setIsSessionActive(true);
-      socketRef.current?.emit("start-session");
-    } catch (err) {
-      console.error("Failed to start:", err);
-      setStatus("Microphone access denied");
-    }
-  };
-
-  const handleEndSession = () => {
-    isSessionActiveRef.current = false;
-    setIsSessionActive(false);
-    socketRef.current?.emit("end-session");
-    stopPlayback();
-    stopMicrophone();
-    setOrbState(null);
-    setStatus("Call ended");
-    setAgentTranscript("");
-    setUserTranscript("");
-  };
+    setMessage(
+      error.response?.data?.message ||
+      "Failed to register. Please try again."
+    );
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   return (
     <div className="fixed inset-0 bg-[#03070b] text-white flex flex-col font-jakarta z-50">
@@ -281,10 +106,10 @@ export default function VoiceAgent({ onBack }: VoiceAgentProps) {
           <div className="flex items-center gap-1">
             <span className="text-orange-500 font-bold">~</span>
             <span className="text-white font-black tracking-tighter uppercase text-sm">
-              VOICE
+              TRADIE
             </span>
             <span className="text-orange-500 font-black tracking-tighter uppercase text-sm">
-              AGENT
+              REGISTRATION
             </span>
           </div>
         </div>
@@ -292,137 +117,139 @@ export default function VoiceAgent({ onBack }: VoiceAgentProps) {
 
       {/* MAIN CONTENT */}
       <main className="flex-1 flex flex-col items-center justify-center p-6 relative overflow-y-auto">
-        <div className="w-full max-w-lg bg-[#090e14]/40 backdrop-blur-2xl border border-white/10 rounded-[40px] p-8 md:p-12 shadow-2xl space-y-10 text-center">
-          <div className="space-y-4">
-            <h1 className="text-3xl md:text-4xl font-black tracking-tight bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent">
-              AI Voice Assistant
-            </h1>
-            <p className="text-zinc-500 text-sm font-medium uppercase tracking-widest">
-              Real-time Service Booking Representative
-            </p>
-          </div>
-
-          <div className="flex flex-col items-center space-y-8">
-            {/* STATUS BADGE */}
-            <div
-              className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${
-                isSessionActive
-                  ? "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.1)]"
-                  : "bg-orange-500/10 text-orange-400 border border-orange-500/20"
-              }`}
-            >
-              {status}
+        <div className="w-full max-w-lg bg-[#090e14]/40 backdrop-blur-2xl border border-white/10 rounded-[40px] p-8 md:p-12 shadow-2xl">
+          <div className="space-y-6">
+            <div className="space-y-4 text-center">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-orange-500/10 rounded-2xl mb-4">
+                <User size={32} className="text-orange-500" />
+              </div>
+              <h1 className="text-3xl md:text-4xl font-black tracking-tight bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent">
+                Register as a Tradie
+              </h1>
+              <p className="text-zinc-500 text-sm">
+                Fill in your details to get started with Tradie platform
+              </p>
             </div>
 
-            {/* THE ORB */}
-            <div className="relative group">
-              <div
-                className={`w-32 h-32 md:w-40 md:h-40 rounded-full flex items-center justify-center transition-all duration-700 relative z-10 ${
-                  orbState === "listening"
-                    ? "bg-emerald-500 scale-105 shadow-[0_0_50px_rgba(16,185,129,0.4)]"
-                    : orbState === "speaking"
-                      ? "bg-orange-500 scale-110 shadow-[0_0_60px_rgba(249,115,22,0.5)]"
-                      : "bg-zinc-800 scale-100 shadow-xl border border-white/5"
-                }`}
-              >
-                <Mic
-                  size={40}
-                  className={`text-white transition-opacity duration-300 ${isSessionActive ? "opacity-100" : "opacity-40"}`}
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* NAME */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-zinc-400 flex items-center gap-2">
+                  <User size={16} /> Full Name
+                </label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                  className="w-full bg-zinc-900 border border-white/10 rounded-2xl px-5 py-3.5 text-white placeholder-zinc-500 focus:outline-none focus:border-orange-500 transition-colors"
+                  placeholder="John Smith"
                 />
-
-                {/* PULSE RINGS */}
-                {isSessionActive && (
-                  <>
-                    <div
-                      className={`absolute inset-0 rounded-full border-2 animate-ping opacity-20 ${
-                        orbState === "speaking"
-                          ? "border-orange-400"
-                          : "border-emerald-400"
-                      }`}
-                    />
-                    <div
-                      className={`absolute -inset-4 rounded-full border border-white/5 ${
-                        orbState === "speaking" ? "animate-pulse" : ""
-                      }`}
-                    />
-                  </>
-                )}
               </div>
 
-              {/* ORB GLOW EFFECT */}
-              <div
-                className={`absolute inset-0 blur-3xl opacity-20 -z-10 transition-all duration-700 ${
-                  orbState === "listening"
-                    ? "bg-emerald-500 scale-150"
-                    : orbState === "speaking"
-                      ? "bg-orange-500 scale-150"
-                      : "bg-transparent"
-                }`}
-              />
-            </div>
+              {/* PHONE */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-zinc-400 flex items-center gap-2">
+                  <Phone size={16} /> Phone Number
+                </label>
+                <input
+                  type="tel"
+                  name="phoneNumber"
+                  value={formData.phoneNumber}
+                  onChange={handleChange}
+                  required
+                  className="w-full bg-zinc-900 border border-white/10 rounded-2xl px-5 py-3.5 text-white placeholder-zinc-500 focus:outline-none focus:border-orange-500 transition-colors"
+                  placeholder="+61412345678"
+                />
+              </div>
 
-            {/* CONTROLS */}
-            <div className="w-full max-w-sm">
-              {!isSessionActive ? (
-                <button
-                  onClick={handleStartSession}
-                  className="w-full bg-orange-600 hover:bg-orange-500 text-black px-8 py-4 rounded-2xl text-sm font-black transition-all shadow-[0_10px_30px_rgba(249,115,22,0.3)] hover:translate-y--0.5 active:scale-95 uppercase tracking-widest"
+              {/* EMAIL */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-zinc-400 flex items-center gap-2">
+                  <Mail size={16} /> Email Address
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                  className="w-full bg-zinc-900 border border-white/10 rounded-2xl px-5 py-3.5 text-white placeholder-zinc-500 focus:outline-none focus:border-orange-500 transition-colors"
+                  placeholder="john@example.com"
+                />
+              </div>
+
+              {/* NOTIFICATION PREFERENCE */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-zinc-400 flex items-center gap-2">
+                  <Bell size={16} /> Notification Preference
+                </label>
+                <select
+                  name="notificationPreference"
+                  value={formData.notificationPreference}
+                  onChange={handleChange}
+                  className="w-full bg-zinc-900 border border-white/10 rounded-2xl px-5 py-3.5 text-white focus:outline-none focus:border-orange-500 transition-colors"
                 >
-                  START CONVERSATION
-                </button>
-              ) : (
-                <button
-                  onClick={handleEndSession}
-                  className="w-full bg-rose-600/10 hover:bg-rose-600 border border-rose-500/30 text-rose-500 hover:text-white px-8 py-4 rounded-2xl text-sm font-black transition-all flex items-center justify-center gap-3 uppercase tracking-widest"
+                  <option value="email">Email</option>
+                  <option value="sms">SMS</option>
+                  <option value="both">Both Email &amp; SMS</option>
+                </select>
+              </div>
+
+              {/* CALL MODE */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-zinc-400 flex items-center gap-2">
+                  <MapPin size={16} /> Call Mode
+                </label>
+              <select
+  name="callMode"
+  value={formData.callMode}
+  onChange={handleChange}
+  className="w-full bg-zinc-900 border border-white/10 rounded-2xl px-5 py-3.5 text-white focus:outline-none focus:border-orange-500 transition-colors"
+>
+  <option value="geo">Geo</option>
+  <option value="ussd">USSD</option>
+</select>
+              </div>
+
+              {/* SUBMIT BUTTON */}
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full mt-8 bg-orange-600 hover:bg-orange-500 disabled:bg-orange-600/50 text-black px-8 py-4 rounded-2xl text-sm font-black transition-all shadow-[0_10px_30px_rgba(249,115,22,0.3)] hover:translate-y-[-1px] active:scale-[0.985] uppercase tracking-widest flex items-center justify-center gap-3"
+              >
+                {isSubmitting ? (
+                  <>Processing...</>
+                ) : submitStatus === "success" ? (
+                  <>
+                    <CheckCircle size={20} /> Registered Successfully
+                  </>
+                ) : (
+                  "REGISTER TRADIE"
+                )}
+              </button>
+
+              {message && (
+                <div
+                  className={`text-center text-sm font-medium p-4 rounded-2xl border ${
+                    submitStatus === "success"
+                      ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
+                      : "bg-rose-500/10 border-rose-500/30 text-rose-400"
+                  }`}
                 >
-                  <PhoneOff size={18} />
-                  END CALL
-                </button>
+                  {message}
+                </div>
               )}
-            </div>
+            </form>
           </div>
-
-          {/* TRANSCRIPTS */}
-          {(userTranscript || agentTranscript) && (
-            <div className="space-y-4 pt-10 border-t border-white/5 text-left">
-              {agentTranscript && (
-                <div className="space-y-2">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-orange-400/60 ml-2">
-                    Agent
-                  </span>
-                  <div className="bg-orange-500/5 border-l-2 border-orange-500 p-4 rounded-r-2xl text-sm text-zinc-300 leading-relaxed italic">
-                    {agentTranscript}
-                  </div>
-                </div>
-              )}
-
-              {userTranscript && (
-                <div className="space-y-2">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-emerald-400/60 ml-2">
-                    You
-                  </span>
-                  <div className="bg-zinc-800/40 p-4 rounded-2xl text-sm text-zinc-400 leading-relaxed">
-                    {userTranscript}
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
         </div>
       </main>
 
-      {/* FOOTER STATUS */}
+      {/* FOOTER */}
       <footer className="w-full h-10 bg-black/50 border-t border-white/5 px-6 flex items-center justify-between font-mono text-[9px] font-black tracking-[0.2em] text-zinc-700">
-        <div className="flex items-center gap-2">
-          <div
-            className={`w-1 h-1 rounded-full ${isSessionActive ? "bg-emerald-500 animate-pulse" : "bg-zinc-600"}`}
-          />
-          {isSessionActive ? "SESSION_ENCRYPTED_ACTIVE" : "READY_TO_CONNECT"}
-        </div>
-        <div className="flex items-center gap-6">
-          <span className="opacity-40">TRADIE_MOB_OS v1.0.4</span>
-          <span className="text-orange-500/30">Mia.Ai_CORE</span>
-        </div>
+        <div>TRADIE REGISTRATION</div>
+        <div className="text-orange-500/30">OmniSuite AI</div>
       </footer>
     </div>
   );
