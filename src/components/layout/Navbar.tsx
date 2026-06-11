@@ -88,7 +88,7 @@ export default function Navbar({
           </div>
 
           <div className="flex flex-col gap-3">
-            <button
+            <button  
               onClick={() => {
                 onWatchDemo();
                 setIsOpen(false);

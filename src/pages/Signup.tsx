@@ -775,6 +775,7 @@
 //     </div>
 //   );
 // }
+
 import { useState } from "react";
 import {
   ArrowLeft,
@@ -786,8 +787,6 @@ import {
   Phone,
   Clock,
   Check,
-  MessageSquare,
-  Plus,
 } from "lucide-react";
 import { authService } from "../services/authService";
 import logo from "../assets/logo.png";
@@ -809,13 +808,9 @@ export default function Signup({ onBack, onSuccess }: SignupProps) {
     acn: "",
     trade: "",
     mobile: "",
-    portGeo: false,
-    geoNumber: "",
-    portMobile: false,
     setBusinessHours: true,
-    openingTime: "07:00 AM",
-    closingTime: "06:00 PM",
-    secondarySMS: "",
+    openingTime: "07:00",     // 24-hour format
+    closingTime: "18:00",     // 24-hour format
   });
 
   const [agreedToTerms, setAgreedToTerms] = useState(false);
@@ -830,14 +825,8 @@ export default function Signup({ onBack, onSuccess }: SignupProps) {
   ];
 
   const trades = [
-    "Plumber",
-    "Electrician",
-    "Carpenter",
-    "HVAC Technician",
-    "Locksmith",
-    "Painter",
-    "Roofer",
-    "General Tradesperson",
+    "Plumber", "Electrician", "Carpenter", "HVAC Technician",
+    "Locksmith", "Painter", "Roofer", "General Tradesperson",
   ];
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -862,10 +851,8 @@ export default function Signup({ onBack, onSuccess }: SignupProps) {
     }
 
     if (step === 3) {
-      const hasMobile = formData.mobile.trim().length > 0;
-      const hasGeo = formData.portGeo && formData.geoNumber.trim().length > 0;
-      if (!hasMobile && !hasGeo) {
-        setError("Please provide either a Mobile Number or an Existing Geo Number");
+      if (!formData.mobile.trim()) {
+        setError("Mobile number is required");
         return;
       }
     }
@@ -894,9 +881,9 @@ export default function Signup({ onBack, onSuccess }: SignupProps) {
         password: formData.password,
         trade: formData.trade,
         mobileNumber: formData.mobile,
-        wantsGeoNumber: formData.portGeo,
-        geoNumberType: formData.portGeo ? "PORT" : "NONE",
-        portingNumber: formData.geoNumber,
+        wantsGeoNumber: false,
+        geoNumberType: "NONE",
+        portingNumber: "",
         openingHours,
         paymentDetails: {},
       };
@@ -982,7 +969,8 @@ export default function Signup({ onBack, onSuccess }: SignupProps) {
 
       {/* FORM CONTAINER */}
       <main className="w-full max-w-2xl px-6 pb-20 animate-in fade-in slide-in-from-bottom-8 duration-700">
-        {/* STEP 1: YOUR DETAILS */}
+        {/* STEP 1 & STEP 2 & STEP 3 unchanged */}
+
         {step === 1 && (
           <div className="space-y-10">
             <div className="space-y-2">
@@ -1014,7 +1002,6 @@ export default function Signup({ onBack, onSuccess }: SignupProps) {
           </div>
         )}
 
-        {/* STEP 2: YOUR TRADE */}
         {step === 2 && (
           <div className="space-y-10 text-center sm:text-left">
             <div className="space-y-2">
@@ -1045,64 +1032,31 @@ export default function Signup({ onBack, onSuccess }: SignupProps) {
           </div>
         )}
 
-        {/* STEP 3: NUMBER SETUP */}
         {step === 3 && (
           <div className="space-y-6">
             <div className="space-y-2">
               <h2 className="text-3xl font-black tracking-tighter">Number Setup</h2>
               <p className="text-zinc-500 font-medium tracking-wide">
-                Your mobile number and optional geographic (landline) number.
+                Enter your mobile number.
               </p>
             </div>
-
-            <div className="space-y-6">
-              <InputField
-                label="Mobile Number *"
-                value={formData.mobile}
-                icon={<Phone size={14} />}
-                placeholder="0412 345 678"
-                onChange={(v: string) => handleInputChange("mobile", v)}
-                disabled={formData.portGeo}
-              />
-
-              <div
-                onClick={() => setFormData((prev) => ({ ...prev, portMobile: !prev.portMobile, portGeo: false }))}
-              >
-                <CheckboxField checked={formData.portMobile} label="Port this mobile number?" sub="Typically takes 24-48 hours" />
-              </div>
-
-              <div className="border-t border-white/5 pt-4" />
-
-              <div className="space-y-4">
-                <div
-                  onClick={() => setFormData((prev) => ({ ...prev, portGeo: !prev.portGeo, portMobile: false }))}
-                >
-                  <CheckboxField checked={formData.portGeo} label="Port an existing Geo number" />
-                </div>
-
-                {formData.portGeo && (
-                  <div className="pl-4 space-y-4 border-l-2 border-orange-500/20 animate-in slide-in-from-left-4 pt-1">
-                    <InputField
-                      label="Existing Geo Number"
-                      value={formData.geoNumber}
-                      icon={<Plus size={14} />}
-                      placeholder="02 XXXX XXXX"
-                      onChange={(v: string) => handleInputChange("geoNumber", v)}
-                    />
-                  </div>
-                )}
-              </div>
-            </div>
+            <InputField
+              label="Mobile Number *"
+              value={formData.mobile}
+              icon={<Phone size={14} />}
+              placeholder="0412 345 678"
+              onChange={(v: string) => handleInputChange("mobile", v)}
+            />
           </div>
         )}
 
-        {/* STEP 4: DELIVERY */}
+        {/* STEP 4: DELIVERY - ONLY BUSINESS HOURS WITH TIME PICKER */}
         {step === 4 && (
           <div className="space-y-10">
             <div className="space-y-2">
               <h2 className="text-3xl font-black tracking-tighter">Delivery</h2>
               <p className="text-zinc-500 font-medium tracking-wide">
-                How and when you want to receive leads.
+                Set when you want to receive leads.
               </p>
             </div>
 
@@ -1122,41 +1076,18 @@ export default function Signup({ onBack, onSuccess }: SignupProps) {
                   label="Opening Time"
                   value={formData.openingTime}
                   icon={<Clock size={14} />}
-                  placeholder="07:00 AM"
+                  type="time"
                   onChange={(v: string) => handleInputChange("openingTime", v)}
                 />
                 <InputField
                   label="Closing Time"
                   value={formData.closingTime}
                   icon={<Clock size={14} />}
-                  placeholder="06:00 PM"
+                  type="time"
                   onChange={(v: string) => handleInputChange("closingTime", v)}
                 />
               </div>
             )}
-
-            <InputField
-              label="Secondary SMS Delivery (optional)"
-              value={formData.secondarySMS}
-              icon={<MessageSquare size={14} />}
-              placeholder="111XXXXXXXX"
-              subLabel="A copy of each lead SMS will also be sent to this number (e.g. partner fielding calls)."
-              highlight
-              onChange={(v: string) => handleInputChange("secondarySMS", v)}
-            />
-
-            <div className="p-6 bg-[#090e14] border border-orange-500/20 rounded-2xl space-y-4">
-              <div className="flex items-center gap-2 text-orange-500">
-                <Briefcase size={16} />
-                <span className="text-xs font-black uppercase tracking-widest">Payment</span>
-              </div>
-              <p className="text-zinc-500 text-sm font-medium">
-                Payment details would be collected here. Upfront payment required before activation.
-              </p>
-              <p className="text-[#ff3b3b] text-[10px] font-black uppercase tracking-widest">
-                (Demo only — no payment processing)
-              </p>
-            </div>
           </div>
         )}
 
@@ -1179,10 +1110,7 @@ export default function Signup({ onBack, onSuccess }: SignupProps) {
                 <SummaryItem label="Company" value={formData.company || "—"} />
                 <SummaryItem label="Email" value={formData.email || "—"} />
                 <SummaryItem label="Trade" value={formData.trade || "—"} />
-                <SummaryItem
-                  label="Mobile"
-                  value={`${formData.mobile || "—"} ${formData.portMobile ? "(porting)" : ""}`}
-                />
+                <SummaryItem label="Mobile" value={formData.mobile || "—"} />
                 <SummaryItem
                   label="Hours"
                   value={formData.setBusinessHours
@@ -1210,14 +1138,14 @@ export default function Signup({ onBack, onSuccess }: SignupProps) {
               <div className="space-y-2">
                 <p className="text-white font-bold text-sm">I agree to the Terms and Conditions</p>
                 <p className="text-zinc-500 text-[10px] leading-relaxed">
-                  Including payment terms, porting authorisation (if applicable), and Mia.Ai service agreement.
+                  Including payment terms and Mia.Ai service agreement.
                 </p>
               </div>
             </div>
           </div>
         )}
 
-        {/* STEP 6: VERIFY OTP */}
+        {/* STEP 6 & 7 (unchanged) */}
         {step === 6 && (
           <div className="space-y-10">
             <div className="space-y-2 text-center">
@@ -1250,7 +1178,6 @@ export default function Signup({ onBack, onSuccess }: SignupProps) {
           </div>
         )}
 
-        {/* STEP 7: SUCCESS */}
         {step === 7 && (
           <div className="flex flex-col items-center justify-center text-center py-10 space-y-10 animate-in fade-in zoom-in-95 duration-1000">
             <div className="relative">
@@ -1353,6 +1280,7 @@ export default function Signup({ onBack, onSuccess }: SignupProps) {
   );
 }
 
+/* InputField, CheckboxField, SummaryItem (same as before) */
 function InputField({
   label,
   value,
@@ -1388,9 +1316,7 @@ function InputField({
         }`}
       />
       {error && <p className="text-red-500 text-xs font-medium">{error}</p>}
-      {subLabel && (
-        <p className="text-zinc-600 text-[10px] font-medium leading-relaxed">{subLabel}</p>
-      )}
+      {subLabel && <p className="text-zinc-600 text-[10px] font-medium leading-relaxed">{subLabel}</p>}
     </div>
   );
 }
