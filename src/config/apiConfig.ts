@@ -1,10 +1,10 @@
 export const API_CONFIG = {
-  BASE_URL: 'https://www.tradie.omnisuiteai.com/api',
+  BASE_URL: "https://www.tradie.omnisuiteai.com",
   ENDPOINTS: {
-    REGISTER: '/auth/register',
-    VERIFY_OTP: '/auth/verify-otp',
-    LOGIN: '/auth/login',
-    FORGOT_PASSWORD: '/auth/forgot-password-email',
-    CHANGE_PASSWORD: '/auth/change-password',
-  }
+    REGISTER: "/auth/register",
+    VERIFY_OTP: "/auth/verify-otp",
+    LOGIN: "/auth/login",
+    FORGOT_PASSWORD: "/auth/forgot-password-email",
+    CHANGE_PASSWORD: "/auth/change-password",
+  },
 };

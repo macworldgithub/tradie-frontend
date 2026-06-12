@@ -1,6 +1,6 @@
 import { API_CONFIG } from '../config/apiConfig';
 
-const BASE_URL = API_CONFIG.BASE_URL;
+const BASE_URL = API_CONFIG.BASE_URL+"/api";
 
 export const authService = {
   async register(data: any) {
