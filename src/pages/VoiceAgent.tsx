@@ -1,13 +1,13 @@
 import { useState } from "react";
-import { ArrowLeft } from "lucide-react";
+import { LogOut } from "lucide-react";
 import Dashboard from "../components/dashboard/Dashboard";
 import RegisterTradieForm from "../components/dashboard/RegisterTradieForm";
 
 interface VoiceAgentProps {
-  onBack: () => void;
+  onLogout: () => void;
 }
 
-export default function VoiceAgent({ onBack }: VoiceAgentProps) {
+export default function VoiceAgent({ onLogout }: VoiceAgentProps) {
   const [view, setView] = useState<"dashboard" | "register">("dashboard");
 
   if (view === "register") {
@@ -25,12 +25,6 @@ export default function VoiceAgent({ onBack }: VoiceAgentProps) {
       {/* NAVBAR */}
       <nav className="w-full h-16 border-b border-white/5 flex items-center justify-between px-6 bg-[#03070b]/80 backdrop-blur-md sticky top-0 z-50 shrink-0">
         <div className="flex items-center gap-4">
-          <button
-            onClick={onBack}
-            className="text-zinc-500 hover:text-white transition-all p-2 hover:bg-white/5 rounded-full"
-          >
-            <ArrowLeft size={20} />
-          </button>
           <div className="flex items-center gap-1">
             <span className="text-orange-500 font-bold">~</span>
             <span className="text-white font-black tracking-tighter uppercase text-sm">
@@ -40,6 +34,16 @@ export default function VoiceAgent({ onBack }: VoiceAgentProps) {
               DASHBOARD
             </span>
           </div>
+        </div>
+
+        <div>
+          <button
+            onClick={onLogout}
+            className="flex items-center gap-2 border border-white/10 hover:border-rose-500/30 hover:bg-rose-500/10 text-zinc-400 hover:text-rose-400 px-4 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer"
+          >
+            <LogOut size={14} />
+            Logout
+          </button>
         </div>
       </nav>
 

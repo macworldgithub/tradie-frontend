@@ -74,7 +74,7 @@ function App() {
       )}
 
       {view === 'voice-agent' && (
-        <VoiceAgent onBack={() => setView('landing')} />
+        <VoiceAgent onLogout={handleLogout} />
       )}
 
       {view === 'login' && (
