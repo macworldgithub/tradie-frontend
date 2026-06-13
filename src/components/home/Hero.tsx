@@ -1,4 +1,4 @@
-import { ArrowRight, ChevronDown, Mic } from "lucide-react";
+import { ArrowRight, Mic } from "lucide-react";
 
 interface HeroProps {
   onGetStarted: () => void;

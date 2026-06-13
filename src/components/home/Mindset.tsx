@@ -1,4 +1,4 @@
-import { Zap, ArrowRight, Mic } from "lucide-react";
+import { ArrowRight, Mic } from "lucide-react";
 
 interface MindsetProps {
   onGetStarted: () => void;
@@ -6,11 +6,6 @@ interface MindsetProps {
 }
 
 export default function Mindset({ onGetStarted, onWatchDemo }: MindsetProps) {
-  const principles = [
-    "Is it right for the customer?",
-    "Is it simple?",
-    "Can it be automated?",
-  ];
 
   return (
     <section className="bg-[#03070b] py-24 px-6 sm:px-12 lg:px-24">
@@ -60,7 +55,7 @@ export default function Mindset({ onGetStarted, onWatchDemo }: MindsetProps) {
           </div>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <button 
+            <button
               onClick={onGetStarted}
               className="w-full sm:w-auto flex items-center justify-center gap-3 bg-orange-500 hover:bg-orange-400 text-black px-6 py-3 rounded-2xl text-lg font-black transition-all duration-300 shadow-[0_10px_30px_rgba(249,115,22,0.3)] hover:scale-105 active:scale-95"
             >
@@ -68,7 +63,7 @@ export default function Mindset({ onGetStarted, onWatchDemo }: MindsetProps) {
               <ArrowRight size={20} />
             </button>
 
-            <button 
+            <button
               onClick={onWatchDemo}
               className="w-full sm:w-auto flex items-center justify-center gap-3 border-2 border-white/10 hover:border-orange-500/50 text-white hover:text-orange-500 px-6 py-3 rounded-2xl text-lg font-black transition-all duration-300 group"
             >
