@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Navbar from "./components/layout/Navbar";
 import Hero from "./components/home/Hero";
 import Problem from "./components/home/Problem";
@@ -14,18 +14,22 @@ import ChangePassword from "./pages/ChangePassword";
 import "./App.css";
 
 function App() {
-  const [view, setView] = useState<'landing' | 'signup' | 'login' | 'forgot-password' | 'change-password' | 'voice-agent'>('landing');
-  const [user, setUser] = useState<any>(null);
-  const [token, setToken] = useState<string | null>(null);
-
-  useEffect(() => {
+  const [user, setUser] = useState<any>(() => {
     const savedUser = localStorage.getItem('user');
-  const savedToken = localStorage.getItem('token');
-    if (savedUser && savedToken) {
-      setUser(JSON.parse(savedUser));
-      setToken(savedToken);
+    if (!savedUser) return null;
+    try {
+      return JSON.parse(savedUser);
+    } catch {
+      return null;
     }
-  }, []);
+  });
+
+  const [token, setToken] = useState<string | null>(() => localStorage.getItem('token'));
+  const [view, setView] = useState<'landing' | 'signup' | 'login' | 'forgot-password' | 'change-password' | 'voice-agent'>(() => {
+    const savedUser = localStorage.getItem('user');
+    const savedToken = localStorage.getItem('token');
+    return savedUser && savedToken ? 'voice-agent' : 'landing';
+  });
 
   const handleLoginSuccess = (userData: any, userToken: string) => {
     setUser(userData);
