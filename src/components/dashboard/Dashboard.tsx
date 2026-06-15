@@ -207,7 +207,7 @@ export default function Dashboard({ onRegisterClick }: DashboardProps) {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 animate-in slide-in-from-bottom-4 duration-500">
           {tradies.map((tradie) => (
-            <TradieCard key={tradie._id} tradie={tradie} />
+            <TradieCard key={tradie._id} tradie={tradie} onDelete={fetchTradies} />
           ))}
         </div>
       )}

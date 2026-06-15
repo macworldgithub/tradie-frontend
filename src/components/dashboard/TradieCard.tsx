@@ -1,4 +1,7 @@
-import { Phone, Mail, Bell, Settings, Calendar, CheckCircle2 } from "lucide-react";
+import { Phone, Mail, Bell, Settings, Calendar, CheckCircle2, Trash } from "lucide-react";
+import { useState } from "react";
+import axios from "axios";
+import { API_CONFIG } from "../../config/apiConfig";
 
 interface Tradie {
   _id: string;
@@ -15,9 +18,42 @@ interface Tradie {
 
 interface TradieCardProps {
   tradie: Tradie;
+  onDelete?: () => void;
 }
 
-export default function TradieCard({ tradie }: TradieCardProps) {
+export default function TradieCard({ tradie, onDelete }: TradieCardProps) {
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleDelete = async () => {
+    const ok = window.confirm(
+      `Delete tradie "${tradie.name}"? This will unmap any assigned DID and remove the tradie.`
+    );
+    if (!ok) return;
+
+    setIsDeleting(true);
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) throw new Error("Authentication token not found");
+
+      // Unmap DIDs assigned to this tradie
+      await axios.delete(`${API_CONFIG.BASE_URL}/dids/tradie/${tradie._id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      // Delete tradie
+      await axios.delete(`${API_CONFIG.BASE_URL}/tradies/${tradie._id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      // Let parent refresh list
+      onDelete?.();
+    } catch (err: any) {
+      console.error("Delete tradie error:", err?.response || err?.message || err);
+      window.alert(err?.response?.data?.message || err?.message || "Failed to delete tradie");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
   const getInitials = (name: string) => {
     return name
       .split(" ")
@@ -69,7 +105,7 @@ export default function TradieCard({ tradie }: TradieCardProps) {
             </div>
           </div>
           {tradie.isMapped && (
-            <div className="inline-flex items-center gap-1 px-2 py-1 rounded-full border border-emerald-500/20 bg-emerald-500/10 text-emerald-300 text-[6px] font-bold uppercase tracking-[0.18em]">
+            <div className="inline-flex items-center gap-1 px-2 py-1 rounded-full border border-emerald-500/20 bg-emerald-500/10 text-emerald-300 text-[11px] font-bold uppercase tracking-[0.18em]">
               <CheckCircle2 size={14} />
               Mapped to DID
             </div>
@@ -104,6 +140,15 @@ export default function TradieCard({ tradie }: TradieCardProps) {
           <Settings size={10} />
           <span>{tradie.callMode} Call</span>
         </div>
+
+        <button
+          onClick={handleDelete}
+          disabled={isDeleting}
+          className="ml-auto inline-flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-rose-600/10 border border-rose-500/20 text-rose-400 text-sm font-bold hover:bg-rose-600/20 transition-colors disabled:opacity-60"
+        >
+          <Trash size={14} />
+          {isDeleting ? "Deleting..." : "Delete"}
+        </button>
       </div>
     </div>
   );
