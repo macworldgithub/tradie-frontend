@@ -146,7 +146,7 @@ export default function TradieCard({ tradie, onDelete }: TradieCardProps) {
           className="ml-auto inline-flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-rose-600/10 border border-rose-500/20 text-rose-400 text-sm font-bold hover:bg-rose-600/20 transition-colors disabled:opacity-60"
         >
           <Trash size={14} />
-          {isDeleting ? "Deleting..." : "Delete"}
+          {/* {isDeleting ? "Deleting..." : "Delete"} */}
         </button>
       </div>
     </div>
