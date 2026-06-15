@@ -105,7 +105,7 @@ export default function TradieCard({ tradie, onDelete }: TradieCardProps) {
             </div>
           </div>
           {tradie.isMapped && (
-            <div className="inline-flex items-center gap-1 px-2 py-1 rounded-full border border-emerald-500/20 bg-emerald-500/10 text-emerald-300 text-[11px] font-bold uppercase tracking-[0.18em]">
+            <div className="inline-flex items-center gap-1 px-2 py-1 rounded-full border border-emerald-500/20 bg-emerald-500/10 text-emerald-300 text-[8px] font-bold uppercase tracking-[0.18em]">
               <CheckCircle2 size={14} />
               Mapped to DID
             </div>
