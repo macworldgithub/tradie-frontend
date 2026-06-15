@@ -113,7 +113,7 @@ export default function Dashboard({ onRegisterClick }: DashboardProps) {
           </div>
           <button
             type="button"
-            className="inline-flex items-center justify-center gap-2 rounded-2xl bg-orange-500 px-5 py-3 text-sm font-black uppercase tracking-wider text-black shadow-[0_10px_25px_rgba(249,115,22,0.15)] disabled:opacity-50"
+            className="inline-flex items-center justify-center gap-2 rounded-2xl bg-orange-500 md:px-3 sm:px-2 sm:text-xs py-3 md:text-sm font-black uppercase tracking-wider text-black shadow-[0_10px_25px_rgba(249,115,22,0.15)] disabled:opacity-50"
             disabled
           >
             Proceed to payment
