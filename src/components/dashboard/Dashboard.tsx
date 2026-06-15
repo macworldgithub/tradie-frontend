@@ -15,6 +15,7 @@ interface Tradie {
   callMode: string;
   createdAt: string;
   updatedAt: string;
+  isMapped?: boolean;
 }
 
 interface DashboardProps {

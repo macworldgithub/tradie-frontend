@@ -1,4 +1,4 @@
-import { Phone, Mail, Bell, Settings, Calendar } from "lucide-react";
+import { Phone, Mail, Bell, Settings, Calendar, CheckCircle2 } from "lucide-react";
 
 interface Tradie {
   _id: string;
@@ -10,6 +10,7 @@ interface Tradie {
   callMode: string;
   createdAt: string;
   updatedAt: string;
+  isMapped?: boolean;
 }
 
 interface TradieCardProps {
@@ -67,6 +68,13 @@ export default function TradieCard({ tradie }: TradieCardProps) {
               </div>
             </div>
           </div>
+          {tradie.isMapped && (
+            <div className="inline-flex items-center gap-1 px-2 py-1 rounded-full border border-emerald-500/20 bg-emerald-500/10 text-emerald-300 text-[6px] font-bold uppercase tracking-[0.18em]">
+              <CheckCircle2 size={14} />
+              Mapped to DID
+            </div>
+          )}
+    
         </div>
 
         {/* Details list */}
