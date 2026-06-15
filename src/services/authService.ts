@@ -54,7 +54,7 @@ export const authService = {
   async changePassword(currentPassword: string, newPassword: string, token: string) {
     const response = await fetch(`${BASE_URL}${API_CONFIG.ENDPOINTS.CHANGE_PASSWORD}`, {
       method: 'POST',
-      headers: {
+      headers: {        
         'Accept': '*/*',
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',

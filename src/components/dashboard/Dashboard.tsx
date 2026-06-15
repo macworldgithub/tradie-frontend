@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Plus, UserPlus, RefreshCw, AlertTriangle, Users } from "lucide-react";
+import { Plus, UserPlus, RefreshCw, AlertTriangle, Users, CreditCard, ShieldCheck, ArrowRight } from "lucide-react";
 import axios from "axios";
 import { API_CONFIG } from "../../config/apiConfig";
 import ProfileCard from "./ProfileCard";
@@ -78,6 +78,49 @@ export default function Dashboard({ onRegisterClick }: DashboardProps) {
       
       {/* Welcome & Profile Section */}
       <ProfileCard user={user} />
+
+      {/* Payment Summary Card */}
+      <div className="w-full bg-[#090e14]/50 border border-white/5 rounded-[32px] p-6 md:p-8 shadow-2xl relative overflow-hidden group hover:border-orange-500/30 transition-all duration-300">
+        <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-40 h-40 rounded-full bg-orange-500/10 blur-3xl pointer-events-none" />
+        <div className="relative z-10 grid gap-6 md:grid-cols-[1fr_auto] items-start">
+          <div className="space-y-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-300 text-xs font-black uppercase tracking-[0.2em]">
+              <CreditCard size={14} />
+              Payment Overview
+            </div>
+            <div>
+              <h3 className="text-2xl font-black text-white tracking-tight">Enfonica Billing Preview</h3>
+              <p className="text-zinc-500 text-sm mt-1 max-w-2xl">
+                Enfonica payment flow will be redirected from here once the portal is live. For now, this card shows your current billing status.
+              </p>
+            </div>
+          </div>
+
+          <div className="inline-flex items-center gap-3 rounded-3xl border border-orange-500/20 bg-orange-500/10 px-4 py-3 text-orange-300 text-sm font-bold">
+            <ShieldCheck size={18} />
+            Ready to connect
+      
+          </div>
+          <div className="rounded-3xl bg-white/5 border border-white/5 p-4">
+            <p className="text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-bold">Next Action</p>
+            <p className="mt-3 text-sm font-black text-white">Redirect to Enfonica</p>
+          </div>
+        </div>
+
+        <div className="mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="text-zinc-400 text-sm leading-relaxed">
+            Enfonica did payment will be redirected from there. This card is currently static and will be wired into the billing flow later.
+          </div>
+          <button
+            type="button"
+            className="inline-flex items-center justify-center gap-2 rounded-2xl bg-orange-500 px-5 py-3 text-sm font-black uppercase tracking-wider text-black shadow-[0_10px_25px_rgba(249,115,22,0.15)] disabled:opacity-50"
+            disabled
+          >
+            Proceed to payment
+            <ArrowRight size={16} />
+          </button>
+        </div>
+      </div>
 
       {/* Main Tradies Section Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/5 pb-5">

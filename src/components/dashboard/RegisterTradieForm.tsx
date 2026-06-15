@@ -148,8 +148,11 @@ export default function RegisterTradieForm({ onBack }: RegisterTradieFormProps) 
 
       console.log("DID Creation Success:", response.data);
       setDidSubmitStatus("success");
-      setDidMessage("DID created successfully! 🎉");
+      setDidMessage("DID created successfully! 🎉 Redirecting to dashboard...");
       setDidFormData({ didNumber: "" });
+      setTimeout(() => {
+        onBack();
+      }, 1200);
     } catch (error: any) {
       console.error("DID Creation Error:", error.response?.data || error.message);
       setDidSubmitStatus("error");
