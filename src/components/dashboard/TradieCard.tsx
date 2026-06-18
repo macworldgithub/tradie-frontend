@@ -34,10 +34,6 @@ export default function TradieCard({ tradie, onDelete }: TradieCardProps) {
       const token = localStorage.getItem("token");
       if (!token) throw new Error("Authentication token not found");
 
-      await axios.delete(`${API_CONFIG.BASE_URL}/dids/tradie/${tradie._id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
       await axios.delete(`${API_CONFIG.BASE_URL}/tradies/${tradie._id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -161,7 +157,7 @@ export default function TradieCard({ tradie, onDelete }: TradieCardProps) {
             <div>
               <h3 className="text-xl font-black text-white">Confirm deletion</h3>
               <p className="text-sm text-zinc-400 mt-1">
-                Delete <span className="font-semibold text-white">{tradie.name}</span> and unmap its DID?
+                Delete <span className="font-semibold text-white">{tradie.name}</span>?
               </p>
             </div>
           </div>

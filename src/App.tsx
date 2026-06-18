@@ -5,12 +5,15 @@ import Problem from "./components/home/Problem";
 import Solution from "./components/home/Solution";
 import HowItWorks from "./components/home/HowItWorks";
 import Mindset from "./components/home/Mindset";
+import Pricing from "./components/home/Pricing";
+import ContactUs from "./components/home/ContactUs";
 import Footer from "./components/layout/Footer";
 import Signup from "./pages/Signup";
 import VoiceAgent from "./pages/VoiceAgent";
 import Login from "./pages/Login";
 import ForgotPassword from "./pages/ForgotPassword";
 import ChangePassword from "./pages/ChangePassword";
+import AdminPanel from "./pages/AdminPanel";
 import "./App.css";
 
 function App() {
@@ -25,7 +28,8 @@ function App() {
   });
 
   const [token, setToken] = useState<string | null>(() => localStorage.getItem('token'));
-  const [view, setView] = useState<'landing' | 'signup' | 'login' | 'forgot-password' | 'change-password' | 'voice-agent'>(() => {
+  const [view, setView] = useState<'landing' | 'signup' | 'login' | 'forgot-password' | 'change-password' | 'voice-agent' | 'admin'>(() => {
+    if (window.location.search.includes('admin=true')) return 'admin';
     const savedUser = localStorage.getItem('user');
     const savedToken = localStorage.getItem('token');
     return savedUser && savedToken ? 'voice-agent' : 'landing';
@@ -64,11 +68,13 @@ function App() {
           />
           <Problem />
           <Solution />
+          <Pricing onGetStarted={() => setView('signup')} />
           <HowItWorks onGetStarted={() => setView('signup')} />
           <Mindset 
             onGetStarted={() => setView('signup')} 
             onWatchDemo={() => setView('voice-agent')}
           />
+          <ContactUs />
           <Footer />
         </>
       )}
@@ -96,6 +102,13 @@ function App() {
 
       {view === 'change-password' && token && (
         <ChangePassword onBack={() => setView('voice-agent')} token={token} />
+      )}
+
+      {view === 'admin' && (
+        <AdminPanel onLogout={() => {
+          window.history.replaceState({}, '', window.location.pathname);
+          setView('landing');
+        }} />
       )}
     </div>
   );
