@@ -7,21 +7,10 @@ interface RegisterTradieFormProps {
   onBack: () => void;
 }
 
-interface CreatedTradie {
-  _id: string;
-  name: string;
-  phoneNumber: string;
-  email: string;
-  companyId: string;
-  notificationPreference: string;
-  callMode: string;
-  createdAt: string;
-  updatedAt: string;
-  __v: number;
-}
+
 
 export default function RegisterTradieForm({ onBack }: RegisterTradieFormProps) {
-  const [step, setStep] = useState<"tradie" | "did">("tradie");
+  // const [step, setStep] = useState<"tradie" | "did">("tradie");
   const [formData, setFormData] = useState({
     name: "",
     phoneNumber: "",
@@ -30,31 +19,15 @@ export default function RegisterTradieForm({ onBack }: RegisterTradieFormProps) 
     callMode: "geo",
   });
 
-  const [createdTradie, setCreatedTradie] = useState<CreatedTradie | null>(null);
-  const [didFormData, setDidFormData] = useState({
-    didNumber: "",
-  });
-
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
 
-  const [didSubmitting, setDidSubmitting] = useState(false);
-  const [didSubmitStatus, setDidSubmitStatus] = useState<"idle" | "success" | "error">("idle");
-  const [didMessage, setDidMessage] = useState("");
-
   const BASE_URL = API_CONFIG.BASE_URL;
-  const capitalize = (value: string) =>
-    value.charAt(0).toUpperCase() + value.slice(1);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleDidChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setDidFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleTradieSubmit = async (e: React.FormEvent) => {
@@ -93,7 +66,6 @@ export default function RegisterTradieForm({ onBack }: RegisterTradieFormProps) 
         callMode: "geo",
       });
 
-      setCreatedTradie(response.data);
       setTimeout(() => {
         setSubmitStatus("idle");
         setMessage("");
@@ -106,59 +78,6 @@ export default function RegisterTradieForm({ onBack }: RegisterTradieFormProps) 
       setMessage(error.response?.data?.message || "Failed to register. Please try again.");
     } finally {
       setIsSubmitting(false);
-    }
-  };
-
-  const handleDidSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!didFormData.didNumber.trim()) {
-      setDidSubmitStatus("error");
-      setDidMessage("Please enter a DID number before submitting.");
-      return;
-    }
-
-    if (!createdTradie) {
-      setDidSubmitStatus("error");
-      setDidMessage("No tradie available for assignment. Please register a tradie first.");
-      return;
-    }
-
-    setDidSubmitting(true);
-    setDidSubmitStatus("idle");
-    setDidMessage("");
-
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        throw new Error("Authentication token not found");
-      }
-
-      const body: Record<string, unknown> = {
-        didNumber: didFormData.didNumber,
-        assignedTradieId: createdTradie._id,
-      };
-
-      const response = await axios.post(`${BASE_URL}/dids`, body, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      console.log("DID Creation Success:", response.data);
-      setDidSubmitStatus("success");
-      setDidMessage("DID created successfully! 🎉 Redirecting to dashboard...");
-      setDidFormData({ didNumber: "" });
-      setTimeout(() => {
-        onBack();
-      }, 1200);
-    } catch (error: any) {
-      console.error("DID Creation Error:", error.response?.data || error.message);
-      setDidSubmitStatus("error");
-      setDidMessage(error.response?.data?.message || "Failed to create DID. Please try again.");
-    } finally {
-      setDidSubmitting(false);
     }
   };
 
@@ -258,89 +177,12 @@ export default function RegisterTradieForm({ onBack }: RegisterTradieFormProps) 
 
       {message && (
         <div
-          className={`text-center text-sm font-medium p-4 rounded-2xl border ${
-            submitStatus === "success"
-              ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
-              : "bg-rose-500/10 border-rose-500/30 text-rose-400"
-          }`}
+          className={`text-center text-sm font-medium p-4 rounded-2xl border ${submitStatus === "success"
+            ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
+            : "bg-rose-500/10 border-rose-500/30 text-rose-400"
+            }`}
         >
           {message}
-        </div>
-      )}
-    </form>
-  );
-
-  const renderDidForm = () => (
-    <form onSubmit={handleDidSubmit} className="space-y-6">
-      <div className="space-y-2">
-        <label className="text-sm font-medium text-zinc-400 flex items-center gap-2">
-          <Phone size={16} /> DID Number
-        </label>
-        <input
-          type="text"
-          name="didNumber"
-          value={didFormData.didNumber}
-          onChange={handleDidChange}
-          required
-          className="w-full bg-zinc-900 border border-white/10 rounded-2xl px-5 py-3.5 text-white placeholder-zinc-500 focus:outline-none focus:border-orange-500 transition-colors"
-          placeholder="+61468112021"
-        />
-      </div>
-
-      {!createdTradie ? (
-        <div className="text-sm text-zinc-400">No tradie data available. Please complete tradie registration first.</div>
-      ) : (
-        <div className="space-y-4 p-4 rounded-3xl border border-white/10 bg-zinc-950/80">
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div>
-              <p className="text-xs uppercase text-zinc-500">Name</p>
-              <p className="mt-2 text-sm text-white">{createdTradie.name}</p>
-            </div>
-            <div>
-              <p className="text-xs uppercase text-zinc-500">Phone</p>
-              <p className="mt-2 text-sm text-white">{createdTradie.phoneNumber}</p>
-            </div>
-            <div>
-              <p className="text-xs uppercase text-zinc-500">Email</p>
-              <p className="mt-2 text-sm text-white">{createdTradie.email}</p>
-            </div>
-            <div>
-                <p className="text-xs uppercase text-zinc-500">Notification</p>
-                <p className="mt-2 text-sm text-white">  {capitalize(createdTradie.notificationPreference)}</p>
-            </div>
-            <div>
-              <p className="text-xs uppercase text-zinc-500">Call Mode</p>
-              <p className="mt-2 text-sm text-white">  {capitalize(createdTradie.callMode)}</p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      <button
-        type="submit"
-        disabled={didSubmitting || !createdTradie}
-        className="w-full mt-4 bg-orange-600 hover:bg-orange-500 disabled:bg-orange-600/50 text-black px-8 py-4 rounded-2xl text-sm font-black transition-all shadow-[0_10px_30px_rgba(249,115,22,0.3)] hover:translate-y-[-1px] active:scale-[0.985] uppercase tracking-widest flex items-center justify-center gap-3"
-      >
-        {didSubmitting ? (
-          <>Assigning DID...</>
-        ) : didSubmitStatus === "success" ? (
-          <>
-            <CheckCircle size={20} /> DID Created
-          </>
-        ) : (
-          "CREATE DID"
-        )}
-      </button>
-
-      {didMessage && (
-        <div
-          className={`text-center text-sm font-medium p-4 rounded-2xl border ${
-            didSubmitStatus === "success"
-              ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
-              : "bg-rose-500/10 border-rose-500/30 text-rose-400"
-          }`}
-        >
-          {didMessage}
         </div>
       )}
     </form>
