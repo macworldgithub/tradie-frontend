@@ -8,9 +8,11 @@ interface LoginProps {
   onSuccess: (user: any, token: string) => void;
   onForgotPassword: () => void;
   onSignup: () => void;
+  initialRole?: 'company' | 'admin';
 }
 
-export default function Login({ onBack, onSuccess, onForgotPassword, onSignup }: LoginProps) {
+export default function Login({ onBack, onSuccess, onForgotPassword, onSignup, initialRole = 'company' }: LoginProps) {
+  const [role, setRole] = useState<'company' | 'admin'>(initialRole);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -21,6 +23,12 @@ export default function Login({ onBack, onSuccess, onForgotPassword, onSignup }:
     e.preventDefault();
     setIsSubmitting(true);
     setError(null);
+
+    if (role === 'admin' && email.trim().toLowerCase() !== 'burhanfani92@gmail.com') {
+      setError("Only the admin email is authorized for admin login");
+      setIsSubmitting(false);
+      return;
+    }
 
     try {
       const res = await authService.login({ email, password });
@@ -56,18 +64,47 @@ export default function Login({ onBack, onSuccess, onForgotPassword, onSignup }:
         </div>
       </header>
 
-      <main className="w-full max-w-md px-6 pt-20 animate-in fade-in slide-in-from-bottom-8 duration-700">
+      <main className="w-full max-w-md px-6 pt-16 animate-in fade-in slide-in-from-bottom-8 duration-700">
         <div className="space-y-10">
           <div className="space-y-2 text-center">
             <h2 className="text-4xl font-black tracking-tighter">
-              Welcome Back
+              {role === 'admin' ? "Admin Portal" : "Welcome Back"}
             </h2>
             <p className="text-zinc-500 font-medium tracking-wide">
-              Sign in to manage your AI agent.
+              {role === 'admin' ? "Sign in to manage systems & companies." : "Sign in to manage your AI agent."}
             </p>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-6">
+            <div className="flex bg-[#12181e] p-1 rounded-xl border border-white/5 mb-8">
+              <button
+                type="button"
+                onClick={() => {
+                  setRole('company');
+                  setError(null);
+                }}
+                className={`flex-1 py-3 text-xs font-bold rounded-lg uppercase tracking-wider transition-all duration-300 ${role === 'company'
+                    ? 'bg-[#f97316] text-black shadow-lg shadow-orange-500/10'
+                    : 'text-zinc-400 hover:text-white'
+                  }`}
+              >
+                Company Account
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setRole('admin');
+                  setError(null);
+                }}
+                className={`flex-1 py-3 text-xs font-bold rounded-lg uppercase tracking-wider transition-all duration-300 ${role === 'admin'
+                    ? 'bg-[#f97316] text-black shadow-lg shadow-orange-500/10'
+                    : 'text-zinc-400 hover:text-white'
+                  }`}
+              >
+                Admin Portal
+              </button>
+            </div>
+
             <div className="space-y-4">
               <div className="space-y-3">
                 <div className="flex items-center gap-2 text-orange-500">
@@ -81,7 +118,7 @@ export default function Login({ onBack, onSuccess, onForgotPassword, onSignup }:
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="jon@plumbing.com.au"
+                  placeholder={role === 'admin' ? "burhanfani92@gmail.com" : "jon@plumbing.com.au"}
                   className="w-full bg-[#12181e] border border-white/5 rounded-xl px-5 py-4 text-white placeholder-zinc-700 focus:outline-none focus:border-orange-500 transition-all"
                 />
               </div>
@@ -94,13 +131,15 @@ export default function Login({ onBack, onSuccess, onForgotPassword, onSignup }:
                       Password
                     </label>
                   </div>
-                  <button
-                    type="button"
-                    onClick={onForgotPassword}
-                    className="text-[10px] font-black uppercase tracking-widest text-zinc-500 hover:text-orange-500 transition-colors"
-                  >
-                    Forgot Password?
-                  </button>
+                  {role !== 'admin' && (
+                    <button
+                      type="button"
+                      onClick={onForgotPassword}
+                      className="text-[10px] font-black uppercase tracking-widest text-zinc-500 hover:text-orange-500 transition-colors"
+                    >
+                      Forgot Password?
+                    </button>
+                  )}
                 </div>
                 <div className="relative">
                   <input
@@ -122,6 +161,8 @@ export default function Login({ onBack, onSuccess, onForgotPassword, onSignup }:
               </div>
             </div>
 
+
+
             {error && (
               <p className="text-red-500 text-xs font-bold text-center">
                 {error}
@@ -141,15 +182,17 @@ export default function Login({ onBack, onSuccess, onForgotPassword, onSignup }:
             </button>
           </form>
 
-          <p className="text-center text-zinc-500 text-xs font-medium">
-            Don't have an account?{" "}
-            <button
-              onClick={onSignup}
-              className="text-orange-500 font-bold hover:underline"
-            >
-              Sign up now
-            </button>
-          </p>
+          {role !== 'admin' && (
+            <p className="text-center text-zinc-500 text-xs font-medium">
+              Don't have an account?{" "}
+              <button
+                onClick={onSignup}
+                className="text-orange-500 font-bold hover:underline"
+              >
+                Sign up now
+              </button>
+            </p>
+          )}
         </div>
       </main>
     </div>

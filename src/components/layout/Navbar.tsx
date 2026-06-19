@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { Menu, X, Mic, LogOut } from "lucide-react";
+import { Menu, X, Mic, LogOut, ChevronDown, Shield, Building2 } from "lucide-react";
 import logo from "../../assets/logo.png";
 
 interface NavbarProps {
   onGetStarted: () => void;
   onWatchDemo: () => void;
-  onLogin?: () => void;
+  onLogin?: (role: 'company' | 'admin') => void;
   isLoggedIn?: boolean;
   onLogout?: () => void;
 }
@@ -18,6 +18,7 @@ export default function Navbar({
   onLogout,
 }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [showLoginDropdown, setShowLoginDropdown] = useState(false);
 
   return (
     <nav className="w-full bg-[#03070b] text-white border-b border-white/5 sticky top-0 z-50">
@@ -53,12 +54,45 @@ export default function Navbar({
                 </button>
               </div>
             ) : (
-              <button
-                onClick={onLogin}
-                className="border border-orange-500/50 hover:bg-orange-500 hover:text-black text-orange-500 px-5 py-2 rounded-lg text-sm font-bold transition-all"
-              >
-                Log In
-              </button>
+              <div className="relative">
+                <button
+                  onClick={() => setShowLoginDropdown(!showLoginDropdown)}
+                  className="flex items-center gap-2 border border-orange-500/50 hover:bg-orange-500 hover:text-black text-orange-500 px-5 py-2 rounded-lg text-sm font-bold transition-all"
+                >
+                  Log In
+                  <ChevronDown size={14} className={`transition-transform duration-200 ${showLoginDropdown ? 'rotate-180' : ''}`} />
+                </button>
+                {showLoginDropdown && (
+                  <>
+                    <div 
+                      className="fixed inset-0 z-40" 
+                      onClick={() => setShowLoginDropdown(false)} 
+                    />
+                    <div className="absolute right-0 mt-2 w-48 bg-[#090e14] border border-white/10 rounded-xl overflow-hidden shadow-2xl z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                      <button
+                        onClick={() => {
+                          onLogin?.('company');
+                          setShowLoginDropdown(false);
+                        }}
+                        className="w-full text-left px-4 py-3 text-sm text-zinc-300 hover:bg-white/5 hover:text-white transition-colors flex items-center gap-2"
+                      >
+                        <Building2 size={16} className="text-[#f97316]" />
+                        As Company
+                      </button>
+                      <button
+                        onClick={() => {
+                          onLogin?.('admin');
+                          setShowLoginDropdown(false);
+                        }}
+                        className="w-full text-left px-4 py-3 text-sm text-zinc-300 hover:bg-white/5 hover:text-white transition-colors border-t border-white/5 flex items-center gap-2"
+                      >
+                        <Shield size={16} className="text-[#f97316]" />
+                        As Admin
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
             )}
           </div>
         </div>
@@ -116,12 +150,24 @@ export default function Navbar({
               <>
                 <button
                   onClick={() => {
-                    onLogin && onLogin();
+                    onLogin && onLogin('company');
                     setIsOpen(false);
                   }}
-                  className="border border-white/10 w-full p-4 rounded-xl text-white font-bold hover:bg-white/5 transition-all"
+                  className="border border-white/10 w-full p-4 rounded-xl text-white font-bold hover:bg-white/5 transition-all flex items-center justify-center gap-2"
                 >
-                  Log In
+                  <Building2 size={16} className="text-[#f97316]" />
+                  Log In as Company
+                </button>
+
+                <button
+                  onClick={() => {
+                    onLogin && onLogin('admin');
+                    setIsOpen(false);
+                  }}
+                  className="border border-orange-500/20 hover:border-orange-500/50 w-full p-4 rounded-xl text-orange-500 font-bold hover:bg-orange-500/10 transition-all flex items-center justify-center gap-2"
+                >
+                  <Shield size={16} className="text-[#f97316]" />
+                  Log In as Admin
                 </button>
 
                 <button

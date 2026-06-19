@@ -28,11 +28,21 @@ function App() {
   });
 
   const [token, setToken] = useState<string | null>(() => localStorage.getItem('token'));
+  const [initialLoginRole, setInitialLoginRole] = useState<'company' | 'admin'>('company');
   const [view, setView] = useState<'landing' | 'signup' | 'login' | 'forgot-password' | 'change-password' | 'voice-agent' | 'admin'>(() => {
     if (window.location.search.includes('admin=true')) return 'admin';
-    const savedUser = localStorage.getItem('user');
+    const savedUserStr = localStorage.getItem('user');
     const savedToken = localStorage.getItem('token');
-    return savedUser && savedToken ? 'voice-agent' : 'landing';
+    if (savedUserStr && savedToken) {
+      try {
+        const savedUser = JSON.parse(savedUserStr);
+        if (savedUser && savedUser.email === 'burhanfani92@gmail.com') {
+          return 'admin';
+        }
+      } catch (e) {}
+      return 'voice-agent';
+    }
+    return 'landing';
   });
 
   const handleLoginSuccess = (userData: any, userToken: string) => {
@@ -40,7 +50,16 @@ function App() {
     setToken(userToken);
     localStorage.setItem('user', JSON.stringify(userData));
     localStorage.setItem('token', userToken);
-    setView('voice-agent');
+    if (userData && userData.email === 'burhanfani92@gmail.com') {
+      setView('admin');
+    } else {
+      setView('voice-agent');
+    }
+  };
+
+  const handleLoginClick = (role: 'company' | 'admin') => {
+    setInitialLoginRole(role);
+    setView('login');
   };
 
   const handleLogout = () => {
@@ -58,7 +77,7 @@ function App() {
           <Navbar 
             onGetStarted={() => setView('signup')} 
             onWatchDemo={() => setView('voice-agent')}
-            onLogin={() => setView('login')}
+            onLogin={handleLoginClick}
             isLoggedIn={!!user}
             onLogout={handleLogout}
           />
@@ -93,6 +112,7 @@ function App() {
           onSuccess={handleLoginSuccess}
           onForgotPassword={() => setView('forgot-password')}
           onSignup={() => setView('signup')}
+          initialRole={initialLoginRole}
         />
       )}
 
@@ -104,11 +124,13 @@ function App() {
         <ChangePassword onBack={() => setView('voice-agent')} token={token} />
       )}
 
-      {view === 'admin' && (
-        <AdminPanel onLogout={() => {
-          window.history.replaceState({}, '', window.location.pathname);
-          setView('landing');
-        }} />
+      {view === 'admin' && token && (
+        <AdminPanel 
+          token={token}
+          onLogout={() => {
+            handleLogout();
+          }} 
+        />
       )}
     </div>
   );
