@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Menu, X, Mic, LogOut, ChevronDown, Shield, Building2 } from "lucide-react";
+import { Menu, X, Mic, LogOut, ChevronDown, Shield, Building2, Mail } from "lucide-react";
 import logo from "../../assets/logo.png";
 
 interface NavbarProps {
@@ -19,6 +19,11 @@ export default function Navbar({
 }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [showLoginDropdown, setShowLoginDropdown] = useState(false);
+
+  const handleScrollToContact = () => {
+    document.getElementById('contact-us')?.scrollIntoView({ behavior: 'smooth' });
+    setIsOpen(false);
+  };
 
   return (
     <nav className="w-full bg-[#03070b] text-white border-b border-white/5 sticky top-0 z-50">
@@ -41,6 +46,14 @@ export default function Navbar({
             >
               <Mic size={14} className="text-black" />
               Live Demo
+            </button>
+
+            <button
+              onClick={handleScrollToContact}
+              className="flex items-center gap-2 border border-white/20 hover:border-orange-500 hover:text-orange-500 text-white px-4 py-2 rounded-lg text-sm font-bold transition-all whitespace-nowrap"
+            >
+              <Mail size={14} />
+              Contact Us
             </button>
 
             {isLoggedIn ? (
@@ -131,6 +144,14 @@ export default function Navbar({
             >
               <Mic size={18} fill="black" />
               Live Demo
+            </button>
+
+            <button
+              onClick={handleScrollToContact}
+              className="flex items-center justify-center gap-2 border border-white/20 text-white py-4 rounded-xl text-md font-bold hover:border-orange-500 hover:text-orange-500 transition-colors"
+            >
+              <Mail size={18} />
+              Contact Us
             </button>
 
             {isLoggedIn ? (
