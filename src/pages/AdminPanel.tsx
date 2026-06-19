@@ -7,7 +7,7 @@ import {
   CheckCircle2,
   XCircle,
   LayoutDashboard,
-  Settings,
+
   Search,
   LogOut,
   Filter,

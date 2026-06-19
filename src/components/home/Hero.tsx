@@ -1,11 +1,11 @@
-import { ArrowRight, Mic } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 interface HeroProps {
   onGetStarted: () => void;
   onWatchDemo: () => void;
 }
 
-export default function Hero({ onGetStarted, onWatchDemo }: HeroProps) {
+export default function Hero({ onGetStarted }: HeroProps) {
   return (
     <section className="relative w-full pt-12 flex flex-col items-center xl:items-start justify-center pb-20 px-6 sm:px-12 xl:px-24 overflow-hidden bg-[#03070b]">
       {/* BACKGROUND ELEMENTS */}
