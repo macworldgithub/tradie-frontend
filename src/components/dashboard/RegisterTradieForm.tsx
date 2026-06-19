@@ -97,9 +97,9 @@ export default function RegisterTradieForm({ onBack }: RegisterTradieFormProps) 
       setTimeout(() => {
         setSubmitStatus("idle");
         setMessage("");
-      }, 3000);
+        onBack();
+      }, 1500);
 
-      setStep("did");
     } catch (error: any) {
       console.error("Tradie Registration Error:", error.response?.data || error.message);
       setSubmitStatus("error");
@@ -366,10 +366,10 @@ export default function RegisterTradieForm({ onBack }: RegisterTradieFormProps) 
           <div className="flex items-center gap-1">
             <span className="text-orange-500 font-bold">~</span>
             <span className="text-white font-black tracking-tighter uppercase text-sm">
-              {step === "tradie" ? "TRADIE" : "DID"}
+              TRADIE
             </span>
             <span className="text-orange-500 font-black tracking-tighter uppercase text-sm">
-              {step === "tradie" ? "REGISTRATION" : "ASSIGNMENT"}
+              REGISTRATION
             </span>
           </div>
         </div>
@@ -384,23 +384,21 @@ export default function RegisterTradieForm({ onBack }: RegisterTradieFormProps) 
                 <User size={32} className="text-orange-500" />
               </div>
               <h1 className="text-3xl md:text-4xl font-black tracking-tight bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent">
-                {step === "tradie" ? "Register as a Tradie" : "Create a DID"}
+                Register as a Tradie
               </h1>
               <p className="text-zinc-500 text-sm">
-                {step === "tradie"
-                  ? "Fill in your details to get started with Tradie platform"
-                  : "Assign a DID to the newly created tradie."}
+                Fill in your details to get started with Tradie platform
               </p>
             </div>
 
-            {step === "tradie" ? renderTradieForm() : renderDidForm()}
+            {renderTradieForm()}
           </div>
         </div>
       </main>
 
       {/* FOOTER */}
       <footer className="w-full h-10 bg-black/50 border-t border-white/5 px-6 flex items-center justify-between font-mono text-[9px] font-black tracking-[0.2em] text-zinc-700 mt-auto">
-        <div>{step === "tradie" ? "TRADIE REGISTRATION" : "DID ASSIGNMENT"}</div>
+        <div>TRADIE REGISTRATION</div>
         <div className="text-orange-500/30">OmniSuite AI</div>
       </footer>
     </div>
