@@ -35,7 +35,7 @@ export default function Hero({ onGetStarted, onWatchDemo }: HeroProps) {
         </svg>
       </div>
 
-      {/* Large Hammer Silhouette (Low Opacity) */} 
+      {/* Large Hammer Silhouette (Low Opacity) */}
       <div className="absolute left-[40%] top-1/2 -translate-y-1/2 opacity-[0.03] pointer-events-none -z-20 scale-150 rotate-12">
         <svg
           width="400"
@@ -73,13 +73,13 @@ export default function Hero({ onGetStarted, onWatchDemo }: HeroProps) {
 
         {/* BUTTONS */}
         <div className="flex flex-col sm:flex-row items-center gap-4 mb-24 w-full sm:w-auto animate-in fade-in slide-in-from-bottom-12 duration-700 delay-200">
-          <button
+          {/* <button
             onClick={onWatchDemo}
             className="w-full sm:w-auto flex items-center justify-center gap-3 bg-orange-500 hover:bg-orange-400 text-black px-8 py-4 rounded-xl text-lg font-black transition-all-shadow duration-300 shadow-[0_10px_30px_rgba(249,115,22,0.3)] hover:scale-[1.02]"
           >
             <Mic size={20} strokeWidth={2.5} />
             Watch the Demo
-          </button>
+          </button> */}
 
           <button
             onClick={onGetStarted}
