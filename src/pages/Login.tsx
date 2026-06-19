@@ -118,7 +118,7 @@ export default function Login({ onBack, onSuccess, onForgotPassword, onSignup, i
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder={role === 'admin' ? "burhanfani92@gmail.com" : "jon@plumbing.com.au"}
+                  placeholder={role === 'admin' ? "admin@example.com" : "jon@plumbing.com.au"}
                   className="w-full bg-[#12181e] border border-white/5 rounded-xl px-5 py-4 text-white placeholder-zinc-700 focus:outline-none focus:border-orange-500 transition-all"
                 />
               </div>
