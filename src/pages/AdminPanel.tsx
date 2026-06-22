@@ -13,9 +13,7 @@ import {
   Filter,
   Activity,
   Plus,
-  TrendingUp,
   Sliders,
-  Sparkles,
   ShieldAlert,
   Save,
   Menu,
@@ -29,13 +27,6 @@ import {
 } from "lucide-react";
 import logo from "../assets/logo.png";
 import { adminService } from "../services/adminService";
-
-const MOCK_ACTIVITIES = [
-  { id: 1, type: 'signup', text: 'New company "Kal" signed up.', time: '10 mins ago' },
-  { id: 2, type: 'did_allocated', text: 'Allocated new DID +61 2 7246 7296 to Yaseen Co.', time: '1 hour ago' },
-  { id: 3, type: 'call_success', text: 'AI Agent "Mia" successfully resolved call for Kal.', time: '2 hours ago' },
-  { id: 4, type: 'status_change', text: 'Company "Ayla\'s Plumbing" status updated to Inactive.', time: '1 day ago' },
-];
 
 export default function AdminPanel({ token, onLogout }: { token: string; onLogout: () => void }) {
   const [activeTab, setActiveTab] = useState<'dashboard' | 'companies' | 'tradies' | 'dids' | 'settings'>('dashboard');
@@ -875,7 +866,7 @@ export default function AdminPanel({ token, onLogout }: { token: string; onLogou
                           </span>
                         </div>
                         <div className="col-span-2">
-                          <span className="text-zinc-500 block flex items-center gap-1"><Clock size={12} /> Opening Hours</span>
+                          <span className="text-zinc-500 flex items-center gap-1"><Clock size={12} /> Opening Hours</span>
                           <span className="text-zinc-300 font-bold">{companyDetails.company.openingHours}</span>
                         </div>
                         <div className="col-span-2 pt-2 border-t border-white/5 text-[10px] text-zinc-500 flex items-center gap-1">

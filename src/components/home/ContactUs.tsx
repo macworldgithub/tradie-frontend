@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Mail, Phone, Send, CheckCircle, AlertTriangle } from "lucide-react";
+import { Send, CheckCircle, AlertTriangle } from "lucide-react";
 import axios from "axios";
 import { API_CONFIG } from "../../config/apiConfig";
 

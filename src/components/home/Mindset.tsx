@@ -1,11 +1,11 @@
-import { ArrowRight, Mic } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 interface MindsetProps {
   onGetStarted: () => void;
   onWatchDemo: () => void;
 }
 
-export default function Mindset({ onGetStarted, onWatchDemo }: MindsetProps) {
+export default function Mindset({ onGetStarted }: MindsetProps) {
 
   return (
     <section className="bg-[#03070b] py-24 px-6 sm:px-12 lg:px-24">

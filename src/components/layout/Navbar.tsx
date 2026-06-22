@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Menu, X, Mic, LogOut, ChevronDown, Shield, Building2, Mail } from "lucide-react";
+import { Menu, X, LogOut, ChevronDown, Shield, Building2, Mail } from "lucide-react";
 import logo from "../../assets/logo.png";
 
 interface NavbarProps {
@@ -12,7 +12,6 @@ interface NavbarProps {
 
 export default function Navbar({
   onGetStarted,
-  onWatchDemo,
   onLogin,
   isLoggedIn,
   onLogout,
