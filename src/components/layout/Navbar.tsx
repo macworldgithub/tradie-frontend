@@ -40,13 +40,13 @@ export default function Navbar({
           </span>
 
           <div className="flex items-center gap-3">
-            <button
+            {/* <button
               onClick={onWatchDemo}
               className="flex items-center gap-2 bg-[#f97316] hover:bg-[#ea580c] text-black px-4 py-2 rounded-lg text-sm font-bold transition-all duration-300 shadow-[0_4px_15px_rgba(249,115,22,0.3)] whitespace-nowrap"
             >
               <Mic size={14} className="text-black" />
               Live Demo
-            </button>
+            </button> */}
 
             <button
               onClick={handleScrollToContact}
@@ -135,7 +135,7 @@ export default function Navbar({
           </div>
 
           <div className="flex flex-col gap-3">
-            <button  
+            {/* <button  
               onClick={() => {
                 onWatchDemo();
                 setIsOpen(false);
@@ -144,7 +144,7 @@ export default function Navbar({
             >
               <Mic size={18} fill="black" />
               Live Demo
-            </button>
+            </button> */}
 
             <button
               onClick={handleScrollToContact}

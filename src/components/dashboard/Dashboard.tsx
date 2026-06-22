@@ -90,9 +90,9 @@ export default function Dashboard({ onRegisterClick }: DashboardProps) {
               Payment Overview
             </div>
             <div>
-              <h3 className="text-2xl font-black text-white tracking-tight">Enfonica Billing Preview</h3>
+              <h3 className="text-2xl font-black text-white tracking-tight">Stripe Billing Preview</h3>
               <p className="text-zinc-500 text-sm mt-1 max-w-2xl">
-                Enfonica payment flow will be redirected from here once the portal is live. For now, this card shows your current billing status.
+                Stripe payment flow will be redirected from here once the portal is live. For now, this card shows your current billing status.
               </p>
             </div>
           </div>
@@ -104,13 +104,13 @@ export default function Dashboard({ onRegisterClick }: DashboardProps) {
           </div>
           <div className="rounded-3xl bg-white/5 border border-white/5 p-4">
             <p className="text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-bold">Next Action</p>
-            <p className="mt-3 text-sm font-black text-white">Redirect to Enfonica</p>
+            <p className="mt-3 text-sm font-black text-white">Redirect to Stripe</p>
           </div>
         </div>
 
         <div className="mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="text-zinc-400 text-sm leading-relaxed">
-            Enfonica did payment will be redirected from there. This card is currently static and will be wired into the billing flow later.
+            Stripe did payment will be redirected from there. This card is currently static and will be wired into the billing flow later.
           </div>
           <button
             type="button"

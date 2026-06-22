@@ -8,14 +8,18 @@ export default function ContactUs() {
     firstName: "",
     lastName: "",
     email: "",
-    message: ""
+    message: "",
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
+  const [submitStatus, setSubmitStatus] = useState<
+    "idle" | "success" | "error"
+  >("idle");
   const [submitMessage, setSubmitMessage] = useState("");
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -27,7 +31,7 @@ export default function ContactUs() {
 
     try {
       await axios.post(`${API_CONFIG.BASE_URL}/contact-form`, formData, {
-        headers: { "Content-Type": "application/json" }
+        headers: { "Content-Type": "application/json" },
       });
       setSubmitStatus("success");
       setSubmitMessage("Your message has been sent successfully!");
@@ -35,16 +39,21 @@ export default function ContactUs() {
       setTimeout(() => setSubmitStatus("idle"), 5000);
     } catch (err: any) {
       setSubmitStatus("error");
-      setSubmitMessage(err.response?.data?.message || "Failed to send message. Please try again.");
+      setSubmitMessage(
+        err.response?.data?.message ||
+          "Failed to send message. Please try again.",
+      );
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <section id="contact-us" className="bg-[#03070b] py-16 sm:py-24 px-6 sm:px-12 lg:px-24 border-t border-white/5 relative">
+    <section
+      id="contact-us"
+      className="bg-[#03070b] py-16 sm:py-24 px-6 sm:px-12 lg:px-24 border-t border-white/5 relative"
+    >
       <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-16 lg:gap-20">
-
         {/* Left Column: Info */}
         <div className="w-full lg:w-5/12 space-y-10">
           <div className="space-y-6">
@@ -56,11 +65,12 @@ export default function ContactUs() {
               <span className="text-orange-500">your business.</span>
             </h2>
             <p className="text-zinc-400 text-base sm:text-lg font-medium leading-relaxed">
-              Have questions about how our AI agent works? Fill out the form and our team will get back to you as soon as possible.
+              Have questions about how our AI agent works? Fill out the form and
+              our team will get back to you as soon as possible.
             </p>
           </div>
 
-          <div className="space-y-6 pt-4">
+          {/* <div className="space-y-6 pt-4">
             <div className="flex items-center gap-4 group cursor-default">
               <div className="bg-orange-500/10 p-4 rounded-xl text-orange-500 group-hover:bg-orange-500 group-hover:text-black transition-all">
                 <Mail size={24} />
@@ -80,7 +90,7 @@ export default function ContactUs() {
                 <p className="text-white font-medium">1300 MIA AI (1300 642 24)</p>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
 
         {/* Right Column: Form */}
@@ -92,7 +102,9 @@ export default function ContactUs() {
             <form className="space-y-6" onSubmit={handleSubmit}>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="space-y-2 text-left">
-                  <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider">First Name</label>
+                  <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider">
+                    First Name
+                  </label>
                   <input
                     type="text"
                     name="firstName"
@@ -104,7 +116,9 @@ export default function ContactUs() {
                   />
                 </div>
                 <div className="space-y-2 text-left">
-                  <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Last Name</label>
+                  <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider">
+                    Last Name
+                  </label>
                   <input
                     type="text"
                     name="lastName"
@@ -118,7 +132,9 @@ export default function ContactUs() {
               </div>
 
               <div className="space-y-2 text-left">
-                <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Email Address</label>
+                <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider">
+                  Email Address
+                </label>
                 <input
                   type="email"
                   name="email"
@@ -131,7 +147,9 @@ export default function ContactUs() {
               </div>
 
               <div className="space-y-2 text-left">
-                <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Message</label>
+                <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider">
+                  Message
+                </label>
                 <textarea
                   rows={4}
                   name="message"
@@ -144,9 +162,18 @@ export default function ContactUs() {
               </div>
 
               {submitStatus !== "idle" && (
-                <div className={`flex items-center gap-2 text-sm font-bold p-4 rounded-xl ${submitStatus === "success" ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : "bg-rose-500/10 text-rose-400 border border-rose-500/20"
-                  }`}>
-                  {submitStatus === "success" ? <CheckCircle size={16} /> : <AlertTriangle size={16} />}
+                <div
+                  className={`flex items-center gap-2 text-sm font-bold p-4 rounded-xl ${
+                    submitStatus === "success"
+                      ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+                      : "bg-rose-500/10 text-rose-400 border border-rose-500/20"
+                  }`}
+                >
+                  {submitStatus === "success" ? (
+                    <CheckCircle size={16} />
+                  ) : (
+                    <AlertTriangle size={16} />
+                  )}
                   {submitMessage}
                 </div>
               )}

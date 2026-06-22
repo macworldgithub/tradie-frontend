@@ -63,13 +63,13 @@ export default function Mindset({ onGetStarted, onWatchDemo }: MindsetProps) {
               <ArrowRight size={20} />
             </button>
 
-            <button
+            {/* <button
               onClick={onWatchDemo}
               className="w-full sm:w-auto flex items-center justify-center gap-3 border-2 border-white/10 hover:border-orange-500/50 text-white hover:text-orange-500 px-6 py-3 rounded-2xl text-lg font-black transition-all duration-300 group"
             >
               <Mic size={20} className="group-hover:text-orange-500" />
               Watch Demo First
-            </button>
+            </button> */}
           </div>
         </div>
       </div>

@@ -43,7 +43,7 @@ export default function Solution() {
   ];
 
   return (
-    <section className="bg-[#03070b] py-24 px-6 sm:px-12 lg:px-24">
+    <section className="bg-[#03070b] py-12 px-6 sm:px-12 lg:px-24">
       <div className="max-w-7xl mx-auto flex flex-col xl:flex-row items-center gap-16 lg:gap-24">
         {/* LEFT COLUMN: Illustration/Image */}
         <div className="w-full xl:w-1/2 relative group">
