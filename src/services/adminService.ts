@@ -2,6 +2,20 @@ import { API_CONFIG } from '../config/apiConfig';
 
 const BASE_URL = API_CONFIG.BASE_URL;
 
+async function handleResponse(response: Response) {
+  if (!response.ok) {
+    let errorMsg = `HTTP error! status: ${response.status}`;
+    try {
+      const errorData = await response.json();
+      errorMsg = errorData.message || errorData.error || errorMsg;
+    } catch (e) {
+      // Ignore if response is not JSON
+    }
+    throw new Error(errorMsg);
+  }
+  return response.json();
+}
+
 export const adminService = {
   async getCompanies(token: string) {
     const response = await fetch(`${BASE_URL}/admin/companies`, {
@@ -12,10 +26,7 @@ export const adminService = {
         'Content-Type': 'application/json',
       },
     });
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    return response.json();
+    return handleResponse(response);
   },
 
   async getCompanyDetails(companyId: string, token: string) {
@@ -27,10 +38,7 @@ export const adminService = {
         'Content-Type': 'application/json',
       },
     });
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    return response.json();
+    return handleResponse(response);
   },
 
   async addTradie(companyId: string, data: any, token: string) {
@@ -43,10 +51,7 @@ export const adminService = {
       },
       body: JSON.stringify(data),
     });
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    return response.json();
+    return handleResponse(response);
   },
 
   async allocateDid(companyId: string, data: any, token: string) {
@@ -59,10 +64,7 @@ export const adminService = {
       },
       body: JSON.stringify(data),
     });
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    return response.json();
+    return handleResponse(response);
   },
 
   async deleteCompany(companyId: string, token: string) {
@@ -74,9 +76,7 @@ export const adminService = {
         'Content-Type': 'application/json',
       },
     });
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    return response.json();
+    return handleResponse(response);
   },
 };
+
