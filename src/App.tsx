@@ -99,7 +99,7 @@ function App() {
       )}
 
       {view === 'signup' && (
-        <Signup onBack={() => setView('landing')} onSuccess={handleLoginSuccess} />
+        <Signup onBack={() => setView('landing')} onSuccess={handleLoginSuccess} onGoToLogin={() => setView('login')} />
       )}
 
       {view === 'voice-agent' && (

@@ -169,7 +169,7 @@
 //               className="group-hover:-translate-x-1 transition-transform"
 //             />
 //           </button>
-             
+
 //           <div className="flex items-center gap-2">
 //             <img src={logo} alt="Logo" className="h-16 w-auto" />
 //           </div>
@@ -794,11 +794,12 @@ import logo from "../assets/logo.png";
 interface SignupProps {
   onBack: () => void;
   onSuccess?: (user: any, token: string) => void;
+  onGoToLogin?: () => void;
 }
 
-export default function Signup({ onBack, onSuccess }: SignupProps) {
+export default function Signup({ onBack, onGoToLogin }: SignupProps) {
   const [step, setStep] = useState(1);
-  const [emailError, setEmailError] = useState("");
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const [formData, setFormData] = useState({
     name: "",
@@ -835,27 +836,54 @@ export default function Signup({ onBack, onSuccess }: SignupProps) {
 
   const nextStep = () => {
     setError(null);
+    const newErrors: Record<string, string> = {};
+    let isValid = true;
 
     if (step === 1) {
-      if (!formData.email.trim()) {
-        setError("Email is required");
-        setEmailError("Email is required");
-        return;
+      if (!formData.name.trim()) {
+        newErrors.name = "Name is required";
+        isValid = false;
       }
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(formData.email)) {
-        setError("Please enter a valid email address");
-        setEmailError("Please enter a valid email address");
-        return;
+      if (!formData.company.trim()) {
+        newErrors.company = "Company Name is required";
+        isValid = false;
+      }
+      if (!formData.email.trim()) {
+        newErrors.email = "Email is required";
+        isValid = false;
+      } else {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(formData.email)) {
+          newErrors.email = "Please enter a valid email address";
+          isValid = false;
+        }
+      }
+      if (!formData.password.trim()) {
+        newErrors.password = "Password is required";
+        isValid = false;
+      } else if (formData.password.length < 6) {
+        newErrors.password = "Password must be at least 6 characters";
+        isValid = false;
+      }
+    }
+
+    if (step === 2) {
+      if (!formData.trade) {
+        setError("Please select a trade");
+        isValid = false;
       }
     }
 
     if (step === 3) {
       if (!formData.mobile.trim()) {
-        setError("Mobile number is required");
-        return;
+        newErrors.mobile = "Mobile number is required";
+        isValid = false;
       }
     }
+
+    setErrors(newErrors);
+
+    if (!isValid) return;
 
     setStep((prev) => Math.min(prev + 1, 7));
   };
@@ -920,6 +948,9 @@ export default function Signup({ onBack, onSuccess }: SignupProps) {
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+    if (errors[field]) {
+      setErrors((prev) => ({ ...prev, [field]: "" }));
+    }
   };
 
   return (
@@ -949,13 +980,12 @@ export default function Signup({ onBack, onSuccess }: SignupProps) {
           {steps.map((s) => (
             <div
               key={s.id}
-              className={`flex items-center gap-2 pb-4 border-b-2 transition-all cursor-pointer z-10 ${
-                step === s.id
+              className={`flex items-center gap-2 pb-4 border-b-2 transition-all cursor-pointer z-10 ${step === s.id
                   ? "border-orange-500 text-orange-500"
                   : step > s.id
-                  ? "border-emerald-500 text-emerald-500"
-                  : "border-transparent text-zinc-600"
-              }`}
+                    ? "border-emerald-500 text-emerald-500"
+                    : "border-transparent text-zinc-600"
+                }`}
             >
               {step > s.id ? <Check size={16} /> : s.icon}
               <span className="text-xs font-black uppercase tracking-widest whitespace-nowrap">
@@ -980,24 +1010,18 @@ export default function Signup({ onBack, onSuccess }: SignupProps) {
               </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-8">
-              <InputField label="Your Name" value={formData.name} icon={<User size={14} />} placeholder="Jon Smith" onChange={(v: string) => handleInputChange("name", v)} />
-              <InputField label="Company Name" value={formData.company} icon={<Briefcase size={14} />} placeholder="Jon's Plumbing" onChange={(v: string) => handleInputChange("company", v)} />
+              <InputField label="Your Name *" value={formData.name} icon={<User size={14} />} placeholder="Jon Smith" error={errors.name} onChange={(v: string) => handleInputChange("name", v)} />
+              <InputField label="Company Name *" value={formData.company} icon={<Briefcase size={14} />} placeholder="Jon's Plumbing" error={errors.company} onChange={(v: string) => handleInputChange("company", v)} />
               <InputField label="ACN (optional)" value={formData.acn} icon={<FileText size={14} />} placeholder="123 456 789" highlight onChange={(v: string) => handleInputChange("acn", v)} />
               <InputField
                 label="Email *"
                 value={formData.email}
                 icon={<Mail size={14} />}
                 placeholder="jon@plumbing.com.au"
-                error={emailError}
-                onChange={(v: string) => {
-                  handleInputChange("email", v);
-                  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                  if (!v.trim()) setEmailError("Email is required");
-                  else if (!emailRegex.test(v)) setEmailError("Please enter a valid email address");
-                  else setEmailError("");
-                }}
+                error={errors.email}
+                onChange={(v: string) => handleInputChange("email", v)}
               />
-              <InputField label="Password" type="password" value={formData.password} icon={<FileText size={14} />} placeholder="••••••••" onChange={(v: string) => handleInputChange("password", v)} />
+              <InputField label="Password *" type="password" value={formData.password} icon={<FileText size={14} />} placeholder="••••••••" error={errors.password} onChange={(v: string) => handleInputChange("password", v)} />
             </div>
           </div>
         )}
@@ -1015,11 +1039,10 @@ export default function Signup({ onBack, onSuccess }: SignupProps) {
                 <button
                   key={t}
                   onClick={() => setFormData({ ...formData, trade: t })}
-                  className={`flex items-center justify-between p-5 rounded-2xl border-2 transition-all group ${
-                    formData.trade === t
+                  className={`flex items-center justify-between p-5 rounded-2xl border-2 transition-all group ${formData.trade === t
                       ? "border-orange-500 bg-orange-500/5 text-orange-500"
                       : "border-white/5 bg-[#090e14] text-zinc-500 hover:border-white/10"
-                  }`}
+                    }`}
                 >
                   <div className="flex items-center gap-4">
                     <Hammer size={18} className={formData.trade === t ? "text-orange-500" : "text-zinc-700 group-hover:text-zinc-400"} />
@@ -1045,6 +1068,7 @@ export default function Signup({ onBack, onSuccess }: SignupProps) {
               value={formData.mobile}
               icon={<Phone size={14} />}
               placeholder="0412 345 678"
+              error={errors.mobile}
               onChange={(v: string) => handleInputChange("mobile", v)}
             />
           </div>
@@ -1122,16 +1146,14 @@ export default function Signup({ onBack, onSuccess }: SignupProps) {
 
             <div
               onClick={() => setAgreedToTerms(!agreedToTerms)}
-              className={`bg-[#090e14] border p-4 rounded-2xl flex items-start gap-4 transition-all group cursor-pointer ${
-                agreedToTerms
+              className={`bg-[#090e14] border p-4 rounded-2xl flex items-start gap-4 transition-all group cursor-pointer ${agreedToTerms
                   ? "border-orange-500/50 bg-orange-500/5 shadow-[0_0_20px_rgba(16,185,129,0.1)]"
                   : "border-white/5 hover:border-white/10"
-              }`}
+                }`}
             >
               <div
-                className={`w-6 h-6 rounded-md border-2 flex items-center justify-center shrink-0 transition-all ${
-                  agreedToTerms ? "bg-orange-500 border-orange-500" : "border-white/20 group-hover:border-white/40"
-                }`}
+                className={`w-6 h-6 rounded-md border-2 flex items-center justify-center shrink-0 transition-all ${agreedToTerms ? "bg-orange-500 border-orange-500" : "border-white/20 group-hover:border-white/40"
+                  }`}
               >
                 {agreedToTerms && <Check size={16} className="text-black stroke-[4]" />}
               </div>
@@ -1220,15 +1242,8 @@ export default function Signup({ onBack, onSuccess }: SignupProps) {
             </div>
 
             <div className="flex flex-col sm:flex-row items-center gap-4 w-full justify-center">
-              <button
-                onClick={() => onSuccess && onSuccess({ email: formData.email, name: formData.name }, "dummy-token-after-signup")}
-                className="w-full sm:w-auto flex items-center justify-center gap-3 bg-orange-500 hover:bg-orange-400 text-black px-8 py-4 rounded-xl text-lg font-black transition-all group"
-              >
-                Try the Demo
-                <ArrowLeft className="w-5 h-5 rotate-180 transition-transform group-hover:translate-x-1" />
-              </button>
-              <button onClick={onBack} className="w-full sm:w-auto border border-white/10 hover:border-white/20 text-white px-8 py-4 rounded-xl text-lg font-black transition-all">
-                Back to Home
+              <button onClick={onGoToLogin || onBack} className="w-full sm:w-auto bg-orange-500 hover:bg-orange-400 text-black px-8 py-4 rounded-xl text-lg font-black transition-all">
+                Go to Login
               </button>
             </div>
           </div>
@@ -1250,13 +1265,12 @@ export default function Signup({ onBack, onSuccess }: SignupProps) {
             <button
               onClick={step === 5 ? handleSignup : nextStep}
               disabled={(step === 5 && (!agreedToTerms || isSubmitting)) || isSubmitting}
-              className={`flex items-center gap-2 px-10 py-3 rounded-2xl text-lg font-black transition-all duration-300 shadow-xl hover:scale-[1.03] active:scale-95 group ${
-                step === 5
+              className={`flex items-center gap-2 px-10 py-3 rounded-2xl text-lg font-black transition-all duration-300 shadow-xl hover:scale-[1.03] active:scale-95 group ${step === 5
                   ? agreedToTerms
                     ? "bg-orange-500 text-black shadow-[0_10px_30px_rgba(249,115,22,0.3)]"
                     : "bg-[#12181e] text-zinc-700 border border-white/5 cursor-not-allowed opacity-50"
                   : "bg-orange-500 text-black shadow-orange-500/20 hover:bg-orange-400"
-              }`}
+                }`}
             >
               {isSubmitting ? (
                 <span className="flex items-center gap-2">
@@ -1305,15 +1319,14 @@ function InputField({
         onChange={(e) => onChange && onChange(e.target.value)}
         placeholder={placeholder}
         disabled={disabled}
-        className={`w-full bg-[#12181e] border rounded-xl px-5 py-4 text-white placeholder-zinc-700 focus:outline-none transition-all ${
-          disabled
+        className={`w-full bg-[#12181e] border rounded-xl px-5 py-4 text-white placeholder-zinc-700 focus:outline-none transition-all ${disabled
             ? "opacity-60 cursor-not-allowed border-white/10"
             : error
-            ? "border-red-500"
-            : highlight
-            ? "border-orange-500/30 shadow-[0_0_20px_rgba(249,115,22,0.05)]"
-            : "border-white/5"
-        }`}
+              ? "border-red-500"
+              : highlight
+                ? "border-orange-500/30 shadow-[0_0_20px_rgba(249,115,22,0.05)]"
+                : "border-white/5"
+          }`}
       />
       {error && <p className="text-red-500 text-xs font-medium">{error}</p>}
       {subLabel && <p className="text-zinc-600 text-[10px] font-medium leading-relaxed">{subLabel}</p>}
@@ -1325,9 +1338,8 @@ function CheckboxField({ checked, label, sub }: any) {
   return (
     <div className="bg-[#090e14] border border-white/5 p-6 rounded-2xl flex items-center gap-5 transition-all hover:border-white/10 group cursor-pointer">
       <div
-        className={`w-6 h-6 rounded-md flex items-center justify-center shrink-0 border-2 transition-colors ${
-          checked ? "bg-orange-500 border-orange-500" : "border-white/10"
-        }`}
+        className={`w-6 h-6 rounded-md flex items-center justify-center shrink-0 border-2 transition-colors ${checked ? "bg-orange-500 border-orange-500" : "border-white/10"
+          }`}
       >
         {checked && <Check size={16} className="text-black" />}
       </div>
