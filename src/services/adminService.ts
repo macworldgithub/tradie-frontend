@@ -67,6 +67,43 @@ export const adminService = {
     return handleResponse(response);
   },
 
+  async remapDid(didId: string, token: string) {
+    const response = await fetch(`${BASE_URL}/admin/dids/${didId}/remap`, {
+      method: 'POST',
+      headers: {
+        'Accept': '*/*',
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ didId }),
+    });
+    return handleResponse(response);
+  },
+
+  async unmapDid(didId: string, token: string) {
+    const response = await fetch(`${BASE_URL}/admin/dids/${didId}/unmap`, {
+      method: 'DELETE',
+      headers: {
+        'Accept': '*/*',
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    return handleResponse(response);
+  },
+
+  async renewDid(didId: string, token: string) {
+    const response = await fetch(`${BASE_URL}/admin/dids/${didId}/renew`, {
+      method: 'POST',
+      headers: {
+        'Accept': '*/*',
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ didId }),
+    });
+    return handleResponse(response);
+  },
   async deleteCompany(companyId: string, token: string) {
     const response = await fetch(`${BASE_URL}/admin/companies/${companyId}`, {
       method: 'DELETE',

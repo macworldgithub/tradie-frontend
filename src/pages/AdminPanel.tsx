@@ -78,6 +78,10 @@ export default function AdminPanel({
   const [mappingTradieId, setMappingTradieId] = useState<string | null>(null);
   console.log(mappingTradieId);
   const [mapTradieError, setMapTradieError] = useState<string | null>(null);
+  const [isUnmappingDid, setIsUnmappingDid] = useState(false);
+  const [isRemappingDid, setIsRemappingDid] = useState(false);
+  const [isRenewingDid, setIsRenewingDid] = useState(false);
+  const [didActionError, setDidActionError] = useState<string | null>(null);
 
   // Delete Company State
   const [isDeletingCompany, setIsDeletingCompany] = useState(false);
@@ -239,6 +243,61 @@ export default function AdminPanel({
     } finally {
       setIsMappingTradie(false);
       setMappingTradieId(null);
+    }
+  };
+
+  // DID actions: unmap, remap, renew
+  const handleUnmapDid = async () => {
+    const didId = companyDetails?.did?._id;
+    if (!didId || !selectedCompanyId) return;
+    if (!window.confirm("Are you sure you want to UNMAP this DID from assigned tradies?")) return;
+
+    setDidActionError(null);
+    setIsUnmappingDid(true);
+    try {
+      await adminService.unmapDid(didId, token);
+      await handleViewDetails(selectedCompanyId);
+      await fetchCompanies();
+    } catch (err: any) {
+      setDidActionError(err.message || "Failed to unmap DID");
+    } finally {
+      setIsUnmappingDid(false);
+    }
+  };
+
+  const handleRemapDid = async () => {
+    const didId = companyDetails?.did?._id;
+    if (!didId || !selectedCompanyId) return;
+    if (!window.confirm("Are you sure you want to REMAP this DID (transfer assigned -> unassigned)?")) return;
+
+    setDidActionError(null);
+    setIsRemappingDid(true);
+    try {
+      await adminService.remapDid(didId, token);
+      await handleViewDetails(selectedCompanyId);
+      await fetchCompanies();
+    } catch (err: any) {
+      setDidActionError(err.message || "Failed to remap DID");
+    } finally {
+      setIsRemappingDid(false);
+    }
+  };
+
+  const handleRenewDid = async () => {
+    const didId = companyDetails?.did?._id;
+    if (!didId || !selectedCompanyId) return;
+    if (!window.confirm("Renew this DID subscription? This will add 30 days to the trial balance.")) return;
+
+    setDidActionError(null);
+    setIsRenewingDid(true);
+    try {
+      await adminService.renewDid(didId, token);
+      await handleViewDetails(selectedCompanyId);
+      await fetchCompanies();
+    } catch (err: any) {
+      setDidActionError(err.message || "Failed to renew DID");
+    } finally {
+      setIsRenewingDid(false);
     }
   };
 
@@ -1178,6 +1237,39 @@ export default function AdminPanel({
                                     companyDetails.did.assignedTradieId,
                                 )?.name || "Unassigned"}
                               </span>
+                            </div>
+
+                            {/* DID Action Buttons */}
+                            <div className="flex items-center gap-2 pt-3">
+                              {didActionError && (
+                                <div className="text-red-500 text-xs font-bold mr-2">{didActionError}</div>
+                              )}
+                              <button
+                                type="button"
+                                onClick={handleUnmapDid}
+                                disabled={isUnmappingDid}
+                                className="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold border border-white/5 text-red-400 hover:bg-white/5 disabled:opacity-50"
+                              >
+                                {isUnmappingDid ? <span className="w-3.5 h-3.5 border-2 border-red-400 border-t-transparent rounded-full animate-spin" /> : 'Unmap'}
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={handleRemapDid}
+                                disabled={isRemappingDid}
+                                className="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold border border-white/5 text-yellow-400 hover:bg-white/5 disabled:opacity-50"
+                              >
+                                {isRemappingDid ? <span className="w-3.5 h-3.5 border-2 border-yellow-400 border-t-transparent rounded-full animate-spin" /> : 'Remap'}
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={handleRenewDid}
+                                disabled={isRenewingDid}
+                                className="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold border border-white/5 text-emerald-400 hover:bg-white/5 disabled:opacity-50"
+                              >
+                                {isRenewingDid ? <span className="w-3.5 h-3.5 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin" /> : 'Renew'}
+                              </button>
                             </div>
                           </div>
                         ) : (
