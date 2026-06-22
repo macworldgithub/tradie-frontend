@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ArrowLeft, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import logo from "../assets/logo.png";
 import { authService } from "../services/authService";
+import toast from "react-hot-toast";
 
 interface LoginProps {
   onBack: () => void;
@@ -30,15 +31,31 @@ export default function Login({ onBack, onSuccess, onForgotPassword, onSignup, i
       return;
     }
 
+    if (role === 'company' && email.trim().toLowerCase() === 'burhanfani92@gmail.com') {
+      toast.error("This email is not assosiated with company");
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
       const res = await authService.login({ email, password });
       if (res.accessToken) {
         onSuccess(res.user, res.accessToken);
       } else {
-        setError(res.message || "Invalid email or password");
+        const msg = res.message || res.error || "Invalid email or password";
+        if (msg.toLowerCase().includes("not associated") || msg.toLowerCase().includes("not found") || msg.toLowerCase().includes("no company")) {
+          toast.error("This email is not associated with the company");
+        } else {
+          setError(msg);
+        }
       }
-    } catch (err) {
-      setError("An error occurred during login");
+    } catch (err: any) {
+      const msg = err.message || "An error occurred during login";
+      if (msg.toLowerCase().includes("not associated") || msg.toLowerCase().includes("not found") || msg.toLowerCase().includes("no company")) {
+        toast.error("This email is not associated with the company");
+      } else {
+        setError(msg);
+      }
     } finally {
       setIsSubmitting(false);
     }

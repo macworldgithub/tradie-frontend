@@ -14,6 +14,7 @@ import Login from "./pages/Login";
 import ForgotPassword from "./pages/ForgotPassword";
 import ChangePassword from "./pages/ChangePassword";
 import AdminPanel from "./pages/AdminPanel";
+import { Toaster } from "react-hot-toast";
 import "./App.css";
 
 function App() {
@@ -72,6 +73,42 @@ function App() {
 
   return (
     <div className="bg-[#03070b] overflow-x-hidden min-h-screen">
+      <Toaster 
+        position="top-center" 
+        toastOptions={{
+          style: {
+            background: '#090e14',
+            color: '#fff',
+            border: '1px solid rgba(255, 255, 255, 0.05)',
+            borderRadius: '12px',
+            fontSize: '12px',
+            fontWeight: 'bold',
+            boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.2)',
+          },
+          error: {
+            style: {
+              background: 'rgba(239, 68, 68, 0.1)', // bg-red-500/10
+              border: '1px solid rgba(239, 68, 68, 0.2)', // border-red-500/20
+              color: '#f87171', // text-red-400
+            },
+            iconTheme: {
+              primary: '#ef4444',
+              secondary: '#090e14',
+            },
+          },
+          success: {
+            style: {
+              background: 'rgba(16, 185, 129, 0.1)', // emerald-500/10
+              border: '1px solid rgba(16, 185, 129, 0.2)', // emerald-500/20
+              color: '#34d399', // emerald-400
+            },
+            iconTheme: {
+              primary: '#10b981',
+              secondary: '#090e14',
+            },
+          },
+        }}
+      />
       {view === 'landing' && (
         <>
           <Navbar 
