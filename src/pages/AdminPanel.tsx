@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import {
   Building2,
@@ -67,14 +68,18 @@ export default function AdminPanel({ token, onLogout }: { token: string; onLogou
   const [allocateDidError, setAllocateDidError] = useState<string | null>(null);
   const [isMappingTradie, setIsMappingTradie] = useState(false);
   const [mappingTradieId, setMappingTradieId] = useState<string | null>(null);
+  console.log(mappingTradieId);
   const [mapTradieError, setMapTradieError] = useState<string | null>(null);
-  const [isMapTradieConfirmationOpen, setIsMapTradieConfirmationOpen] = useState(false);
+
+  // Delete Company State
+  const [isDeletingCompany, setIsDeletingCompany] = useState(false);
+  const [deleteCompanyError, setDeleteCompanyError] = useState<string | null>(null);
+
+   const [isMapTradieConfirmationOpen, setIsMapTradieConfirmationOpen] = useState(false);
   const [tradieToMap, setTradieToMap] = useState<string | null>(null);
 
   // Delete Company State
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] = useState(false);
-  const [isDeletingCompany, setIsDeletingCompany] = useState(false);
-  const [deleteCompanyError, setDeleteCompanyError] = useState<string | null>(null);
 
   // Settings State
   const [settings, setSettings] = useState({
@@ -225,7 +230,7 @@ export default function AdminPanel({ token, onLogout }: { token: string; onLogou
   };
 
   // Delete Company Submission
-  const handleDeleteCompany = () => {
+ const handleDeleteCompany = () => {
     setIsDeleteConfirmationOpen(true);
   };
 
@@ -486,10 +491,10 @@ export default function AdminPanel({ token, onLogout }: { token: string; onLogou
                       <p className="text-3xl font-black text-white relative z-10">{totalDids}</p>
                     </div>
                   </div>
-                  <div className="space-y-6 animate-in fade-in duration-500">
+                    <div className="space-y-6 animate-in fade-in duration-500">
 
-                    {/* Search & Action Bar */}
-                    <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-[#090e14] border border-white/5 p-4 rounded-2xl">
+              {/* Search & Action Bar */}
+              <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-[#090e14] border border-white/5 p-4 rounded-2xl">
 
                 <div className="relative w-full md:w-80">
                   <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-600" size={16} />
@@ -600,134 +605,27 @@ export default function AdminPanel({ token, onLogout }: { token: string; onLogou
                         </div>
                       </div>
 
-                      <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
-                        <div className="flex items-center gap-2 bg-[#12181e] border border-white/5 px-3 py-2 rounded-xl text-xs font-semibold text-zinc-400">
-                          <Filter size={14} className="text-[#f97316]" />
-                          <span>Filters:</span>
-                        </div>
-
-                        <select
-                          value={statusFilter}
-                          onChange={(e) => setStatusFilter(e.target.value)}
-                          className="bg-[#12181e] border border-white/5 rounded-xl px-3 py-2 text-xs font-semibold text-white focus:outline-none focus:border-orange-500"
-                        >
-                          <option value="all">All Statuses</option>
-                          <option value="active">Active</option>
-                          <option value="inactive">Inactive</option>
-                        </select>
-
-                        <select
-                          value={paymentFilter}
-                          onChange={(e) => setPaymentFilter(e.target.value)}
-                          className="bg-[#12181e] border border-white/5 rounded-xl px-3 py-2 text-xs font-semibold text-white focus:outline-none focus:border-orange-500"
-                        >
-                          <option value="all">All Subscriptions</option>
-                          <option value="paid">Paid Accounts</option>
-                          <option value="unpaid">Trial/Unpaid</option>
-                        </select>
-
-                        <button className="flex items-center gap-2 bg-[#f97316] hover:bg-[#ea580c] text-black px-4 py-2 rounded-xl text-xs font-black transition-all ml-auto md:ml-0 shadow-lg shadow-orange-500/10">
-                          <Plus size={14} /> Add Company
-                        </button>
-                      </div>
-
+                      {/* Detail Button */}
+                      <button
+                        onClick={() => handleViewDetails(company.companyId)}
+                        className="mt-6 w-full flex items-center justify-center gap-1.5 bg-white/5 group-hover:bg-[#f97316] text-white group-hover:text-black font-black py-2.5 rounded-xl text-xs transition-all"
+                      >
+                        View Details
+                        <ChevronRight size={14} />
+                      </button>
                     </div>
+                  ))}
 
-                    {/* API Loaders */}
-                    {isLoading ? (
-                      <div className="flex flex-col items-center justify-center py-20 gap-4">
-                        <span className="w-10 h-10 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
-                        <p className="text-zinc-500 text-sm font-semibold">Loading companies directory...</p>
-                      </div>
-                    ) : error ? (
-                      <div className="bg-red-500/10 border border-red-500/25 rounded-2xl p-12 text-center">
-                        <ShieldAlert className="text-red-500 mx-auto mb-4" size={40} />
-                        <h3 className="font-bold text-lg text-white mb-2">Error Connecting to Backend</h3>
-                        <p className="text-sm text-red-400 max-w-md mx-auto">{error}</p>
-                        <button
-                          onClick={fetchCompanies}
-                          className="mt-4 bg-[#f97316] text-black font-black px-6 py-2.5 rounded-xl text-xs transition-all shadow-lg hover:bg-orange-400"
-                        >
-                          Try Again
-                        </button>
-                      </div>
-                    ) : (
-                      /* Card Grid */
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {filteredCompanies.map((company) => (
-                          <div
-                            key={company.companyId}
-                            className="bg-[#090e14] border border-white/5 rounded-2xl p-6 flex flex-col justify-between hover:border-white/10 transition-all group"
-                          >
-                            <div className="space-y-4">
-                              {/* Title and status */}
-                              <div className="flex items-start justify-between gap-2">
-                                <h3 className="font-black text-lg text-white group-hover:text-[#f97316] transition-colors truncate">
-                                  {company.companyName}
-                                </h3>
-                                <span className={`shrink-0 text-[10px] font-bold px-2 py-0.5 rounded-full border ${company.isActive
-                                  ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
-                                  : 'bg-red-500/10 text-red-400 border-red-500/20'
-                                  }`}>
-                                  {company.isActive ? 'Active' : 'Inactive'}
-                                </span>
-                              </div>
-
-                              {/* Email */}
-                              <div className="flex items-center gap-2 text-xs text-zinc-400">
-                                <Mail size={14} className="text-zinc-500 shrink-0" />
-                                <span className="truncate">{company.email}</span>
-                              </div>
-
-                              {/* DID details */}
-                              <div className="bg-[#12181e] p-3 rounded-xl border border-white/5 space-y-1.5">
-                                <div className="flex items-center justify-between text-xs">
-                                  <span className="text-zinc-500">DID Number:</span>
-                                  <span className="font-mono text-zinc-300 font-bold">
-                                    {company.didNumber || 'None Assigned'}
-                                  </span>
-                                </div>
-                                <div className="flex items-center justify-between text-xs">
-                                  <span className="text-zinc-500">Tradie Staff:</span>
-                                  <span className="text-zinc-300 font-bold">
-                                    {company.tradieCount || 0} registered
-                                  </span>
-                                </div>
-                              </div>
-
-                              {/* Days Remaining Banner */}
-                              <div className="flex items-center justify-between text-xs font-semibold">
-                                <span className="text-zinc-500">Trial Period:</span>
-                                <span className={`px-2 py-0.5 rounded font-bold ${company.daysRemaining > 0
-                                  ? 'bg-[#f97316]/10 text-[#f97316]'
-                                  : 'bg-zinc-800 text-zinc-400'
-                                  }`}>
-                                  {company.daysRemaining} days left
-                                </span>
-                              </div>
-                            </div>
-
-                            {/* Detail Button */}
-                            <button
-                              onClick={() => handleViewDetails(company.companyId)}
-                              className="mt-6 w-full flex items-center justify-center gap-1.5 bg-white/5 group-hover:bg-[#f97316] text-white group-hover:text-black font-black py-2.5 rounded-xl text-xs transition-all"
-                            >
-                              View Details
-                              <ChevronRight size={14} />
-                            </button>
-                          </div>
-                        ))}
-
-                        {filteredCompanies.length === 0 && (
-                          <div className="col-span-full bg-[#090e14] border border-white/5 rounded-2xl p-16 text-center">
-                            <Building2 className="mx-auto text-zinc-700 mb-4" size={40} />
-                            <h3 className="font-bold text-base">No companies match your filters</h3>
-                            <p className="text-sm text-zinc-500 mt-1">Try resetting the status/payment parameters.</p>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
+                  {filteredCompanies.length === 0 && (
+                    <div className="col-span-full bg-[#090e14] border border-white/5 rounded-2xl p-16 text-center">
+                      <Building2 className="mx-auto text-zinc-700 mb-4" size={40} />
+                      <h3 className="font-bold text-base">No companies match your filters</h3>
+                      <p className="text-sm text-zinc-500 mt-1">Try resetting the status/payment parameters.</p>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
                 </>
               )}
             </div>
@@ -1238,7 +1136,6 @@ export default function AdminPanel({ token, onLogout }: { token: string; onLogou
                       </form>
                     )}
 
-                    {/* Inline error moved to modal */}
                     <div className="space-y-3">
                       {companyDetails.tradies.map((tradie: any) => {
                         const isTradieMapped = tradie.isMapped || companyDetails?.did?.assignedTradieId === tradie._id;
@@ -1256,36 +1153,35 @@ export default function AdminPanel({ token, onLogout }: { token: string; onLogou
                                   </span>
                                 )}
                               </p>
-                              <p className="text-xs text-zinc-500 mt-1">
-                                Call Mode: <span className="text-zinc-300 font-semibold uppercase">{tradie.callMode}</span>
-                                <span className="mx-2 text-zinc-700">|</span>
-                                Notif: <span className="text-zinc-300 font-semibold uppercase">{tradie.notificationPreference}</span>
-                              </p>
-                            </div>
-
-                            <div className="sm:text-right text-xs">
-                              <p className="font-mono text-zinc-300 flex items-center sm:justify-end gap-1.5">
-                                <Mail size={12} className="text-zinc-600" />
-                                {tradie.email}
-                              </p>
-                              <p className="font-mono text-zinc-500 mt-1 flex items-center sm:justify-end gap-1.5">
-                                <Smartphone size={12} className="text-zinc-600" />
-                                {tradie.phoneNumber}
-                              </p>
-                              {!isTradieMapped && companyDetails?.did?.didNumber && (
-                                <button
-                                  type="button"
-                                  onClick={() => handleMapTradie(tradie._id)}
-                                  disabled={isMappingTradie}
-                                  className="mt-3 inline-flex items-center justify-center gap-2 border border-[#f97316]/20 text-[#f97316] hover:bg-white/5 px-3 py-2 rounded-xl text-[10px] font-bold transition-all disabled:opacity-50"
-                                >
-                                  Map to DID
-                                </button>
-                              )}
-                            </div>
+                            <p className="text-xs text-zinc-500 mt-1">
+                              Call Mode: <span className="text-zinc-300 font-semibold uppercase">{tradie.callMode}</span>
+                              <span className="mx-2 text-zinc-700">|</span>
+                              Notif: <span className="text-zinc-300 font-semibold uppercase">{tradie.notificationPreference}</span>
+                            </p>
                           </div>
-                        )
-                      }
+
+                          <div className="sm:text-right text-xs">
+                            <p className="font-mono text-zinc-300 flex items-center sm:justify-end gap-1.5">
+                              <Mail size={12} className="text-zinc-600" />
+                              {tradie.email}
+                            </p>
+                            <p className="font-mono text-zinc-500 mt-1 flex items-center sm:justify-end gap-1.5">
+                              <Smartphone size={12} className="text-zinc-600" />
+                              {tradie.phoneNumber}
+                            </p>
+                            {!isTradieMapped && companyDetails?.did?.didNumber && (
+                              <button
+                                type="button"
+                                onClick={() => handleMapTradie(tradie._id)}
+                                disabled={isMappingTradie}
+                                className="mt-3 inline-flex items-center justify-center gap-2 border border-[#f97316]/20 text-[#f97316] hover:bg-white/5 px-3 py-2 rounded-xl text-[10px] font-bold transition-all disabled:opacity-50"
+                              >
+                               Map to DID
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                        )}
                       )}
 
                       {companyDetails.tradies.length === 0 && !showAddTradieForm && (
@@ -1323,8 +1219,7 @@ export default function AdminPanel({ token, onLogout }: { token: string; onLogou
           </div>
         </div>
       )}
-
-      {/* MAP TRADIE CONFIRMATION MODAL */}
+{/* MAP TRADIE CONFIRMATION MODAL */}
       {isMapTradieConfirmationOpen && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 sm:p-6">
           <div
@@ -1419,7 +1314,10 @@ export default function AdminPanel({ token, onLogout }: { token: string; onLogou
           </div>
         </div>
       )}
-
     </div>
   );
 }
+
+
+
+
