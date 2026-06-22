@@ -74,6 +74,9 @@ export default function AdminPanel({ token, onLogout }: { token: string; onLogou
   const [didTradieId, setDidTradieId] = useState("");
   const [isAllocatingDid, setIsAllocatingDid] = useState(false);
   const [allocateDidError, setAllocateDidError] = useState<string | null>(null);
+  const [isMappingTradie, setIsMappingTradie] = useState(false);
+  const [mappingTradieId, setMappingTradieId] = useState<string | null>(null);
+  const [mapTradieError, setMapTradieError] = useState<string | null>(null);
 
   // Delete Company State
   const [isDeletingCompany, setIsDeletingCompany] = useState(false);
@@ -191,6 +194,34 @@ export default function AdminPanel({ token, onLogout }: { token: string; onLogou
       setAllocateDidError(err.message || "Failed to allocate DID");
     } finally {
       setIsAllocatingDid(false);
+    }
+  };
+
+  const handleMapTradie = async (tradieId: string) => {
+    if (!selectedCompanyId || !companyDetails?.did?.didNumber) return;
+
+    const confirmed = window.confirm("Do you want to map this tradie to the company's DID?");
+    if (!confirmed) return;
+
+    setMapTradieError(null);
+    setMappingTradieId(tradieId);
+    setIsMappingTradie(true);
+
+    try {
+      const payload = {
+        companyId: selectedCompanyId,
+        didNumber: companyDetails.did.didNumber,
+        tradieId,
+      };
+
+      await adminService.allocateDid(selectedCompanyId, payload, token);
+      await handleViewDetails(selectedCompanyId);
+      await fetchCompanies();
+    } catch (err: any) {
+      setMapTradieError(err.message || "Failed to map tradie to DID");
+    } finally {
+      setIsMappingTradie(false);
+      setMappingTradieId(null);
     }
   };
 
@@ -314,17 +345,6 @@ export default function AdminPanel({ token, onLogout }: { token: string; onLogou
             </button>
 
             <button
-              onClick={() => { setActiveTab('companies'); setIsMobileSidebarOpen(false); setSearchQuery(""); }}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${activeTab === 'companies'
-                ? 'bg-orange-500 text-black'
-                : 'text-zinc-400 hover:text-white hover:bg-white/5'
-                }`}
-            >
-              <Building2 size={18} />
-              Companies
-            </button>
-
-            <button
               onClick={() => { setActiveTab('dids'); setIsMobileSidebarOpen(false); setSearchQuery(""); }}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${activeTab === 'dids'
                 ? 'bg-orange-500 text-black'
@@ -332,7 +352,7 @@ export default function AdminPanel({ token, onLogout }: { token: string; onLogou
                 }`}
             >
               <Phone size={18} />
-              DIDs & Numbers
+              DIDs
             </button>
 
             {/* <button
@@ -425,7 +445,7 @@ export default function AdminPanel({ token, onLogout }: { token: string; onLogou
               ) : (
                 <>
                   {/* Stat Cards */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 
                     <div
                       onClick={() => setActiveTab('companies')}
@@ -465,154 +485,8 @@ export default function AdminPanel({ token, onLogout }: { token: string; onLogou
                       </div>
                       <p className="text-3xl font-black text-white relative z-10">{totalDids}</p>
                     </div>
-
-                    <div className="bg-[#090e14] border border-white/5 rounded-2xl p-6 relative overflow-hidden group transition-all">
-                      <div className="absolute top-0 right-0 bg-orange-500/5 w-24 h-24 blur-xl rounded-full group-hover:bg-orange-500/10 transition-all" />
-                      <div className="flex items-center gap-4 mb-4 relative z-10">
-                        <div className="bg-[#f97316]/10 p-2.5 rounded-xl text-[#f97316]">
-                          <Activity size={20} />
-                        </div>
-                        <h3 className="text-zinc-400 font-bold text-sm">Avg Call Latency</h3>
-                      </div>
-                      <p className="text-3xl font-black text-white relative z-10">1.84s</p>
-                    </div>
-
                   </div>
-
-                  {/* Chart & Quick Actions Row */}
-                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-                    {/* SVG Call Volume Chart */}
-                    <div className="lg:col-span-2 bg-[#090e14] border border-white/5 rounded-2xl p-6 flex flex-col justify-between">
-                      <div className="flex items-center justify-between mb-4">
-                        <div>
-                          <h3 className="font-bold text-lg text-white">AI Agent Conversational Activity</h3>
-                          <p className="text-xs text-zinc-500 mt-1">Weekly voice sessions and routing counts</p>
-                        </div>
-                        <div className="flex items-center gap-2 bg-[#f97316]/10 px-3 py-1.5 rounded-lg text-[#f97316] text-xs font-bold">
-                          <TrendingUp size={14} />
-                          +28.4%
-                        </div>
-                      </div>
-
-                      {/* Custom SVG Render */}
-                      <div className="relative w-full">
-                        <svg className="w-full h-48 mt-4" viewBox="0 0 500 150">
-                          <defs>
-                            <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="0%" stopColor="#f97316" stopOpacity="0.4" />
-                              <stop offset="100%" stopColor="#f97316" stopOpacity="0.0" />
-                            </linearGradient>
-                          </defs>
-                          <line x1="0" y1="30" x2="500" y2="30" stroke="rgba(255,255,255,0.03)" strokeWidth="1" />
-                          <line x1="0" y1="70" x2="500" y2="70" stroke="rgba(255,255,255,0.03)" strokeWidth="1" />
-                          <line x1="0" y1="110" x2="500" y2="110" stroke="rgba(255,255,255,0.03)" strokeWidth="1" />
-
-                          <path
-                            d="M 0 130 C 50 90, 100 110, 150 50 C 200 80, 250 20, 300 60 C 350 40, 400 90, 450 30 C 475 10, 500 20, 500 20 L 500 150 L 0 150 Z"
-                            fill="url(#areaGrad)"
-                          />
-
-                          <path
-                            d="M 0 130 C 50 90, 100 110, 150 50 C 200 80, 250 20, 300 60 C 350 40, 400 90, 450 30 C 475 10, 500 20, 500 20"
-                            fill="none"
-                            stroke="#f97316"
-                            strokeWidth="3"
-                          />
-
-                          <circle cx="150" cy="50" r="5" fill="#f97316" stroke="#090e14" strokeWidth="2" />
-                          <circle cx="250" cy="20" r="5" fill="#f97316" stroke="#090e14" strokeWidth="2" />
-                          <circle cx="300" cy="60" r="5" fill="#f97316" stroke="#090e14" strokeWidth="2" />
-                          <circle cx="450" cy="30" r="5" fill="#f97316" stroke="#090e14" strokeWidth="2" />
-                        </svg>
-                      </div>
-
-                      <div className="flex justify-between items-center text-[10px] text-zinc-600 font-bold uppercase tracking-wider mt-4">
-                        <span>Mon</span>
-                        <span>Tue</span>
-                        <span>Wed</span>
-                        <span>Thu</span>
-                        <span>Fri</span>
-                        <span>Sat</span>
-                        <span>Sun</span>
-                      </div>
-                    </div>
-
-                    {/* System Diagnostics / Actions */}
-                    <div className="bg-[#090e14] border border-white/5 rounded-2xl p-6 space-y-6">
-                      <h3 className="font-bold text-lg text-white">System Diagnostics</h3>
-
-                      <div className="space-y-4">
-                        <div className="flex items-center justify-between border-b border-white/5 pb-3">
-                          <span className="text-zinc-500 text-xs font-bold uppercase">OpenAI Engine</span>
-                          <span className="bg-emerald-500/10 text-emerald-400 text-xs font-bold px-2 py-0.5 rounded border border-emerald-500/20">Nominal</span>
-                        </div>
-
-                        <div className="flex items-center justify-between border-b border-white/5 pb-3">
-                          <span className="text-zinc-500 text-xs font-bold uppercase">Twilio Voice Trunk</span>
-                          <span className="bg-emerald-500/10 text-emerald-400 text-xs font-bold px-2 py-0.5 rounded border border-emerald-500/20">Connected</span>
-                        </div>
-
-                        <div className="flex items-center justify-between border-b border-white/5 pb-3">
-                          <span className="text-zinc-500 text-xs font-bold uppercase">SMS Gateway</span>
-                          <span className="bg-orange-500/10 text-orange-400 text-xs font-bold px-2 py-0.5 rounded border border-[#f97316]/20">High Load</span>
-                        </div>
-
-                        <div className="flex items-center justify-between">
-                          <span className="text-zinc-500 text-xs font-bold uppercase">Admin Session</span>
-                          <span className="text-white font-mono text-xs truncate">BF-92 (Authenticated)</span>
-                        </div>
-                      </div>
-
-                      <div className="pt-2">
-                        <button
-                          onClick={() => setActiveTab('settings')}
-                          className="w-full flex items-center justify-between bg-white/5 hover:bg-white/10 text-white font-bold p-3 rounded-xl text-sm transition-all group"
-                        >
-                          Configure Global Parameters
-                          <Sliders size={16} className="text-zinc-500 group-hover:text-white transition-colors" />
-                        </button>
-                      </div>
-                    </div>
-
-                  </div>
-                </>
-              )}
-
-              {/* Recent Activity Log */}
-              <div className="bg-[#090e14] border border-white/5 rounded-2xl p-6 space-y-4">
-                <div className="flex items-center justify-between border-b border-white/5 pb-4">
-                  <h3 className="font-bold text-lg text-white flex items-center gap-2">
-                    <Activity size={18} className="text-orange-500" />
-                    Live System Feed
-                  </h3>
-                  <span className="text-xs text-zinc-500 font-medium">Real-time status updates</span>
-                </div>
-
-                <div className="space-y-4">
-                  {MOCK_ACTIVITIES.map((act) => (
-                    <div key={act.id} className="flex items-start gap-4 text-sm group">
-                      <div className="bg-white/5 group-hover:bg-orange-500/10 p-2 rounded-lg text-zinc-400 group-hover:text-[#f97316] transition-all shrink-0">
-                        {act.type === 'signup' && <Building2 size={16} />}
-                        {act.type === 'did_allocated' && <Phone size={16} />}
-                        {act.type === 'call_success' && <Sparkles size={16} />}
-                        {act.type === 'status_change' && <ShieldAlert size={16} />}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-zinc-300 font-medium break-words">{act.text}</p>
-                        <span className="text-xs text-zinc-600 font-medium mt-1 inline-block">{act.time}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-            </div>
-          )}
-
-          {/* TAB 2: COMPANIES */}
-          {activeTab === 'companies' && (
-            <div className="space-y-6 animate-in fade-in duration-500">
+                    <div className="space-y-6 animate-in fade-in duration-500">
 
               {/* Search & Action Bar */}
               <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-[#090e14] border border-white/5 p-4 rounded-2xl">
@@ -755,7 +629,9 @@ export default function AdminPanel({ token, onLogout }: { token: string; onLogou
                   )}
                 </div>
               )}
-
+            </div>
+                </>
+              )}
             </div>
           )}
 
@@ -1264,21 +1140,26 @@ export default function AdminPanel({ token, onLogout }: { token: string; onLogou
                       </form>
                     )}
 
+                    {mapTradieError && (
+                      <div className="text-red-500 text-[10px] font-bold mb-2">{mapTradieError}</div>
+                    )}
                     <div className="space-y-3">
-                      {companyDetails.tradies.map((tradie: any) => (
-                        <div
-                          key={tradie._id}
-                          className="bg-[#090e14] p-4 rounded-xl border border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
-                        >
-                          <div>
-                            <p className="font-bold text-sm text-white flex items-center gap-2">
-                              {tradie.name}
-                              {tradie.isMapped && (
-                                <span className="text-[9px] font-extrabold bg-[#f97316]/10 text-[#f97316] px-1.5 py-0.5 rounded uppercase tracking-wider">
-                                  Mapped
-                                </span>
-                              )}
-                            </p>
+                      {companyDetails.tradies.map((tradie: any) => {
+                        const isTradieMapped = tradie.isMapped || companyDetails?.did?.assignedTradieId === tradie._id;
+                        return (
+                          <div
+                            key={tradie._id}
+                            className="bg-[#090e14] p-4 rounded-xl border border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                          >
+                            <div>
+                              <p className="font-bold text-sm text-white flex items-center gap-2">
+                                {tradie.name}
+                                {isTradieMapped && (
+                                  <span className="text-[9px] font-extrabold bg-[#f97316]/10 text-[#f97316] px-1.5 py-0.5 rounded uppercase tracking-wider">
+                                    Mapped
+                                  </span>
+                                )}
+                              </p>
                             <p className="text-xs text-zinc-500 mt-1">
                               Call Mode: <span className="text-zinc-300 font-semibold uppercase">{tradie.callMode}</span>
                               <span className="mx-2 text-zinc-700">|</span>
@@ -1295,9 +1176,24 @@ export default function AdminPanel({ token, onLogout }: { token: string; onLogou
                               <Smartphone size={12} className="text-zinc-600" />
                               {tradie.phoneNumber}
                             </p>
+                            {!isTradieMapped && companyDetails?.did?.didNumber && (
+                              <button
+                                type="button"
+                                onClick={() => handleMapTradie(tradie._id)}
+                                disabled={isMappingTradie}
+                                className="mt-3 inline-flex items-center justify-center gap-2 border border-[#f97316]/20 text-[#f97316] hover:bg-white/5 px-3 py-2 rounded-xl text-[10px] font-bold transition-all disabled:opacity-50"
+                              >
+                                {isMappingTradie && mappingTradieId === tradie._id ? (
+                                  <span className="w-3.5 h-3.5 border-2 border-orange-500 border-t-transparent rounded-full animate-spin" />
+                                ) : (
+                                  "Map to DID"
+                                )}
+                              </button>
+                            )}
                           </div>
                         </div>
-                      ))}
+                        )}
+                      )}
 
                       {companyDetails.tradies.length === 0 && !showAddTradieForm && (
                         <div className="p-8 text-center bg-white/[0.01] rounded-xl border border-dashed border-white/5">
