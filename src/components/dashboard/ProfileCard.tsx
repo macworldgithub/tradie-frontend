@@ -9,9 +9,10 @@ interface ProfileCardProps {
     company?: string;
   } | null;
   daysRemaining?: number | null;
+  didNumber?: string | null;
 }
 
-export default function ProfileCard({ user, daysRemaining }: ProfileCardProps) {
+export default function ProfileCard({ user, daysRemaining, didNumber }: ProfileCardProps) {
   if (!user) return null;
   console.log(daysRemaining, "DAYS")
   const displayName = user.customerName || user.name || "N/A";
@@ -50,15 +51,21 @@ export default function ProfileCard({ user, daysRemaining }: ProfileCardProps) {
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-start gap-3">
             <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-zinc-400 group-hover:text-white transition-colors">
               <Briefcase size={16} />
             </div>
-            <div>
+            <div className="flex-1">
               <p className="text-[9px] uppercase tracking-wider text-zinc-500 font-bold">Company Name</p>
               <p className="text-sm font-medium text-zinc-200 mt-0.5">{displayCompany}</p>
+              <div className="mt-3 rounded-2xl border border-white/10 bg-white/5 p-3">
+                <p className="text-[9px] uppercase tracking-wider text-zinc-500 font-bold">DID Number</p>
+                <p className={`text-sm font-medium mt-1 ${didNumber ? 'text-white' : 'text-zinc-400'}`}>
+                  {didNumber || 'DID number not allocated yet'}
+                </p>
+              </div>
               {typeof daysRemaining !== 'undefined' && daysRemaining !== null && (
-                <p className="text-[11px] mt-1 text-zinc-400 font-bold">Trial Days Remaining: {daysRemaining}</p>
+                <p className="text-[11px] mt-3 text-zinc-400 font-bold">Days Remaining: {daysRemaining}</p>
               )}
             </div>
           </div>

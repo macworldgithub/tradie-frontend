@@ -286,7 +286,7 @@ export default function AdminPanel({
   const handleRenewDid = async () => {
     const didId = companyDetails?.did?._id;
     if (!didId || !selectedCompanyId) return;
-    if (!window.confirm("Renew this DID subscription? This will add 30 days to the trial balance.")) return;
+    if (!window.confirm("Renew this DID subscription? This will add 30 days to the balance.")) return;
 
     setDidActionError(null);
     setIsRenewingDid(true);
