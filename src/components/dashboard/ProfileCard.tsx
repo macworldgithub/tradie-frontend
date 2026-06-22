@@ -8,11 +8,12 @@ interface ProfileCardProps {
     companyName?: string;
     company?: string;
   } | null;
+  daysRemaining?: number | null;
 }
 
-export default function ProfileCard({ user }: ProfileCardProps) {
+export default function ProfileCard({ user, daysRemaining }: ProfileCardProps) {
   if (!user) return null;
-
+  console.log(daysRemaining, "DAYS")
   const displayName = user.customerName || user.name || "N/A";
   const displayEmail = user.email || "N/A";
   const displayCompany = user.companyName || user.company || "N/A";
@@ -38,7 +39,6 @@ export default function ProfileCard({ user }: ProfileCardProps) {
         </div>
 
         <div className="h-px md:h-12 w-full md:w-px bg-white/10" />
-
         <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-zinc-400 group-hover:text-white transition-colors">
@@ -57,6 +57,9 @@ export default function ProfileCard({ user }: ProfileCardProps) {
             <div>
               <p className="text-[9px] uppercase tracking-wider text-zinc-500 font-bold">Company Name</p>
               <p className="text-sm font-medium text-zinc-200 mt-0.5">{displayCompany}</p>
+              {typeof daysRemaining !== 'undefined' && daysRemaining !== null && (
+                <p className="text-[11px] mt-1 text-zinc-400 font-bold">Trial Days Remaining: {daysRemaining}</p>
+              )}
             </div>
           </div>
         </div>
