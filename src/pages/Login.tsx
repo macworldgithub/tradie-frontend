@@ -26,7 +26,7 @@ export default function Login({ onBack, onSuccess, onForgotPassword, onSignup, i
     setError(null);
 
     if (role === 'admin' && email.trim().toLowerCase() !== 'burhanfani92@gmail.com') {
-      setError("Only the admin email is authorized for admin login");
+      toast.error("Only the admin email is authorized for admin login");
       setIsSubmitting(false);
       return;
     }
