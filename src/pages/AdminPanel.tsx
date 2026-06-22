@@ -40,7 +40,7 @@ export default function AdminPanel({ token, onLogout }: { token: string; onLogou
   // Search and Filter States
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [paymentFilter, setPaymentFilter] = useState("all");
+  const [paymentFilter] = useState("all");
 
   // Detail Modal States
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
@@ -509,15 +509,6 @@ export default function AdminPanel({ token, onLogout }: { token: string; onLogou
                     <option value="inactive">Inactive</option>
                   </select>
 
-                  <select
-                    value={paymentFilter}
-                    onChange={(e) => setPaymentFilter(e.target.value)}
-                    className="bg-[#12181e] border border-white/5 rounded-xl px-3 py-2 text-xs font-semibold text-white focus:outline-none focus:border-orange-500"
-                  >
-                    <option value="all">All Subscriptions</option>
-                    <option value="paid">Paid Accounts</option>
-                    <option value="unpaid">Trial/Unpaid</option>
-                  </select>
 
                   <button className="flex items-center gap-2 bg-[#f97316] hover:bg-[#ea580c] text-black px-4 py-2 rounded-xl text-xs font-black transition-all ml-auto md:ml-0 shadow-lg shadow-orange-500/10">
                     <Plus size={14} /> Add Company
