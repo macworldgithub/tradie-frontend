@@ -25,8 +25,10 @@ interface DashboardProps {
 export default function Dashboard({ onRegisterClick }: DashboardProps) {
   const [user, setUser] = useState<any>(null);
   const [tradies, setTradies] = useState<Tradie[]>([]);
+  const [companies, setCompanies] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [daysRemaining, setDaysRemaining] = useState<number | null>(null);
 
   const fetchTradies = async () => {
     setIsLoading(true);
@@ -48,6 +50,8 @@ export default function Dashboard({ onRegisterClick }: DashboardProps) {
       } else {
         setTradies([]);
       }
+      // after loading tradies, also refresh companies so we can compute daysRemaining
+      await fetchCompaniesAdmin();
     } catch (err: any) {
       console.error("Fetch tradies error:", err);
       setError(
@@ -57,6 +61,20 @@ export default function Dashboard({ onRegisterClick }: DashboardProps) {
       );
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const fetchCompaniesAdmin = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const res = await axios.get(`${API_CONFIG.BASE_URL}/admin/companies`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (Array.isArray(res.data)) setCompanies(res.data);
+      else setCompanies([]);
+    } catch (err: any) {
+      console.error("Fetch companies error:", err);
     }
   };
 
@@ -70,15 +88,35 @@ export default function Dashboard({ onRegisterClick }: DashboardProps) {
         console.error("Error parsing user profile data:", e);
       }
     }
-
     fetchTradies();
+    // also fetch companies in parallel
+    fetchCompaniesAdmin();
   }, []);
+
+  // compute daysRemaining when user, tradies or companies change
+  useEffect(() => {
+    if (!user) return;
+    const userCompanyId = (user.id || user.company || null);
+    if (!userCompanyId) {
+      setDaysRemaining(null);
+      return;
+    }
+    // check if any tradie for this company is mapped
+    const hasMappedTradie = tradies.some((t) => t.companyId === userCompanyId && !!t.isMapped);
+    if (!hasMappedTradie) {
+      setDaysRemaining(null);
+      return;
+    }
+
+    const matched = companies.find((c: any) => c.companyId === userCompanyId || c._id === userCompanyId);
+    setDaysRemaining(matched ? (matched.daysRemaining ?? null) : null);
+  }, [user, tradies, companies]);
 
   return (
     <div className="w-full max-w-6xl mx-auto px-4 md:px-8 py-8 space-y-10 animate-in fade-in duration-500">
       
       {/* Welcome & Profile Section */}
-      <ProfileCard user={user} />
+      <ProfileCard user={user} daysRemaining={daysRemaining} />
 
       {/* Payment Summary Card */}
       <div className="w-full bg-[#090e14]/50 border border-white/5 rounded-[32px] p-6 md:p-8 shadow-2xl relative overflow-hidden group hover:border-orange-500/30 transition-all duration-300">
