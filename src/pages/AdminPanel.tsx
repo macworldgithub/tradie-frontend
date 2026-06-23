@@ -1231,11 +1231,18 @@ export default function AdminPanel({
                                 DID Assigned Tradie:
                               </span>
                               <span className="text-zinc-300 font-bold">
-                                {companyDetails.tradies.find(
-                                  (t: any) =>
-                                    t._id ===
-                                    companyDetails.did.assignedTradieId,
-                                )?.name || "Unassigned"}
+                                {Array.isArray(companyDetails.did.assignedTradieIds)
+                                  ? companyDetails.tradies
+                                      .filter((t: any) =>
+                                        companyDetails.did.assignedTradieIds.includes(t._id)
+                                      )
+                                      .map((t: any) => t.name)
+                                      .join(", ") || "Unassigned"
+                                  : companyDetails.tradies.find(
+                                      (t: any) =>
+                                        t._id ===
+                                        companyDetails.did.assignedTradieId,
+                                    )?.name || "Unassigned"}
                               </span>
                             </div>
 
@@ -1470,7 +1477,9 @@ export default function AdminPanel({
                       {companyDetails.tradies.map((tradie: any) => {
                         const isTradieMapped =
                           tradie.isMapped ||
-                          companyDetails?.did?.assignedTradieId === tradie._id;
+                          (Array.isArray(companyDetails?.did?.assignedTradieIds)
+                            ? companyDetails.did.assignedTradieIds.includes(tradie._id)
+                            : companyDetails?.did?.assignedTradieId === tradie._id);
                         return (
                           <div
                             key={tradie._id}
