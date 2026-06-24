@@ -15,6 +15,7 @@ export default function RegisterTradieForm({ onBack }: RegisterTradieFormProps) 
     name: "",
     phoneNumber: "",
     email: "",
+    country: "AU",
     notificationPreference: "email",
     callMode: "geo",
   });
@@ -62,6 +63,7 @@ export default function RegisterTradieForm({ onBack }: RegisterTradieFormProps) 
         name: "",
         phoneNumber: "",
         email: "",
+        country: "AU",
         notificationPreference: "email",
         callMode: "geo",
       });
@@ -141,6 +143,21 @@ export default function RegisterTradieForm({ onBack }: RegisterTradieFormProps) 
           <option value="email">Email</option>
           <option value="sms">SMS</option>
           <option value="both">Both Email &amp; SMS</option>
+        </select>
+      </div>
+
+      <div className="space-y-2">
+        <label className="text-sm font-medium text-zinc-400 flex items-center gap-2">
+          <MapPin size={16} /> Country
+        </label>
+        <select
+          name="country"
+          value={formData.country}
+          onChange={handleChange}
+          className="w-full bg-zinc-900 border border-white/10 rounded-2xl px-5 py-3.5 text-white focus:outline-none focus:border-orange-500 transition-colors"
+        >
+          <option value="AU">Australia</option>
+          <option value="NZ">New Zealand</option>
         </select>
       </div>
 
