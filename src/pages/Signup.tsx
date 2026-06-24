@@ -1181,29 +1181,21 @@ const handleInputChange = (field: string, value: string) => {
   label="Mobile Number *"
   value={formData.mobile}
   icon={<Phone size={14} />}
-  placeholder={
-    formData.country === "AU"
-      ? "0412 345 678 or +61 412 345 678"
-      : "021 123 4567 or +64 21 123 4567"
-  }
+          placeholder={
+            formData.country === "AU"
+              ? "+61 412 345 678"
+              : "+64 21 123 4567"
+          }
   error={errors.mobile}
   onChange={(v: string) =>
-    handleInputChange("mobile", v.replace(/\D/g, ""))
+            // allow digits, spaces and leading + for country code
+            handleInputChange("mobile", v.replace(/[^+\d\s]/g, ""))
   }
 />
-<p className="mt-2 rounded-lg border border-white/5 bg-white/[0.03] px-3 py-2 text-xs text-zinc-400">
-  {formData.country === "AU" ? (
-    <>
-      <span className="font-semibold text-orange-400">Example:</span>{" "}
-      0412 345 678 or +61 412 345 678
-    </>
-  ) : (
-    <>
-      <span className="font-semibold text-orange-400">Example:</span>{" "}
-      021 123 4567 or +64 21 123 4567
-    </>
-  )}
-</p>
+        <p className="mt-2 rounded-lg border border-white/5 bg-white/[0.03] px-3 py-2 text-xs text-zinc-400">
+          <span className="font-semibold text-orange-400">Note:</span>{" "}
+          Write your mobile number including the country code, for example {formData.country === "AU" ? "+61 412 345 678" : "+64 21 123 4567"}.
+        </p>
           </div>
         )}
 
