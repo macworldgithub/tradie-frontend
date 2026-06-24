@@ -865,8 +865,8 @@ export default function Signup({ onBack, onGoToLogin }: SignupProps) {
       if (!formData.password.trim()) {
         newErrors.password = "Password is required";
         isValid = false;
-      } else if (formData.password.length < 6) {
-        newErrors.password = "Password must be at least 6 characters";
+      } else if (formData.password.length < 8) {
+        newErrors.password = "Password must be at least 8 characters";
         isValid = false;
       }
     }
@@ -958,12 +958,29 @@ export default function Signup({ onBack, onGoToLogin }: SignupProps) {
     }
   };
 
-  const handleInputChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-    if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: "" }));
+const handleInputChange = (field: string, value: string) => {
+  setFormData((prev) => ({ ...prev, [field]: value }));
+
+  if (field === "password") {
+    if (value.length > 0 && value.length < 8) {
+      setErrors((prev) => ({
+        ...prev,
+        password: "Password must be at least 8 characters",
+      }));
+    } else {
+      setErrors((prev) => ({
+        ...prev,
+        password: "",
+      }));
     }
-  };
+
+    return;
+  }
+
+  if (errors[field]) {
+    setErrors((prev) => ({ ...prev, [field]: "" }));
+  }
+};
 
   return (
     <div className="min-h-screen bg-[#03070b] text-white flex flex-col items-center">
