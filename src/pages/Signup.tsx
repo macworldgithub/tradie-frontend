@@ -836,6 +836,7 @@ export default function Signup({ onBack, onGoToLogin }: SignupProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [otp, setOtp] = useState("");
+  const [hasRegisteredSuccess, setHasRegisteredSuccess] = useState(false);
 
   const nextStep = () => {
     setError(null);
@@ -892,6 +893,7 @@ export default function Signup({ onBack, onGoToLogin }: SignupProps) {
   };
 
   const prevStep = () => {
+    if (hasRegisteredSuccess) return;
     if (step === 1) onBack();
     else setStep((prev) => prev - 1);
   };
@@ -927,6 +929,7 @@ export default function Signup({ onBack, onGoToLogin }: SignupProps) {
 
       const res = await authService.register(payload);
       if (res.userId) {
+        setHasRegisteredSuccess(true);
         setStep(6);
       } else {
         setError(res.message || "Failed to register");
@@ -969,9 +972,10 @@ export default function Signup({ onBack, onGoToLogin }: SignupProps) {
         <div className="flex items-center gap-4">
           <button
             onClick={prevStep}
-            className="text-zinc-500 hover:text-white transition-colors flex items-center gap-2 group"
+            disabled={hasRegisteredSuccess}
+            className={`flex items-center gap-2 transition-colors ${hasRegisteredSuccess ? "text-zinc-500 cursor-not-allowed" : "text-zinc-500 hover:text-white"}`}
           >
-            <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
+            <ArrowLeft size={18} className={hasRegisteredSuccess ? "transition-transform" : "group-hover:-translate-x-1 transition-transform"} />
           </button>
           <div className="flex items-center gap-2">
             <img src={logo} alt="Logo" className="h-16 w-auto" />
@@ -1156,14 +1160,33 @@ export default function Signup({ onBack, onGoToLogin }: SignupProps) {
                 Enter your mobile number.
               </p>
             </div>
-            <InputField
-              label="Mobile Number *"
-              value={formData.mobile}
-              icon={<Phone size={14} />}
-              placeholder="0412 345 678"
-              error={errors.mobile}
-              onChange={(v: string) => handleInputChange("mobile", v)}
-            />
+           <InputField
+  label="Mobile Number *"
+  value={formData.mobile}
+  icon={<Phone size={14} />}
+  placeholder={
+    formData.country === "AU"
+      ? "0412 345 678 or +61 412 345 678"
+      : "021 123 4567 or +64 21 123 4567"
+  }
+  error={errors.mobile}
+  onChange={(v: string) =>
+    handleInputChange("mobile", v.replace(/\D/g, ""))
+  }
+/>
+<p className="mt-2 rounded-lg border border-white/5 bg-white/[0.03] px-3 py-2 text-xs text-zinc-400">
+  {formData.country === "AU" ? (
+    <>
+      <span className="font-semibold text-orange-400">Example:</span>{" "}
+      0412 345 678 or +61 412 345 678
+    </>
+  ) : (
+    <>
+      <span className="font-semibold text-orange-400">Example:</span>{" "}
+      021 123 4567 or +64 21 123 4567
+    </>
+  )}
+</p>
           </div>
         )}
 
@@ -1347,7 +1370,8 @@ export default function Signup({ onBack, onGoToLogin }: SignupProps) {
           <div className="mt-10 flex items-center justify-between">
             <button
               onClick={prevStep}
-              className="flex items-center gap-2 text-zinc-600 hover:text-white transition-colors text-sm font-black uppercase tracking-widest group"
+              disabled={hasRegisteredSuccess}
+              className={`flex items-center gap-2 text-sm font-black uppercase tracking-widest group transition-colors ${hasRegisteredSuccess ? "text-zinc-500 cursor-not-allowed" : "text-zinc-600 hover:text-white"}`}
             >
               <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
               Back
