@@ -50,7 +50,7 @@ export const authService = {
     });
     return response.json();
   },
-
+  
   async changePassword(currentPassword: string, newPassword: string, token: string) {
     const response = await fetch(`${BASE_URL}${API_CONFIG.ENDPOINTS.CHANGE_PASSWORD}`, {
       method: 'POST',

@@ -812,6 +812,9 @@ export default function Signup({ onBack, onGoToLogin }: SignupProps) {
     setBusinessHours: true,
     openingTime: "07:00",     // 24-hour format
     closingTime: "18:00",     // 24-hour format
+     notificationPreference: "both",
+  callMode: "geo",
+  country: "AU",
   });
 
   const [agreedToTerms, setAgreedToTerms] = useState(false);
@@ -901,20 +904,26 @@ export default function Signup({ onBack, onGoToLogin }: SignupProps) {
         ? `${formData.openingTime}-${formData.closingTime} MON-FRI`
         : "24/7";
 
-      const payload = {
-        customerName: formData.name,
-        companyName: formData.company,
-        acn: formData.acn,
-        email: formData.email,
-        password: formData.password,
-        trade: formData.trade,
-        mobileNumber: formData.mobile,
-        wantsGeoNumber: false,
-        geoNumberType: "NONE",
-        portingNumber: "",
-        openingHours,
-        paymentDetails: {},
-      };
+    const payload = {
+  customerName: formData.name,
+  companyName: formData.company,
+  acn: formData.acn,
+  email: formData.email,
+  password: formData.password,
+  trade: formData.trade,
+  mobileNumber: formData.mobile,
+
+  wantsGeoNumber: false,
+  geoNumberType: "NONE",
+  portingNumber: "",
+
+  openingHours,
+  paymentDetails: {},
+
+  country: formData.country,
+  notificationPreference: formData.notificationPreference,
+  callMode: formData.callMode,
+};
 
       const res = await authService.register(payload);
       if (res.userId) {
@@ -1009,20 +1018,104 @@ export default function Signup({ onBack, onGoToLogin }: SignupProps) {
                 Tell us about yourself and your business.
               </p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-8">
-              <InputField label="Your Name *" value={formData.name} icon={<User size={14} />} placeholder="Jon Smith" error={errors.name} onChange={(v: string) => handleInputChange("name", v)} />
-              <InputField label="Company Name *" value={formData.company} icon={<Briefcase size={14} />} placeholder="Jon's Plumbing" error={errors.company} onChange={(v: string) => handleInputChange("company", v)} />
-              <InputField label="ACN (optional)" value={formData.acn} icon={<FileText size={14} />} placeholder="123 456 789" highlight onChange={(v: string) => handleInputChange("acn", v)} />
-              <InputField
-                label="Email *"
-                value={formData.email}
-                icon={<Mail size={14} />}
-                placeholder="jon@plumbing.com.au"
-                error={errors.email}
-                onChange={(v: string) => handleInputChange("email", v)}
-              />
-              <InputField label="Password *" type="password" value={formData.password} icon={<FileText size={14} />} placeholder="••••••••" error={errors.password} onChange={(v: string) => handleInputChange("password", v)} />
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-8">
+  <InputField
+    label="Your Name *"
+    value={formData.name}
+    icon={<User size={14} />}
+    placeholder="Jon Smith"
+    error={errors.name}
+    onChange={(v: string) => handleInputChange("name", v)}
+  />
+
+  <InputField
+    label="Company Name *"
+    value={formData.company}
+    icon={<Briefcase size={14} />}
+    placeholder="Jon's Plumbing"
+    error={errors.company}
+    onChange={(v: string) => handleInputChange("company", v)}
+  />
+
+  <InputField
+    label="ACN (optional)"
+    value={formData.acn}
+    icon={<FileText size={14} />}
+    placeholder="123 456 789"
+    highlight
+    onChange={(v: string) => handleInputChange("acn", v)}
+  />
+
+  <InputField
+    label="Email *"
+    value={formData.email}
+    icon={<Mail size={14} />}
+    placeholder="jon@plumbing.com.au"
+    error={errors.email}
+    onChange={(v: string) => handleInputChange("email", v)}
+  />
+
+  <InputField
+    label="Password *"
+    type="password"
+    value={formData.password}
+    icon={<FileText size={14} />}
+    placeholder="••••••••"
+    error={errors.password}
+    onChange={(v: string) => handleInputChange("password", v)}
+  />
+
+  {/* Notification Preference */}
+  <div className="space-y-3">
+    <label className="text-[10px] font-black uppercase tracking-widest text-orange-500">
+      Notification Preference
+    </label>
+
+    <select
+      value={formData.notificationPreference}
+      onChange={(e) =>
+        handleInputChange("notificationPreference", e.target.value)
+      }
+      className="w-full bg-[#12181e] border border-white/5 rounded-xl px-5 py-4 text-white"
+    >
+      <option value="email">Email</option>
+      <option value="sms">SMS</option>
+      <option value="both">Both</option>
+    </select>
+  </div>
+
+  {/* Call Mode */}
+  <div className="space-y-3">
+    <label className="text-[10px] font-black uppercase tracking-widest text-orange-500">
+      Call Mode
+    </label>
+
+    <select
+      value={formData.callMode}
+      onChange={(e) => handleInputChange("callMode", e.target.value)}
+      className="w-full bg-[#12181e] border border-white/5 rounded-xl px-5 py-4 text-white"
+    >
+      <option value="geo">Geo</option>
+      <option value="ussd">USSD</option>
+    </select>
+  </div>
+
+  {/* Country */}
+  <div className="space-y-3">
+    <label className="text-[10px] font-black uppercase tracking-widest text-orange-500">
+      Country
+    </label>
+
+    <select
+      value={formData.country}
+      onChange={(e) => handleInputChange("country", e.target.value)}
+      className="w-full bg-[#12181e] border border-white/5 rounded-xl px-5 py-4 text-white"
+    >
+      <option value="AU">Australia</option>
+      <option value="NZ">New Zealand</option>
+    </select>
+  </div>
+</div>
           </div>
         )}
 
