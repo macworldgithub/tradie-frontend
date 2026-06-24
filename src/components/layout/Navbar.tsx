@@ -1,11 +1,19 @@
 import { useState } from "react";
-import { Menu, X, LogOut, ChevronDown, Shield, Building2, Mail } from "lucide-react";
+import {
+  Menu,
+  X,
+  LogOut,
+  ChevronDown,
+  Shield,
+  Building2,
+  Mail,
+} from "lucide-react";
 import logo from "../../assets/logo.png";
 
 interface NavbarProps {
   onGetStarted: () => void;
   onWatchDemo: () => void;
-  onLogin?: (role: 'company' | 'admin') => void;
+  onLogin?: (role: "company" | "admin") => void;
   isLoggedIn?: boolean;
   onLogout?: () => void;
 }
@@ -20,20 +28,25 @@ export default function Navbar({
   const [showLoginDropdown, setShowLoginDropdown] = useState(false);
 
   const handleScrollToContact = () => {
-    document.getElementById('contact-us')?.scrollIntoView({ behavior: 'smooth' });
+    document
+      .getElementById("contact-us")
+      ?.scrollIntoView({ behavior: "smooth" });
     setIsOpen(false);
   };
 
   return (
     <nav className="w-full bg-[#03070b] text-white border-b border-white/5 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto max-md:px-6 md:px-0 lg:px-2 py-4 flex items-center justify-between">
-        {/* LEFT: Logo Section */}
-        <div className="flex items-center gap-3">
-          <img src={logo} alt="Logo" className="h-28 w-auto" />
+        {/* LEFT: Placeholder to balance flex layout */}
+        <div className="flex-1"></div>
+
+        {/* CENTER: Logo Section */}
+        <div className="flex flex-shrink-0 items-center justify-center z-10">
+          <img src={logo} alt="Logo" className="h-36 w-auto" />
         </div>
 
         {/* RIGHT (Desktop) - Shows only on LG screens (1024px) and above */}
-        <div className="hidden lg:flex items-center gap-6">
+        <div className="hidden lg:flex flex-1 items-center justify-end gap-6">
           <span className="text-[10px] text-zinc-500 font-bold tracking-[0.15em] uppercase whitespace-nowrap">
             POWERED BY Mia.Ai
           </span>
@@ -72,18 +85,21 @@ export default function Navbar({
                   className="flex items-center gap-2 border border-orange-500/50 hover:bg-orange-500 hover:text-black text-orange-500 px-5 py-2 rounded-lg text-sm font-bold transition-all"
                 >
                   Log In
-                  <ChevronDown size={14} className={`transition-transform duration-200 ${showLoginDropdown ? 'rotate-180' : ''}`} />
+                  <ChevronDown
+                    size={14}
+                    className={`transition-transform duration-200 ${showLoginDropdown ? "rotate-180" : ""}`}
+                  />
                 </button>
                 {showLoginDropdown && (
                   <>
-                    <div 
-                      className="fixed inset-0 z-40" 
-                      onClick={() => setShowLoginDropdown(false)} 
+                    <div
+                      className="fixed inset-0 z-40"
+                      onClick={() => setShowLoginDropdown(false)}
                     />
                     <div className="absolute right-0 mt-2 w-48 bg-[#090e14] border border-white/10 rounded-xl overflow-hidden shadow-2xl z-50 animate-in fade-in slide-in-from-top-2 duration-200">
                       <button
                         onClick={() => {
-                          onLogin?.('company');
+                          onLogin?.("company");
                           setShowLoginDropdown(false);
                         }}
                         className="w-full text-left px-4 py-3 text-sm text-zinc-300 hover:bg-white/5 hover:text-white transition-colors flex items-center gap-2"
@@ -93,7 +109,7 @@ export default function Navbar({
                       </button>
                       <button
                         onClick={() => {
-                          onLogin?.('admin');
+                          onLogin?.("admin");
                           setShowLoginDropdown(false);
                         }}
                         className="w-full text-left px-4 py-3 text-sm text-zinc-300 hover:bg-white/5 hover:text-white transition-colors border-t border-white/5 flex items-center gap-2"
@@ -110,7 +126,7 @@ export default function Navbar({
         </div>
 
         {/* MOBILE MENU BUTTON - Shows on all screens below LG (1024px) */}
-        <div className="lg:hidden flex items-center">
+        <div className="lg:hidden flex-1 flex justify-end items-center z-10">
           <button
             onClick={() => setIsOpen(!isOpen)}
             className="p-2 text-zinc-400 hover:text-white transition-colors"
@@ -170,7 +186,7 @@ export default function Navbar({
               <>
                 <button
                   onClick={() => {
-                    onLogin && onLogin('company');
+                    onLogin && onLogin("company");
                     setIsOpen(false);
                   }}
                   className="border border-white/10 w-full p-4 rounded-xl text-white font-bold hover:bg-white/5 transition-all flex items-center justify-center gap-2"
@@ -181,7 +197,7 @@ export default function Navbar({
 
                 <button
                   onClick={() => {
-                    onLogin && onLogin('admin');
+                    onLogin && onLogin("admin");
                     setIsOpen(false);
                   }}
                   className="border border-orange-500/20 hover:border-orange-500/50 w-full p-4 rounded-xl text-orange-500 font-bold hover:bg-orange-500/10 transition-all flex items-center justify-center gap-2"
