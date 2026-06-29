@@ -192,13 +192,13 @@ export default function Dashboard({ onRegisterClick }: DashboardProps) {
             <RefreshCw size={18} className={`${isLoading ? "animate-spin" : ""}`} />
           </button>
           
-          <button
+          {/* <button
             onClick={onRegisterClick}
             className="flex items-center gap-2 bg-orange-500 hover:bg-orange-400 text-black px-5 py-3 rounded-2xl text-sm font-black transition-all shadow-[0_10px_25px_rgba(249,115,22,0.15)] hover:translate-y-[-1px] active:scale-[0.985] uppercase tracking-wider"
           >
             <Plus size={16} className="stroke-[3]" />
             Register a new tradie
-          </button>
+          </button> */}
         </div>
       </div>
 
