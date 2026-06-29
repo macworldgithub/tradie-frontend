@@ -40,6 +40,7 @@ export default function Demo({ onBack }: DemoProps) {
               TRADIE MOBILE
             </span>
           </div>
+
         </div>
 
         <div className="flex items-center gap-6">

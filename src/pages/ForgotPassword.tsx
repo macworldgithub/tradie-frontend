@@ -46,14 +46,18 @@ export default function ForgotPassword({ onBack }: ForgotPasswordProps) {
             /> 
           </button>
 
-          <div className="flex items-center gap-2">
+          {/* <div className="flex items-center gap-2">
             <span className="text-lg font-black tracking-tighter">JUST</span>
             <div className="border border-orange-500/50 px-2 py-0.5 rounded-sm">
               <span className="text-[10px] font-black uppercase tracking-widest text-[#f97316]">
                 Tradie Mobile
               </span>
             </div>
-          </div>
+          </div> */}
+          {/* <img src="/src/assets/logo.png" alt="logo" /> */}
+           <div className="flex flex-shrink-0 items-center justify-center z-10">
+          <img src='/src/assets/logo.png' alt="Logo" className="h-32 w-auto" />
+        </div>
         </div>
       </header>
 

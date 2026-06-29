@@ -14,6 +14,7 @@ import Login from "./pages/Login";
 import ForgotPassword from "./pages/ForgotPassword";
 import ChangePassword from "./pages/ChangePassword";
 import AdminPanel from "./pages/AdminPanel";
+import StripePayment from "./pages/StripePayment";
 import { Toaster } from "react-hot-toast";
 import "./App.css";
 
@@ -30,7 +31,7 @@ function App() {
 
   const [token, setToken] = useState<string | null>(() => localStorage.getItem('token'));
   const [initialLoginRole, setInitialLoginRole] = useState<'company' | 'admin'>('company');
-  const [view, setView] = useState<'landing' | 'signup' | 'login' | 'forgot-password' | 'change-password' | 'voice-agent' | 'admin'>(() => {
+  const [view, setView] = useState<'landing' | 'signup' | 'login' | 'forgot-password' | 'change-password' | 'voice-agent' | 'admin' | 'payment'>(() => {
     if (window.location.search.includes('admin=true')) return 'admin';
     const savedUserStr = localStorage.getItem('user');
     const savedToken = localStorage.getItem('token');
@@ -166,8 +167,12 @@ function App() {
           token={token}
           onLogout={() => {
             handleLogout();
-          }} 
+          }}
         />
+      )}
+
+      {view === 'payment' && (
+        <StripePayment onBack={() => setView('admin')} />
       )}
     </div>
   );

@@ -630,9 +630,9 @@ export default function AdminPanel({
                           <option value="inactive">Inactive</option>
                         </select>
 
-                        <button className="flex items-center gap-2 bg-[#f97316] hover:bg-[#ea580c] text-black px-4 py-2 rounded-xl text-xs font-black transition-all ml-auto md:ml-0 shadow-lg shadow-orange-500/10">
+                        {/* <button className="flex items-center gap-2 bg-[#f97316] hover:bg-[#ea580c] text-black px-4 py-2 rounded-xl text-xs font-black transition-all ml-auto md:ml-0 shadow-lg shadow-orange-500/10">
                           <Plus size={14} /> Add Company
-                        </button>
+                        </button> */}
                       </div>
                     </div>
 

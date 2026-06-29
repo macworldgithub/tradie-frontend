@@ -20,9 +20,10 @@ interface Tradie {
 
 interface DashboardProps {
   onRegisterClick: () => void;
+  onPaymentClick?: () => void;
 }
 
-export default function Dashboard({ onRegisterClick }: DashboardProps) {
+export default function Dashboard({ onRegisterClick, onPaymentClick }: DashboardProps) {
   const [user, setUser] = useState<any>(null);
   const [tradies, setTradies] = useState<Tradie[]>([]);
   const [companies, setCompanies] = useState<any[]>([]);
@@ -111,6 +112,7 @@ export default function Dashboard({ onRegisterClick }: DashboardProps) {
        matched?.didNumber || matched?.did?.didNumber || null
      );
   }, [user, tradies, companies]);
+const isDisabled = true;
 
   return (
     <div className="w-full max-w-6xl mx-auto px-4 md:px-8 py-8 space-y-10 animate-in fade-in duration-500">
@@ -146,18 +148,24 @@ export default function Dashboard({ onRegisterClick }: DashboardProps) {
           </div>
         </div>
 
-        <div className="mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div className="text-zinc-400 text-sm leading-relaxed">
-            Stripe did payment will be redirected from there. This card is currently static and will be wired into the billing flow later.
+        <div className="mt-6 space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="text-zinc-400 text-sm leading-relaxed">
+              Stripe payment portal is now available. Click the button below to access secure billing and payment management.
+            </div>
+           <button
+  type="button"
+  disabled={isDisabled}
+  className={`inline-flex items-center justify-center gap-2 rounded-2xl md:px-3 sm:px-2 sm:text-xs py-3 md:text-sm font-black uppercase tracking-wider text-black transition-all ${
+    isDisabled
+      ? "bg-orange-500 opacity-50 cursor-not-allowed"
+      : "bg-orange-500 hover:bg-orange-400 hover:translate-y-[-1px] active:scale-[0.98] shadow-[0_10px_25px_rgba(249,115,22,0.15)] hover:shadow-[0_10px_25px_rgba(249,115,22,0.3)]"
+  }`}
+>
+  Proceed to payment
+  <ArrowRight size={16} />
+</button>
           </div>
-          <button
-            type="button"
-            className="inline-flex items-center justify-center gap-2 rounded-2xl bg-orange-500 md:px-3 sm:px-2 sm:text-xs py-3 md:text-sm font-black uppercase tracking-wider text-black shadow-[0_10px_25px_rgba(249,115,22,0.15)] disabled:opacity-50"
-            disabled
-          >
-            Proceed to payment
-            <ArrowRight size={16} />
-          </button>
         </div>
       </div>
 

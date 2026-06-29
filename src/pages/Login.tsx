@@ -141,22 +141,24 @@ export default function Login({ onBack, onSuccess, onForgotPassword, onSignup, i
               </div>
 
               <div className="space-y-3">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                   <div className="flex items-center gap-2 text-orange-500">
                     <Lock size={14} />
                     <label className="text-[10px] font-black uppercase tracking-widest">
                       Password
                     </label>
                   </div>
-                  {role !== 'admin' && (
-                    <button
-                      type="button"
-                      onClick={onForgotPassword}
-                      className="text-[10px] font-black uppercase tracking-widest text-zinc-500 hover:text-orange-500 transition-colors"
-                    >
-                      Forgot Password?
-                    </button>
-                  )}
+                  <div className="flex items-center gap-3">
+                    {role !== 'admin' && (
+                      <button
+                        type="button"
+                        onClick={onForgotPassword}
+                        className="text-[10px] font-black uppercase tracking-widest text-zinc-500 hover:text-orange-500 transition-colors"
+                      >
+                        Forgot Password?
+                      </button>
+                    )}
+                  </div>
                 </div>
                 <div className="relative">
                   <input
@@ -198,6 +200,7 @@ export default function Login({ onBack, onSuccess, onForgotPassword, onSignup, i
               )}
             </button>
           </form>
+
 
           {role !== 'admin' && (
             <p className="text-center text-zinc-500 text-xs font-medium">
