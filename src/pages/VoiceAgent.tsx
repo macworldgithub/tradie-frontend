@@ -78,9 +78,9 @@ export default function VoiceAgent({ onLogout }: VoiceAgentProps) {
   };
 
 
-  if (view === "payment") {
-    return <StripePayment onBack={() => setView("dashboard")} />;
-  }
+  // if (view === "payment") {
+  //   return <StripePayment onBack={() => setView("dashboard")} />;
+  // }
 
   if (view === "register") {
     return <RegisterTradieForm onBack={() => setView("dashboard")} />;

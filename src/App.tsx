@@ -170,10 +170,10 @@ function App() {
           }}
         />
       )}
-
+{/* 
       {view === 'payment' && (
         <StripePayment onBack={() => setView('admin')} />
-      )}
+      )} */}
     </div>
   );
 }
