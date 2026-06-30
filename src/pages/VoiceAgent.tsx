@@ -150,7 +150,6 @@ export default function VoiceAgent({ onLogout }: VoiceAgentProps) {
       <main className="flex-1 p-6 relative overflow-y-auto">
         <Dashboard
           onRegisterClick={() => setView("register")}
-          onPaymentClick={() => setView("payment")}
         />
           {isPasswordModalOpen && (
           <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-[100]" onClick={() => setIsPasswordModalOpen(false)}>

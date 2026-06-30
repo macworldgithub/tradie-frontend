@@ -4,6 +4,7 @@ import axios from "axios";
 import { API_CONFIG } from "../../config/apiConfig";
 import ProfileCard from "./ProfileCard";
 import TradieCard from "./TradieCard";
+import toast from "react-hot-toast";
 
 interface Tradie {
   _id: string;
@@ -20,10 +21,9 @@ interface Tradie {
 
 interface DashboardProps {
   onRegisterClick: () => void;
-  onPaymentClick?: () => void;
 }
 
-export default function Dashboard({ onRegisterClick, onPaymentClick }: DashboardProps) {
+export default function Dashboard({ onRegisterClick }: DashboardProps) {
   const [user, setUser] = useState<any>(null);
   const [tradies, setTradies] = useState<Tradie[]>([]);
   const [companies, setCompanies] = useState<any[]>([]);
@@ -31,6 +31,7 @@ export default function Dashboard({ onRegisterClick, onPaymentClick }: Dashboard
   const [error, setError] = useState<string | null>(null);
   const [daysRemaining, setDaysRemaining] = useState<number | null>(null);
   const [companyDidNumber, setCompanyDidNumber] = useState<string | null>(null);
+  const [isCreatingCheckout, setIsCreatingCheckout] = useState(false);
 
   const fetchTradies = async () => {
     setIsLoading(true);
@@ -80,6 +81,46 @@ export default function Dashboard({ onRegisterClick, onPaymentClick }: Dashboard
       console.error("Fetch companies error:", err);
     }
   };
+
+  const handleCreateCheckout = async () => {
+    setIsCreatingCheckout(true);
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        toast.error("Session expired. Please login again.");
+        setIsCreatingCheckout(false);
+        return;
+      }
+
+      const response = await axios.post(
+        `${API_CONFIG.BASE_URL}/payments/create-checkout`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      if (response.data?.url) {
+        // Redirect to Stripe checkout
+        window.location.href = response.data.url;
+      } else if (response.data?.checkoutUrl) {
+        window.location.href = response.data.checkoutUrl;
+      } else {
+        toast.error("Failed to create checkout session.");
+      }
+    } catch (err: any) {
+      console.error("Create checkout error:", err);
+      const errorMessage =
+        err.response?.data?.message ||
+        err.response?.data?.error ||
+        err.message ||
+        "Failed to create checkout session.";
+      toast.error(errorMessage);
+    } finally {
+      setIsCreatingCheckout(false);
+    }
+  };
+
   useEffect(() => {
     // Load user profile details
     const savedUserStr = localStorage.getItem("user");
@@ -112,7 +153,6 @@ export default function Dashboard({ onRegisterClick, onPaymentClick }: Dashboard
        matched?.didNumber || matched?.did?.didNumber || null
      );
   }, [user, tradies, companies]);
-const isDisabled = true;
 
   return (
     <div className="w-full max-w-6xl mx-auto px-4 md:px-8 py-8 space-y-10 animate-in fade-in duration-500">
@@ -155,15 +195,16 @@ const isDisabled = true;
             </div>
            <button
   type="button"
-  disabled={isDisabled}
+  onClick={handleCreateCheckout}
+  disabled={isCreatingCheckout}
   className={`inline-flex items-center justify-center gap-2 rounded-2xl md:px-3 sm:px-2 sm:text-xs py-3 md:text-sm font-black uppercase tracking-wider text-black transition-all ${
-    isDisabled
+    isCreatingCheckout
       ? "bg-orange-500 opacity-50 cursor-not-allowed"
       : "bg-orange-500 hover:bg-orange-400 hover:translate-y-[-1px] active:scale-[0.98] shadow-[0_10px_25px_rgba(249,115,22,0.15)] hover:shadow-[0_10px_25px_rgba(249,115,22,0.3)]"
   }`}
 >
-  Proceed to payment
-  <ArrowRight size={16} />
+  {isCreatingCheckout ? "Loading..." : "Proceed to payment"}
+  {!isCreatingCheckout && <ArrowRight size={16} />}
 </button>
           </div>
         </div>

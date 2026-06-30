@@ -813,7 +813,7 @@ export default function Signup({ onBack, onGoToLogin }: SignupProps) {
     openingTime: "07:00",     // 24-hour format
     closingTime: "18:00",     // 24-hour format
      notificationPreference: "both",
-  callMode: "geo",
+ callReceivedOn: "mobile",
   country: "AU",
   });
 
@@ -924,7 +924,7 @@ export default function Signup({ onBack, onGoToLogin }: SignupProps) {
 
   country: formData.country,
   notificationPreference: formData.notificationPreference,
-  callMode: formData.callMode,
+   callReceivedOn: formData.callReceivedOn,
 };
 
       const res = await authService.register(payload);
@@ -1108,16 +1108,18 @@ const handleInputChange = (field: string, value: string) => {
   {/* Call Mode */}
   <div className="space-y-3">
     <label className="text-[10px] font-black uppercase tracking-widest text-orange-500">
-      Call Mode
+ Call Received On
     </label>
 
     <select
-      value={formData.callMode}
-      onChange={(e) => handleInputChange("callMode", e.target.value)}
+        value={formData.callReceivedOn}
+       onChange={(e) =>
+      handleInputChange("callReceivedOn", e.target.value)
+    }
       className="w-full bg-[#12181e] border border-white/5 rounded-xl px-5 py-4 text-white"
     >
-      <option value="geo">Geo</option>
-      <option value="ussd">USSD</option>
+      <option value="mobile">Mobile</option>
+      <option value="landline">Landline</option>
     </select>
   </div>
 

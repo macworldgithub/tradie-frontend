@@ -684,7 +684,7 @@ export default function AdminPanel({
                                       : "bg-red-500/10 text-red-400 border-red-500/20"
                                   }`}
                                 >
-                                  {company.isActive ? "Active" : "Inactive"}
+                                  {company.isActive ? "Authorized" : "Awaiting Payment"}
                                 </span>
                               </div>
 
@@ -722,7 +722,7 @@ export default function AdminPanel({
                               {/* Days Remaining Banner */}
                               <div className="flex items-center justify-between text-xs font-semibold">
                                 <span className="text-zinc-500">
-                                  Trial Period:
+                                Days Remaining:
                                 </span>
                                 <span
                                   className={`px-2 py-0.5 rounded font-bold ${
@@ -1056,7 +1056,7 @@ export default function AdminPanel({
                         </div>
                         <div>
                           <span className="text-zinc-500 block">
-                            Aussie ACN
+                        {companyDetails.company.country === "NZ" ? "NZBN" : "Aussie ACN"}
                           </span>
                           <span className="text-white font-bold font-mono">
                             {companyDetails.company.acn || "Not Specified"}
