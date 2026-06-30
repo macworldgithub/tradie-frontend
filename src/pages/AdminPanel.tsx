@@ -1301,7 +1301,7 @@ const [tradieCallReceivedOn, setTradieCallReceivedOn] = useState("mobile");
 
                         <div className="flex items-center justify-between text-xs">
                           <span className="text-zinc-400">
-                            Trial Period Balance:
+                           Days Remaining:
                           </span>
                           <span
                             className={`px-2 py-0.5 rounded font-black text-xs ${
