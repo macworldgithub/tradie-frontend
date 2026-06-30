@@ -64,7 +64,7 @@ export default function AdminPanel({
   const [tradiePhone, setTradiePhone] = useState("");
   const [tradieEmail, setTradieEmail] = useState("");
   const [tradieNotifPref, setTradieNotifPref] = useState("both");
-  const [tradieCallMode, setTradieCallMode] = useState("geo");
+const [tradieCallReceivedOn, setTradieCallReceivedOn] = useState("mobile");
   const [isAddingTradie, setIsAddingTradie] = useState(false);
   const [addTradieError, setAddTradieError] = useState<string | null>(null);
 
@@ -158,7 +158,7 @@ export default function AdminPanel({
       phoneNumber: tradiePhone,
       email: tradieEmail,
       notificationPreference: tradieNotifPref,
-      callMode: tradieCallMode,
+      callReceivedOn: tradieCallReceivedOn,
     };
 
     try {
@@ -169,7 +169,7 @@ export default function AdminPanel({
       setTradiePhone("");
       setTradieEmail("");
       setTradieNotifPref("both");
-      setTradieCallMode("geo");
+   setTradieCallReceivedOn("mobile");
       setShowAddTradieForm(false);
 
       // Refresh details and company list
@@ -1418,27 +1418,31 @@ export default function AdminPanel({
                             </select>
                           </div>
 
-                          <div className="space-y-1 sm:col-span-2">
-                            <label className="text-[10px] text-zinc-500 uppercase tracking-wider block">
-                              Call Mode
-                            </label>
-                            <div className="flex gap-2">
-                              {["geo", "ussd"].map((mode) => (
-                                <button
-                                  key={mode}
-                                  type="button"
-                                  onClick={() => setTradieCallMode(mode)}
-                                  className={`flex-1 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all ${
-                                    tradieCallMode === mode
-                                      ? "bg-[#f97316] text-black"
-                                      : "bg-[#12181e] border border-white/5 text-zinc-400 hover:text-white"
-                                  }`}
-                                >
-                                  {mode}
-                                </button>
-                              ))}
-                            </div>
-                          </div>
+                       <div className="space-y-1 sm:col-span-2">
+  <label className="text-[10px] text-zinc-500 uppercase tracking-wider block">
+    Call Received On
+  </label>
+
+  <div className="flex gap-2">
+    {[
+      { label: "Mobile", value: "mobile" },
+      { label: "Landline", value: "landline" },
+    ].map((option) => (
+      <button
+        key={option.value}
+        type="button"
+        onClick={() => setTradieCallReceivedOn(option.value)}
+        className={`flex-1 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all ${
+          tradieCallReceivedOn === option.value
+            ? "bg-[#f97316] text-black"
+            : "bg-[#12181e] border border-white/5 text-zinc-400 hover:text-white"
+        }`}
+      >
+        {option.label}
+      </button>
+    ))}
+  </div>
+</div>
                         </div>
 
                         {addTradieError && (
@@ -1495,12 +1499,12 @@ export default function AdminPanel({
                                 )}
                               </p>
                               <p className="text-xs text-zinc-500 mt-1">
-                                Call Mode:{" "}
+                                Call Received On:  {"  "}
                                 <span className="text-zinc-300 font-semibold uppercase">
-                                  {tradie.callMode}
+                                     {tradie.callReceivedOn}
                                 </span>
                                 <span className="mx-2 text-zinc-700">|</span>
-                                Notif:{" "}
+                                Notification Preference:{" "}
                                 <span className="text-zinc-300 font-semibold uppercase">
                                   {tradie.notificationPreference}
                                 </span>
