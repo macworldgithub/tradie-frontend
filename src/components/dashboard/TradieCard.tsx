@@ -10,7 +10,7 @@ interface Tradie {
   email: string;
   companyId: string;
   notificationPreference: string;
-  callMode: string;
+  callReceivedOn: string;
   createdAt: string;
   updatedAt: string;
   isMapped?: boolean;
@@ -133,7 +133,7 @@ export default function TradieCard({ tradie, onDelete }: TradieCardProps) {
           {/* Call mode badge */}
           <div className="inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full border border-white/10 bg-white/5 text-zinc-300">
             <Settings size={10} />
-            <span>{tradie.callMode} Call</span>
+            <span>{tradie.callReceivedOn} </span>
           </div>
 
           <button

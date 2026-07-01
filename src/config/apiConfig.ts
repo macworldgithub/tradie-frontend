@@ -1,5 +1,6 @@
 export const API_CONFIG = {
   BASE_URL: "https://www.tradie.omnisuiteai.com",
+  // BASE_URL: "http://localhost:3007",
   ENDPOINTS: {
     REGISTER: "/auth/register",
     VERIFY_OTP: "/auth/verify-otp",

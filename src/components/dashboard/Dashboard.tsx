@@ -13,7 +13,7 @@ interface Tradie {
   email: string;
   companyId: string;
   notificationPreference: string;
-  callMode: string;
+  callReceivedOn: string;
   createdAt: string;
   updatedAt: string;
   isMapped?: boolean;
