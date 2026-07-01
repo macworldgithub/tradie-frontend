@@ -129,6 +129,43 @@ export default function Dashboard({ onRegisterClick }: DashboardProps) {
     }
   }, []);
 
+  // Handle Stripe session sync on redirect
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const sessionId = urlParams.get("session_id");
+
+    if (sessionId) {
+      const syncSession = async () => {
+        try {
+          const token = localStorage.getItem("token");
+          if (token) {
+            await axios.post(
+              `${API_CONFIG.BASE_URL}/payments/sync-session`,
+              { session_id: sessionId },
+              { headers: { Authorization: `Bearer ${token}` } }
+            );
+          }
+          toast.success("Payment successful! Your subscription is now active.");
+          
+          // Refresh company details if user is already loaded
+          if (user) {
+            const companyId = user.id || user._id || user.companyId || user.company;
+            if (companyId) {
+              fetchCompanyDetails(companyId);
+            }
+          }
+        } catch (err: any) {
+          console.error("Failed to sync session:", err);
+        } finally {
+          const newUrl = window.location.pathname;
+          window.history.replaceState({}, document.title, newUrl);
+        }
+      };
+      
+      syncSession();
+    }
+  }, [user]);
+
   useEffect(() => {
     if (!user) return;
     fetchTradies();
