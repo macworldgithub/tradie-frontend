@@ -26,7 +26,7 @@ interface DashboardProps {
 export default function Dashboard({ onRegisterClick }: DashboardProps) {
   const [user, setUser] = useState<any>(null);
   const [tradies, setTradies] = useState<Tradie[]>([]);
-  const [companies, setCompanies] = useState<any[]>([]);
+  const [companyDetails, setCompanyDetails] = useState<any | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [daysRemaining, setDaysRemaining] = useState<number | null>(null);
@@ -53,9 +53,6 @@ export default function Dashboard({ onRegisterClick }: DashboardProps) {
       } else {
         setTradies([]);
       }
-
-      // after loading tradies, also refresh companies so we can compute daysRemaining
-      await fetchCompaniesAdmin();
     } catch (err: any) {
       console.error("Fetch tradies error:", err);
       setError(
@@ -68,17 +65,17 @@ export default function Dashboard({ onRegisterClick }: DashboardProps) {
     }
   };
 
-  const fetchCompaniesAdmin = async () => {
+  const fetchCompanyDetails = async (companyId: string) => {
     try {
       const token = localStorage.getItem("token");
       if (!token) return;
-      const res = await axios.get(`${API_CONFIG.BASE_URL}/admin/companies`, {
+      const res = await axios.get(`${API_CONFIG.BASE_URL}/admin/companies/${companyId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      if (Array.isArray(res.data)) setCompanies(res.data);
-      else setCompanies([]);
+      setCompanyDetails(res.data);
     } catch (err: any) {
-      console.error("Fetch companies error:", err);
+      console.error("Fetch company details error:", err);
+      setCompanyDetails(null);
     }
   };
 
@@ -122,7 +119,6 @@ export default function Dashboard({ onRegisterClick }: DashboardProps) {
   };
 
   useEffect(() => {
-    // Load user profile details
     const savedUserStr = localStorage.getItem("user");
     if (savedUserStr) {
       try {
@@ -131,28 +127,34 @@ export default function Dashboard({ onRegisterClick }: DashboardProps) {
         console.error("Error parsing user profile data:", e);
       }
     }
-    fetchTradies();
-    // also fetch companies in parallel
-    fetchCompaniesAdmin();
   }, []);
 
+  useEffect(() => {
+    if (!user) return;
+    fetchTradies();
+    const companyId = user.id || user._id || user.companyId || user.company;
+    if (companyId) {
+      fetchCompanyDetails(companyId);
+    } else {
+      setCompanyDetails(null);
+    }
+  }, [user]);
+
 // compute daysRemaining and DID number when user, tradies or companies change
-   useEffect(() => {
-     if (!user) return;
-     const userCompanyId = user.id || user.companyId || user.company || null;
-     if (!userCompanyId) {
-       setDaysRemaining(null);
-       setCompanyDidNumber(null);
-       return;
-     }
-     // check if any tradie for this company is mapped
-     const hasMappedTradie = tradies.some((t) => t.companyId === userCompanyId && !!t.isMapped);
-     const matched = companies.find((c: any) => c.companyId === userCompanyId || c._id === userCompanyId);
-     setDaysRemaining(hasMappedTradie ? (matched ? (matched.daysRemaining ?? null) : null) : null);
-     setCompanyDidNumber(
-       matched?.didNumber || matched?.did?.didNumber || null
-     );
-  }, [user, tradies, companies]);
+  useEffect(() => {
+    if (!user) return;
+    const userCompanyId = user.id || user._id || user.companyId || user.company || null;
+    if (!userCompanyId) {
+      setDaysRemaining(null);
+      setCompanyDidNumber(null);
+      return;
+    }
+    const hasMappedTradie = tradies.some((t) => t.companyId === userCompanyId && !!t.isMapped);
+    setDaysRemaining(hasMappedTradie ? (companyDetails?.daysRemaining ?? null) : null);
+    setCompanyDidNumber(
+      companyDetails?.didNumber || companyDetails?.did?.didNumber || null
+    );
+  }, [user, tradies, companyDetails]);
 
   return (
     <div className="w-full max-w-6xl mx-auto px-4 md:px-8 py-8 space-y-10 animate-in fade-in duration-500">
