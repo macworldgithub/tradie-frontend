@@ -1221,7 +1221,7 @@ const [tradieCallReceivedOn, setTradieCallReceivedOn] = useState("mobile");
                               </span>
                               <span className="text-zinc-300 font-semibold font-mono">
                                 {new Date(
-                                  companyDetails.did.subscriptionStartDate,
+                                  companyDetails.company.lastPaymentDate,
                                 ).toLocaleDateString()}
                               </span>
                             </div>
