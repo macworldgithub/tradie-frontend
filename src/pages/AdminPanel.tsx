@@ -423,8 +423,8 @@ export default function AdminPanel({
                 setIsMobileSidebarOpen(false);
               }}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${activeTab === "dashboard"
-                  ? "bg-orange-500 text-black"
-                  : "text-zinc-400 hover:text-white hover:bg-white/5"
+                ? "bg-orange-500 text-black"
+                : "text-zinc-400 hover:text-white hover:bg-white/5"
                 }`}
             >
               <LayoutDashboard size={18} />
@@ -438,8 +438,8 @@ export default function AdminPanel({
                 setSearchQuery("");
               }}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${activeTab === "dids"
-                  ? "bg-orange-500 text-black"
-                  : "text-zinc-400 hover:text-white hover:bg-white/5"
+                ? "bg-orange-500 text-black"
+                : "text-zinc-400 hover:text-white hover:bg-white/5"
                 }`}
             >
               <Phone size={18} />
@@ -677,8 +677,8 @@ export default function AdminPanel({
                                 </h3>
                                 <span
                                   className={`shrink-0 text-[10px] font-bold px-2 py-0.5 rounded-full border ${company.isActive
-                                      ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
-                                      : "bg-red-500/10 text-red-400 border-red-500/20"
+                                    ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                                    : "bg-red-500/10 text-red-400 border-red-500/20"
                                     }`}
                                 >
                                   {company.isActive ? "Authorized" : "Awaiting Payment"}
@@ -723,8 +723,8 @@ export default function AdminPanel({
                                 </span>
                                 <span
                                   className={`px-2 py-0.5 rounded font-bold ${company.daysRemaining > 0
-                                      ? "bg-[#f97316]/10 text-[#f97316]"
-                                      : "bg-zinc-800 text-zinc-400"
+                                    ? "bg-[#f97316]/10 text-[#f97316]"
+                                    : "bg-zinc-800 text-zinc-400"
                                     }`}
                                 >
                                   {company.daysRemaining} days left
@@ -805,8 +805,8 @@ export default function AdminPanel({
                       <div className="flex items-center justify-between">
                         <span
                           className={`text-[10px] font-bold px-2 py-0.5 rounded border ${did.status === "active"
-                              ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
-                              : "bg-red-500/10 text-red-400 border-red-500/20"
+                            ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                            : "bg-red-500/10 text-red-400 border-red-500/20"
                             }`}
                         >
                           {did.status.toUpperCase()}
@@ -1082,8 +1082,8 @@ export default function AdminPanel({
                           </span>
                           <span
                             className={`inline-block text-[9px] font-extrabold mt-1 px-1.5 py-0.5 rounded uppercase tracking-wider ${companyDetails.company.emailVerified
-                                ? "bg-emerald-500/10 text-emerald-400"
-                                : "bg-red-500/10 text-red-400"
+                              ? "bg-emerald-500/10 text-emerald-400"
+                              : "bg-red-500/10 text-red-400"
                               }`}
                           >
                             {companyDetails.company.emailVerified
@@ -1211,7 +1211,7 @@ export default function AdminPanel({
 
                             <div className="flex items-center justify-between">
                               <span className="text-zinc-500">
-                                Subscription Start:
+                                Subscription End:
                               </span>
                               <span className="text-zinc-300 font-semibold font-mono">
                                 {new Date(
@@ -1299,8 +1299,8 @@ export default function AdminPanel({
                           </span>
                           <span
                             className={`px-2 py-0.5 rounded font-black text-xs ${companyDetails.daysRemaining > 0
-                                ? "bg-emerald-500/10 text-emerald-400"
-                                : "bg-red-500/10 text-red-400"
+                              ? "bg-emerald-500/10 text-emerald-400"
+                              : "bg-red-500/10 text-red-400"
                               }`}
                           >
                             {companyDetails.daysRemaining} Days Left
@@ -1426,8 +1426,8 @@ export default function AdminPanel({
                                   type="button"
                                   onClick={() => setTradieCallReceivedOn(option.value)}
                                   className={`flex-1 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all ${tradieCallReceivedOn === option.value
-                                      ? "bg-[#f97316] text-black"
-                                      : "bg-[#12181e] border border-white/5 text-zinc-400 hover:text-white"
+                                    ? "bg-[#f97316] text-black"
+                                    : "bg-[#12181e] border border-white/5 text-zinc-400 hover:text-white"
                                     }`}
                                 >
                                   {option.label}
