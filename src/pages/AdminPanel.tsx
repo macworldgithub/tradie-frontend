@@ -1215,7 +1215,7 @@ export default function AdminPanel({
                               </span>
                               <span className="text-zinc-300 font-semibold font-mono">
                                 {new Date(
-                                  companyDetails.subscriptionExpiresAt,
+                                  companyDetails.company.subscriptionExpiresAt,
                                 ).toLocaleDateString()}
                               </span>
                             </div>
