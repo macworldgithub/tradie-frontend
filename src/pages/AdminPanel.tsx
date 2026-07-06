@@ -1215,7 +1215,7 @@ export default function AdminPanel({
                               </span>
                               <span className="text-zinc-300 font-semibold font-mono">
                                 {new Date(
-                                  companyDetails.did.subscriptionStartDate,
+                                  companyDetails.subscriptionExpiresAt,
                                 ).toLocaleDateString()}
                               </span>
                             </div>
@@ -1236,7 +1236,7 @@ export default function AdminPanel({
                                     (t: any) =>
                                       t._id ===
                                       companyDetails.did.assignedTradieId,
-                                  )?.name || "Unassigned"}
+                                  )?.name || "Subscrip"}
                               </span>
                             </div>
 
