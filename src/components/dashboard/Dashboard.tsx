@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Plus, UserPlus, RefreshCw, AlertTriangle, Users, CreditCard, ShieldCheck, ArrowRight } from "lucide-react";
 import axios from "axios";
 import { API_CONFIG } from "../../config/apiConfig";
@@ -130,11 +130,16 @@ export default function Dashboard({ onRegisterClick }: DashboardProps) {
   }, []);
 
   // Handle Stripe session sync on redirect
+  const syncAttemptedRef = useRef(false);
+  
   useEffect(() => {
+    if (!user) return;
+
     const urlParams = new URLSearchParams(window.location.search);
     const sessionId = urlParams.get("session_id");
 
-    if (sessionId) {
+    if (sessionId && !syncAttemptedRef.current) {
+      syncAttemptedRef.current = true;
       const syncSession = async () => {
         try {
           const token = localStorage.getItem("token");
@@ -148,11 +153,9 @@ export default function Dashboard({ onRegisterClick }: DashboardProps) {
           toast.success("Payment successful! Your subscription is now active.");
           
           // Refresh company details if user is already loaded
-          if (user) {
-            const companyId = user.id || user._id || user.companyId || user.company;
-            if (companyId) {
-              fetchCompanyDetails(companyId);
-            }
+          const companyId = user.id || user._id || user.companyId || user.company;
+          if (companyId) {
+            fetchCompanyDetails(companyId);
           }
         } catch (err: any) {
           console.error("Failed to sync session:", err);
