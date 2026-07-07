@@ -776,7 +776,7 @@
 //   );
 // }
 
-import { useState } from "react";
+import { useState,  useEffect, useRef } from "react";
 import {
   ArrowLeft,
   User,
@@ -787,6 +787,7 @@ import {
   Phone,
   Clock,
   Check,
+    Info,
 } from "lucide-react";
 import { authService } from "../services/authService";
 import logo from "../assets/logo.png";
@@ -800,7 +801,7 @@ interface SignupProps {
 export default function Signup({ onBack, onGoToLogin }: SignupProps) {
   const [step, setStep] = useState(1);
   const [errors, setErrors] = useState<Record<string, string>>({});
-
+  const [showMobileInfo, setShowMobileInfo] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     company: "",
@@ -818,6 +819,8 @@ export default function Signup({ onBack, onGoToLogin }: SignupProps) {
   });
 
   const [agreedToTerms, setAgreedToTerms] = useState(false);
+  //@ts-ignore
+const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const steps = [
     { id: 1, label: "Your Details", icon: <User size={16} /> },
@@ -837,6 +840,24 @@ export default function Signup({ onBack, onGoToLogin }: SignupProps) {
   const [error, setError] = useState<string | null>(null);
   const [otp, setOtp] = useState("");
   const [hasRegisteredSuccess, setHasRegisteredSuccess] = useState(false);
+
+useEffect(() => {
+  if (formData.callReceivedOn === "mobile") {
+    showMobileInfoMessage();
+  } else {
+    setShowMobileInfo(false);
+
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+  }
+
+  return () => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+  };
+}, [formData.callReceivedOn]);
 
   const nextStep = () => {
     setError(null);
@@ -957,6 +978,18 @@ export default function Signup({ onBack, onGoToLogin }: SignupProps) {
       setIsSubmitting(false);
     }
   };
+
+  const showMobileInfoMessage = () => {
+  setShowMobileInfo(true);
+
+  if (timerRef.current) {
+    clearTimeout(timerRef.current);
+  }
+
+  timerRef.current = setTimeout(() => {
+    setShowMobileInfo(false);
+  }, 5000);
+};
 
 const handleInputChange = (field: string, value: string) => {
   setFormData((prev) => ({ ...prev, [field]: value }));
@@ -1107,9 +1140,23 @@ const handleInputChange = (field: string, value: string) => {
 
   {/* Call Mode */}
   <div className="space-y-3">
-    <label className="text-[10px] font-black uppercase tracking-widest text-orange-500">
- Call Received On
-    </label>
+    <div className="flex items-center gap-2">
+  <label className="text-[10px] font-black uppercase tracking-widest text-orange-500">
+    Call Received On
+  </label>
+{/* {formData.callReceivedOn === "mobile" && (
+  <Info size={14} className="text-orange-400" />
+)} */}
+{formData.callReceivedOn === "mobile" && (
+  <button
+    type="button"
+    onClick={showMobileInfoMessage}
+    className="text-orange-400 hover:text-orange-300"
+  >
+    <Info size={14} />
+  </button>
+)}
+</div>
 
     <select
         value={formData.callReceivedOn}
@@ -1122,7 +1169,17 @@ const handleInputChange = (field: string, value: string) => {
       <option value="landline">Landline</option>
     </select>
   </div>
-
+{showMobileInfo && (
+  <div className="mt-3 rounded-xl border border-orange-500/30 bg-orange-500/10 p-4 animate-in fade-in duration-300">
+    <p className="text-xs leading-6 text-orange-100 text-justify">
+      <span className="font-semibold">Note:</span> Mobile call forwarding uses
+      your network operator's USSD service. Most operators do not support USSD
+      call forwarding on prepaid mobile plans. If you have a prepaid SIM,
+      please switch to a postpaid plan or select <strong>Landline</strong>{" "}
+      instead.
+    </p>
+  </div>
+)}
   {/* Country */}
   <div className="space-y-3">
     <label className="text-[10px] font-black uppercase tracking-widest text-orange-500">

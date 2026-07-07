@@ -32,10 +32,10 @@ export default function Pricing({ onGetStarted }: PricingProps) {
             <div>
               <h3 className="text-2xl font-bold text-white mb-2">Professional</h3>
               <div className="flex items-baseline gap-2">
-                <span className="text-5xl sm:text-6xl font-black text-orange-500">$200</span>
+                <span className="text-5xl sm:text-6xl font-black text-orange-500">$220</span>
                 <span className="text-zinc-500 font-medium">/ month</span>
               </div>
-              <p className="text-xs text-zinc-500 mt-2 font-medium">(ex GST)</p>
+              <p className="text-xs text-zinc-500 mt-2 font-medium">(incl GST)</p>
             </div>
 
             <div className="w-full h-px bg-white/5" />
