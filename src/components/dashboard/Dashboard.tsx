@@ -209,31 +209,31 @@ export default function Dashboard({ onRegisterClick }: DashboardProps) {
           <div className="space-y-4">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-300 text-xs font-black uppercase tracking-[0.2em]">
               <CreditCard size={14} />
-              Payment Overview
+          Billing and Payments
             </div>
             <div>
               <h3 className="text-2xl font-black text-white tracking-tight">Stripe Billing Preview</h3>
               <p className="text-zinc-500 text-sm mt-1 max-w-2xl">
-                Stripe payment flow will be redirected from here once the portal is live. For now, this card shows your current billing status.
+                Securely manage your subscription, Payment methods, invoices, and billing details through our Stripe-powered billing portal.
               </p>
             </div>
           </div>
 
           <div className="inline-flex items-center gap-3 rounded-3xl border border-orange-500/20 bg-orange-500/10 px-4 py-3 text-orange-300 text-sm font-bold">
             <ShieldCheck size={18} />
-            Ready to connect
+         Secure Billing Portal
       
           </div>
-          <div className="rounded-3xl bg-white/5 border border-white/5 p-4">
+          {/* <div className="rounded-3xl bg-white/5 border border-white/5 p-4">
             <p className="text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-bold">Next Action</p>
             <p className="mt-3 text-sm font-black text-white">Redirect to Stripe</p>
-          </div>
+          </div> */}
         </div>
 
-        <div className="mt-6 space-y-6">
+        <div className=" space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="text-zinc-400 text-sm leading-relaxed">
-              Stripe payment portal is now available. Click the button below to access secure billing and payment management.
+              Stripe payment portal is now available.
             </div>
            <button
   type="button"
@@ -245,7 +245,7 @@ export default function Dashboard({ onRegisterClick }: DashboardProps) {
       : "bg-orange-500 hover:bg-orange-400 hover:translate-y-[-1px] active:scale-[0.98] shadow-[0_10px_25px_rgba(249,115,22,0.15)] hover:shadow-[0_10px_25px_rgba(249,115,22,0.3)]"
   }`}
 >
-  {isCreatingCheckout ? "Loading..." : "Proceed to payment"}
+  {isCreatingCheckout ? "Loading..." : "Manage Billing"}
   {!isCreatingCheckout && <ArrowRight size={16} />}
 </button>
           </div>
