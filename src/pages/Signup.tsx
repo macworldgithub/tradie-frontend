@@ -962,6 +962,11 @@ useEffect(() => {
         newErrors.password = "Password must be at least 8 characters";
         isValid = false;
       }
+      // City is required only for Australia
+if (formData.country === "AU" && !formData.cityCode) {
+  newErrors.cityCode = "Please select a city";
+  isValid = false;
+}
     }
 
     if (step === 2) {
@@ -1349,7 +1354,7 @@ const handleInputChange = (field: string, value: string) => {
     <div className="space-y-3">
       <div className="flex items-center gap-2">
         <label className="text-[10px] font-black uppercase tracking-widest text-orange-500">
-          City
+          City *
         </label>
         <button
           type="button"
@@ -1360,24 +1365,7 @@ const handleInputChange = (field: string, value: string) => {
         </button>
       </div>
 
-      {/* <select
-        value={formData.cityCode}
-        onChange={(e) => handleInputChange("cityCode", e.target.value)}
-        className="w-full bg-[#12181e] border border-white/5 rounded-xl px-5 py-4 text-white"
-      >
-        <option value="" disabled>
-          Select a city
-        </option>
-        {australianCityOptions.map((group) => (
-          <optgroup key={group.group} label={group.group}>
-            {group.options.map((option) => (
-              <option key={option.value} value={option.label}>
-                {option.label}
-              </option>
-            ))}
-          </optgroup>
-        ))}
-      </select> */}
+      
       <Select
   options={australianCityOptions.map((group) => ({
     label: group.group,
@@ -1434,7 +1422,11 @@ const handleInputChange = (field: string, value: string) => {
     }),
   }}
 />
-
+{errors.cityCode && (
+  <p className="text-red-500 text-xs font-medium mt-2">
+    {errors.cityCode}
+  </p>
+)}
       {showCityInfo && (
         <div className="rounded-xl border border-orange-500/30 bg-orange-500/10 p-4 animate-in fade-in duration-300">
           <p className="text-xs leading-6 text-orange-100 text-justify">
