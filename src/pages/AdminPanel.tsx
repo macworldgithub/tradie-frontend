@@ -568,8 +568,9 @@ export default function AdminPanel({
                         {totalCompanies}
                       </p>
                     </div>
-
-                    <div className="bg-[#090e14] border border-white/5 rounded-2xl p-6 relative overflow-hidden group transition-all">
+                    <div
+                      className="bg-[#090e14] border border-white/5 hover:border-orange-500/20 cursor-pointer rounded-2xl p-6 relative overflow-hidden group transition-all"
+                    >
                       <div className="absolute top-0 right-0 bg-orange-500/5 w-24 h-24 blur-xl rounded-full group-hover:bg-orange-500/10 transition-all" />
                       <div className="flex items-center gap-4 mb-4 relative z-10">
                         <div className="bg-orange-500/10 p-2.5 rounded-xl text-orange-500">
@@ -1386,7 +1387,7 @@ export default function AdminPanel({
                               className="w-full bg-[#12181e] border border-white/5 rounded-lg px-3 py-2 text-xs text-white placeholder-zinc-700 focus:outline-none focus:border-orange-500"
                             />
                           </div>
-                             
+
                           <div className="space-y-1">
                             <label className="text-[10px] text-zinc-500 uppercase tracking-wider block">
                               Email Address
