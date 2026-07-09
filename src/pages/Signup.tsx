@@ -971,6 +971,7 @@ useEffect(() => {
         setStep(7);
       } else {
         setError(res.message || "Invalid OTP");
+        console.log(res.message, "Error verifying OTP");
       }
     } catch (err) {
       setError("An error occurred during verification");
