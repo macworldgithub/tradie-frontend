@@ -791,6 +791,7 @@ import {
 } from "lucide-react";
 import { authService } from "../services/authService";
 import logo from "../assets/logo.png";
+import Select from "react-select";
 
 interface SignupProps {
   onBack: () => void;
@@ -1359,7 +1360,7 @@ const handleInputChange = (field: string, value: string) => {
         </button>
       </div>
 
-      <select
+      {/* <select
         value={formData.cityCode}
         onChange={(e) => handleInputChange("cityCode", e.target.value)}
         className="w-full bg-[#12181e] border border-white/5 rounded-xl px-5 py-4 text-white"
@@ -1376,7 +1377,63 @@ const handleInputChange = (field: string, value: string) => {
             ))}
           </optgroup>
         ))}
-      </select>
+      </select> */}
+      <Select
+  options={australianCityOptions.map((group) => ({
+    label: group.group,
+    options: group.options,
+  }))}
+  value={
+    australianCityOptions
+      .flatMap((g) => g.options)
+      .find((city) => city.label === formData.cityCode) || null
+  }
+  onChange={(selectedOption) =>
+    handleInputChange("cityCode", selectedOption?.label || "")
+  }
+  placeholder="Search or select a city..."
+  isSearchable
+  className="text-black"
+  styles={{
+    control: (base) => ({
+      ...base,
+      backgroundColor: "#12181e",
+      borderColor: "#2a2a2a",
+      minHeight: "56px",
+      borderRadius: "12px",
+      color: "white",
+    }),
+    singleValue: (base) => ({
+      ...base,
+      color: "white",
+    }),
+    input: (base) => ({
+      ...base,
+      color: "white",
+    }),
+    menu: (base) => ({
+      ...base,
+      backgroundColor: "#12181e",
+    }),
+    option: (base, state) => ({
+      ...base,
+      backgroundColor: state.isFocused ? "#f97316" : "#12181e",
+      color: "white",
+      cursor: "pointer",
+    }),
+    groupHeading: (base) => ({
+      ...base,
+      color: "#f97316",
+      fontWeight: "bold",
+      fontSize: "12px",
+      textTransform: "uppercase",
+    }),
+    placeholder: (base) => ({
+      ...base,
+      color: "#71717a",
+    }),
+  }}
+/>
 
       {showCityInfo && (
         <div className="rounded-xl border border-orange-500/30 bg-orange-500/10 p-4 animate-in fade-in duration-300">
