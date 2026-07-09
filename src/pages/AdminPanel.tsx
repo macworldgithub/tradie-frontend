@@ -353,10 +353,15 @@ export default function AdminPanel({
 
   // Filtered Companies
   const filteredCompanies = companies.filter((c) => {
+    const normalizedSearch = searchQuery.toLowerCase();
+    const companyName = c.companyName?.toString().toLowerCase() ?? "";
+    const email = c.email?.toString().toLowerCase() ?? "";
+    const didNumber = c.didNumber?.toString() ?? "";
+
     const matchesSearch =
-      c.companyName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      c.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (c.didNumber && c.didNumber.includes(searchQuery));
+      companyName.includes(normalizedSearch) ||
+      email.includes(normalizedSearch) ||
+      didNumber.includes(normalizedSearch);
 
     const matchesStatus =
       statusFilter === "all" ||
@@ -372,11 +377,13 @@ export default function AdminPanel({
   });
 
   // Filtered DIDs
-  const filteredDids = activeDids.filter(
-    (d) =>
-      d.number.includes(searchQuery) ||
-      d.companyName.toLowerCase().includes(searchQuery.toLowerCase()),
-  );
+  const filteredDids = activeDids.filter((d) => {
+    const normalizedSearch = searchQuery.toLowerCase();
+    const companyName = d.companyName?.toString().toLowerCase() ?? "";
+    const number = d.number?.toString() ?? "";
+
+    return number.includes(normalizedSearch) || companyName.includes(normalizedSearch);
+  });
 
   return (
     <div className="min-h-screen bg-[#03070b] text-white flex flex-col md:flex-row relative">
