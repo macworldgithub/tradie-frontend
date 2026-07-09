@@ -839,7 +839,12 @@ const timerRef = useRef<NodeJS.Timeout | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [otp, setOtp] = useState("");
+  const STRIPE_PENDING_TOKEN_KEY = "pendingStripeAuthToken";
   const [hasRegisteredSuccess, setHasRegisteredSuccess] = useState(false);
+  const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
+  const [loginToken, setLoginToken] = useState<string | null>(() => {
+    return localStorage.getItem(STRIPE_PENDING_TOKEN_KEY);
+  });
 
 useEffect(() => {
   if (formData.callReceivedOn === "mobile") {
@@ -969,6 +974,7 @@ useEffect(() => {
       const res = await authService.verifyOtp(formData.email, otp);
       if (res.message === "Email verified successfully") {
         setStep(7);
+        await loginAfterSignup();
       } else {
         setError(res.message || "Invalid OTP");
         console.log(res.message, "Error verifying OTP");
@@ -979,6 +985,74 @@ useEffect(() => {
       setIsSubmitting(false);
     }
   };
+
+  const loginAfterSignup = async () => {
+    try {
+      const loginRes = await authService.login({
+        email: formData.email,
+        password: formData.password,
+      });
+
+      if (loginRes.accessToken) {
+        const token = loginRes.accessToken;
+        setLoginToken(token);
+        localStorage.setItem(STRIPE_PENDING_TOKEN_KEY, token);
+        localStorage.setItem('token', token);
+        localStorage.setItem('user', JSON.stringify(loginRes.user));
+        await processPaymentAndLogout(token);
+      } else {
+        console.error('Login failed after signup', loginRes);
+      }
+    } catch (loginErr) {
+      console.error('Error logging in after signup', loginErr);
+    }
+  };
+
+  const processPaymentAndLogout = async (token: string) => {
+    setIsPaymentProcessing(true);
+    setError(null);
+
+    try {
+      const checkoutRes = await authService.createCheckout(token);
+      const checkoutUrl = checkoutRes.url || checkoutRes.checkoutUrl;
+
+      if (!checkoutUrl) {
+        setError('Unable to start payment checkout.');
+        return;
+      }
+
+      window.location.href = checkoutUrl;
+    } catch (err: any) {
+      console.error('Payment checkout failed', err);
+      setError('Payment checkout failed. Please try again later.');
+    } finally {
+      setIsPaymentProcessing(false);
+    }
+  };
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const sessionId = urlParams.get('session_id');
+
+    if (!sessionId) return;
+    if (!loginToken) return;
+
+    const syncStripe = async () => {
+      try {
+        await authService.syncSession(sessionId, loginToken);
+      } catch (err) {
+        console.error('Stripe session sync failed', err);
+      } finally {
+        localStorage.removeItem(STRIPE_PENDING_TOKEN_KEY);
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        if (onGoToLogin) onGoToLogin();
+        else onBack();
+      }
+    };
+
+    syncStripe();
+  }, [loginToken, onBack, onGoToLogin]);
 
   const showMobileInfoMessage = () => {
   setShowMobileInfo(true);
