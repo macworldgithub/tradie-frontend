@@ -1370,7 +1370,7 @@ const handleInputChange = (field: string, value: string) => {
         {australianCityOptions.map((group) => (
           <optgroup key={group.group} label={group.group}>
             {group.options.map((option) => (
-              <option key={option.value} value={option.value}>
+              <option key={option.value} value={option.label}>
                 {option.label}
               </option>
             ))}
