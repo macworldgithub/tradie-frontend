@@ -30,9 +30,12 @@ export default function Dashboard({ onRegisterClick }: DashboardProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [daysRemaining, setDaysRemaining] = useState<number | null>(null);
+  console.log(companyDetails, "DAYS REMAINING IN DASHBOARD");
+
   const [companyDidNumber, setCompanyDidNumber] = useState<string | null>(null);
   const [isCreatingCheckout, setIsCreatingCheckout] = useState(false);
 
+  console.log(daysRemaining, "DAYS REMAINING");
   const fetchTradies = async () => {
     setIsLoading(true);
     setError(null);
@@ -185,12 +188,16 @@ export default function Dashboard({ onRegisterClick }: DashboardProps) {
     if (!user) return;
     const userCompanyId = user.id || user._id || user.companyId || user.company || null;
     if (!userCompanyId) {
-      setDaysRemaining(null);
+      setDaysRemaining(0);
       setCompanyDidNumber(null);
       return;
     }
-    const hasMappedTradie = tradies.some((t) => t.companyId === userCompanyId && !!t.isMapped);
-    setDaysRemaining(hasMappedTradie ? (companyDetails?.daysRemaining ?? null) : null);
+
+    // Use the daysRemaining value from company details when available.
+    // Accept numeric 0 as a valid value (do not coerce to null).
+    const days = companyDetails?.daysRemaining;
+    setDaysRemaining(typeof days === "number" ? days : 0);
+
     setCompanyDidNumber(
       companyDetails?.didNumber || companyDetails?.did?.didNumber || null
     );

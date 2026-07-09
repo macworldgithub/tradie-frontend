@@ -64,9 +64,9 @@ export default function ProfileCard({ user, daysRemaining, didNumber }: ProfileC
                   {didNumber || 'DID number not allocated yet'}
                 </p>
               </div>
-              {typeof daysRemaining !== 'undefined' && daysRemaining !== null && (
+              {/* {typeof daysRemaining !== 'undefined' && daysRemaining !== null && ( */}
                 <p className="text-[11px] mt-3 text-zinc-400 font-bold">Days Remaining: {daysRemaining}</p>
-              )}
+              {/* )} */}
             </div>
           </div>
         </div>
