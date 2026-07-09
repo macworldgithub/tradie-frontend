@@ -1593,7 +1593,7 @@ const handleInputChange = (field: string, value: string) => {
               <div className="space-y-2">
                 <p className="text-white font-bold text-sm">I agree to the Terms and Conditions</p>
                 <p className="text-zinc-500 text-[10px] leading-relaxed">
-                  Including payment terms and Mia.Ai service agreement.
+                 Including payment terms for a recurring monthly subscription (your payment method will be charged automatically each month) and the Mia.Ai Service Agreement.
                 </p>
               </div>
             </div>
