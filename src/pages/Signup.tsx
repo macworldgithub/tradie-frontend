@@ -802,6 +802,7 @@ export default function Signup({ onBack, onGoToLogin }: SignupProps) {
   const [step, setStep] = useState(1);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showMobileInfo, setShowMobileInfo] = useState(false);
+  const [showCityInfo, setShowCityInfo] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     company: "",
@@ -816,6 +817,7 @@ export default function Signup({ onBack, onGoToLogin }: SignupProps) {
      notificationPreference: "both",
  callReceivedOn: "mobile",
   country: "AU",
+  cityCode: "",
   });
 
   const [agreedToTerms, setAgreedToTerms] = useState(false);
@@ -834,6 +836,70 @@ const timerRef = useRef<NodeJS.Timeout | null>(null);
   const trades = [
     "Plumber", "Electrician", "Carpenter", "HVAC Technician",
     "Locksmith", "Painter", "Roofer", "General Tradesperson",
+  ];
+
+  const australianCityOptions = [
+    {
+      group: "Australian Capital Territory (ACT)",
+      options: [{ value: "ACT-CANBERRA", label: "Canberra" }],
+    },
+    {
+      group: "New South Wales (NSW)",
+      options: [
+        { value: "NSW-SYDNEY", label: "Sydney" },
+        { value: "NSW-NEWCASTLE", label: "Newcastle" },
+        { value: "NSW-GOSFORD", label: "Gosford" },
+        { value: "NSW-NOWRA", label: "Nowra" },
+        { value: "NSW-CAMPBELLTOWN", label: "Campbelltown" },
+        { value: "NSW-PENRITH", label: "Penrith" },
+        { value: "NSW-TAREE", label: "Taree" },
+        { value: "NSW-COFFS-HARBOUR", label: "Coffs Harbour" },
+        { value: "NSW-ALBURY", label: "Albury" },
+      ],
+    },
+    {
+      group: "Queensland (QLD)",
+      options: [
+        { value: "QLD-BRISBANE", label: "Brisbane" },
+        { value: "QLD-CAIRNS", label: "Cairns" },
+        { value: "QLD-TOWNSVILLE", label: "Townsville" },
+        { value: "QLD-TOOWOOMBA", label: "Toowoomba" },
+        { value: "QLD-ROCKHAMPTON", label: "Rockhampton" },
+        { value: "QLD-MARYBOROUGH", label: "Maryborough" },
+        { value: "QLD-SOUTHPORT", label: "Southport" },
+        { value: "QLD-BEAUDESERT", label: "Beaudesert" },
+      ],
+    },
+    {
+      group: "Victoria (VIC)",
+      options: [
+        { value: "VIC-MELBOURNE", label: "Melbourne" },
+        { value: "VIC-GEELONG", label: "Geelong" },
+      ],
+    },
+    {
+      group: "South Australia (SA)",
+      options: [{ value: "SA-ADELAIDE", label: "Adelaide" }],
+    },
+    {
+      group: "Western Australia (WA)",
+      options: [
+        { value: "WA-PERTH", label: "Perth" },
+        { value: "WA-BUNBURY", label: "Bunbury" },
+        { value: "WA-PINJARRA", label: "Pinjarra" },
+      ],
+    },
+    {
+      group: "Tasmania (TAS)",
+      options: [
+        { value: "TAS-HOBART", label: "Hobart" },
+        { value: "TAS-LAUNCESTON", label: "Launceston" },
+      ],
+    },
+    {
+      group: "Northern Territory (NT)",
+      options: [{ value: "NT-DARWIN", label: "Darwin" }],
+    },
   ];
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -951,6 +1017,7 @@ useEffect(() => {
   country: formData.country,
   notificationPreference: formData.notificationPreference,
    callReceivedOn: formData.callReceivedOn,
+   cityCode: formData.country === "AU" ? formData.cityCode : "",
 };
 
       const res = await authService.register(payload);
@@ -1067,7 +1134,13 @@ useEffect(() => {
 };
 
 const handleInputChange = (field: string, value: string) => {
-  setFormData((prev) => ({ ...prev, [field]: value }));
+  setFormData((prev) => {
+    if (field === "country" && value !== "AU") {
+      return { ...prev, [field]: value, cityCode: "" };
+    }
+
+    return { ...prev, [field]: value };
+  });
 
   if (field === "password") {
     if (value.length > 0 && value.length < 8) {
@@ -1270,6 +1343,50 @@ const handleInputChange = (field: string, value: string) => {
       <option value="NZ">New Zealand</option>
     </select>
   </div>
+
+  {formData.country === "AU" && (
+    <div className="space-y-3">
+      <div className="flex items-center gap-2">
+        <label className="text-[10px] font-black uppercase tracking-widest text-orange-500">
+          City
+        </label>
+        <button
+          type="button"
+          onClick={() => setShowCityInfo((prev) => !prev)}
+          className="text-orange-400 hover:text-orange-300"
+        >
+          <Info size={14} />
+        </button>
+      </div>
+
+      <select
+        value={formData.cityCode}
+        onChange={(e) => handleInputChange("cityCode", e.target.value)}
+        className="w-full bg-[#12181e] border border-white/5 rounded-xl px-5 py-4 text-white"
+      >
+        <option value="" disabled>
+          Select a city
+        </option>
+        {australianCityOptions.map((group) => (
+          <optgroup key={group.group} label={group.group}>
+            {group.options.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </optgroup>
+        ))}
+      </select>
+
+      {showCityInfo && (
+        <div className="rounded-xl border border-orange-500/30 bg-orange-500/10 p-4 animate-in fade-in duration-300">
+          <p className="text-xs leading-6 text-orange-100 text-justify">
+            <span className="font-semibold">Note:</span> If your city is not listed, please select the city closest to your location.
+          </p>
+        </div>
+      )}
+    </div>
+  )}
 </div>
           </div>
         )}
