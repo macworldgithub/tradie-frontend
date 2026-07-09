@@ -289,7 +289,7 @@ export default function Dashboard({ onRegisterClick }: DashboardProps) {
           >
             <Plus size={16} className="stroke-[3]" />
             Register a new tradie
-          </button> */}fmanage 
+          </button> */}
         </div>
       </div>
 
