@@ -836,7 +836,7 @@ const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const trades = [
     "Plumber", "Electrician", "Carpenter", "HVAC Technician",
-    "Locksmith", "Painter", "Roofer", "General Tradesperson",
+    "Locksmith", "Painter", "Roofer", "General Tradesperson", "Pest Control"
   ];
 
   const australianCityOptions = [
