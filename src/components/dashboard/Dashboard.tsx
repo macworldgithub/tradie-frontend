@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Plus, UserPlus, RefreshCw, AlertTriangle, Users, CreditCard, ShieldCheck, ArrowRight } from "lucide-react";
+import { Plus, UserPlus, RefreshCw, AlertTriangle, Users, CreditCard, ShieldCheck, ArrowRight, X } from "lucide-react";
 import axios from "axios";
 import { API_CONFIG } from "../../config/apiConfig";
 import ProfileCard from "./ProfileCard";
@@ -34,6 +34,7 @@ export default function Dashboard({ onRegisterClick }: DashboardProps) {
 
   const [companyDidNumber, setCompanyDidNumber] = useState<string | null>(null);
   const [isCreatingCheckout, setIsCreatingCheckout] = useState(false);
+  const [isCancelingSubscription, setIsCancelingSubscription] = useState(false);
 
   console.log(daysRemaining, "DAYS REMAINING");
   const fetchTradies = async () => {
@@ -118,6 +119,50 @@ export default function Dashboard({ onRegisterClick }: DashboardProps) {
       toast.error(errorMessage);
     } finally {
       setIsCreatingCheckout(false);
+    }
+  };
+
+  const handleCancelSubscription = async () => {
+    // Show confirmation dialog
+    const confirmed = window.confirm(
+      "Are you sure you want to cancel your subscription? This action cannot be undone."
+    );
+    if (!confirmed) return;
+
+    setIsCancelingSubscription(true);
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        toast.error("Session expired. Please login again.");
+        setIsCancelingSubscription(false);
+        return;
+      }
+
+      const response = await axios.post(
+        `${API_CONFIG.BASE_URL}/subscriptions/cancel`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      toast.success(response.data?.message || "Subscription cancelled successfully.");
+      
+      // Refresh company details to update subscription status
+      const companyId = user.id || user._id || user.companyId || user.company;
+      if (companyId) {
+        fetchCompanyDetails(companyId);
+      }
+    } catch (err: any) {
+      console.error("Cancel subscription error:", err);
+      const errorMessage =
+        err.response?.data?.message ||
+        err.response?.data?.error ||
+        err.message ||
+        "Failed to cancel subscription.";
+      toast.error(errorMessage);
+    } finally {
+      setIsCancelingSubscription(false);
     }
   };
 
@@ -242,7 +287,21 @@ export default function Dashboard({ onRegisterClick }: DashboardProps) {
             <div className="text-zinc-400 text-sm leading-relaxed">
               Stripe payment portal is now available.
             </div>
-           <button
+           <div className="flex gap-3 flex-wrap">
+                         <button
+  type="button"
+  onClick={handleCancelSubscription}
+  disabled={isCancelingSubscription}
+  className={`inline-flex items-center justify-center gap-2 rounded-2xl md:px-3 sm:px-2 sm:text-xs py-3 md:text-sm font-black uppercase tracking-wider text-white transition-all ${
+    isCancelingSubscription
+      ? "bg-red-600 opacity-50 cursor-not-allowed border border-red-600/30"
+      : "bg-red-600/20 hover:bg-red-600/30 border border-red-600/40 hover:border-red-600/60 hover:translate-y-[-1px] active:scale-[0.98]"
+  }`}
+>
+  {isCancelingSubscription ? "Canceling..." : "Cancel"}
+  {!isCancelingSubscription && <X size={16} />}
+</button>
+             <button
   type="button"
   onClick={handleCreateCheckout}
   disabled={isCreatingCheckout}
@@ -255,6 +314,9 @@ export default function Dashboard({ onRegisterClick }: DashboardProps) {
   {isCreatingCheckout ? "Loading..." : "Manage Billing"}
   {!isCreatingCheckout && <ArrowRight size={16} />}
 </button>
+
+
+           </div>
           </div>
         </div>
       </div>
