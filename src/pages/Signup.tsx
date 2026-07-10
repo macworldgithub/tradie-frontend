@@ -776,7 +776,7 @@
 //   );
 // }
 
-import { useState,  useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   ArrowLeft,
   User,
@@ -787,7 +787,7 @@ import {
   Phone,
   Clock,
   Check,
-    Info,
+  Info,
 } from "lucide-react";
 import { authService } from "../services/authService";
 import logo from "../assets/logo.png";
@@ -813,17 +813,17 @@ export default function Signup({ onBack, onGoToLogin }: SignupProps) {
     trade: "",
     mobile: "",
     setBusinessHours: true,
-    openingTime: "07:00",     // 24-hour format
-    closingTime: "18:00",     // 24-hour format
-     notificationPreference: "both",
- callReceivedOn: "mobile",
-  country: "AU",
-  cityCode: "",
+    openingTime: "07:00", // 24-hour format
+    closingTime: "18:00", // 24-hour format
+    notificationPreference: "both",
+    callReceivedOn: "mobile",
+    country: "AU",
+    cityCode: "",
   });
 
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   //@ts-ignore
-const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const steps = [
     { id: 1, label: "Your Details", icon: <User size={16} /> },
@@ -835,8 +835,15 @@ const timerRef = useRef<NodeJS.Timeout | null>(null);
   ];
 
   const trades = [
-    "Plumber", "Electrician", "Carpenter", "HVAC Technician",
-    "Locksmith", "Painter", "Roofer", "General Tradesperson",
+    "Plumber",
+    "Electrician",
+    "Carpenter",
+    "HVAC Technician",
+    "Locksmith",
+    "Painter",
+    "Roofer",
+    "General Tradesperson",
+    "Pest Control",
   ];
 
   const australianCityOptions = [
@@ -913,23 +920,23 @@ const timerRef = useRef<NodeJS.Timeout | null>(null);
     return localStorage.getItem(STRIPE_PENDING_TOKEN_KEY);
   });
 
-useEffect(() => {
-  if (formData.callReceivedOn === "mobile") {
-    showMobileInfoMessage();
-  } else {
-    setShowMobileInfo(false);
+  useEffect(() => {
+    if (formData.callReceivedOn === "mobile") {
+      showMobileInfoMessage();
+    } else {
+      setShowMobileInfo(false);
 
-    if (timerRef.current) {
-      clearTimeout(timerRef.current);
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
     }
-  }
 
-  return () => {
-    if (timerRef.current) {
-      clearTimeout(timerRef.current);
-    }
-  };
-}, [formData.callReceivedOn]);
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, [formData.callReceivedOn]);
 
   const nextStep = () => {
     setError(null);
@@ -999,27 +1006,27 @@ useEffect(() => {
         ? `${formData.openingTime}-${formData.closingTime} MON-FRI`
         : "24/7";
 
-    const payload = {
-  customerName: formData.name,
-  companyName: formData.company,
-  acn: formData.acn,
-  email: formData.email,
-  password: formData.password,
-  trade: formData.trade,
-  mobileNumber: formData.mobile,
+      const payload = {
+        customerName: formData.name,
+        companyName: formData.company,
+        acn: formData.acn,
+        email: formData.email,
+        password: formData.password,
+        trade: formData.trade,
+        mobileNumber: formData.mobile,
 
-  wantsGeoNumber: false,
-  geoNumberType: "NONE",
-  portingNumber: "",
+        wantsGeoNumber: false,
+        geoNumberType: "NONE",
+        portingNumber: "",
 
-  openingHours,
-  paymentDetails: {},
+        openingHours,
+        paymentDetails: {},
 
-  country: formData.country,
-  notificationPreference: formData.notificationPreference,
-   callReceivedOn: formData.callReceivedOn,
-   cityCode: formData.country === "AU" ? formData.cityCode : "",
-};
+        country: formData.country,
+        notificationPreference: formData.notificationPreference,
+        callReceivedOn: formData.callReceivedOn,
+        cityCode: formData.country === "AU" ? formData.cityCode : "",
+      };
 
       const res = await authService.register(payload);
       if (res.userId) {
@@ -1065,14 +1072,14 @@ useEffect(() => {
         const token = loginRes.accessToken;
         setLoginToken(token);
         localStorage.setItem(STRIPE_PENDING_TOKEN_KEY, token);
-        localStorage.setItem('token', token);
-        localStorage.setItem('user', JSON.stringify(loginRes.user));
+        localStorage.setItem("token", token);
+        localStorage.setItem("user", JSON.stringify(loginRes.user));
         await processPaymentAndLogout(token);
       } else {
-        console.error('Login failed after signup', loginRes);
+        console.error("Login failed after signup", loginRes);
       }
     } catch (loginErr) {
-      console.error('Error logging in after signup', loginErr);
+      console.error("Error logging in after signup", loginErr);
     }
   };
 
@@ -1085,14 +1092,14 @@ useEffect(() => {
       const checkoutUrl = checkoutRes.url || checkoutRes.checkoutUrl;
 
       if (!checkoutUrl) {
-        setError('Unable to start payment checkout.');
+        setError("Unable to start payment checkout.");
         return;
       }
 
       window.location.href = checkoutUrl;
     } catch (err: any) {
-      console.error('Payment checkout failed', err);
-      setError('Payment checkout failed. Please try again later.');
+      console.error("Payment checkout failed", err);
+      setError("Payment checkout failed. Please try again later.");
     } finally {
       setIsPaymentProcessing(false);
     }
@@ -1100,7 +1107,7 @@ useEffect(() => {
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    const sessionId = urlParams.get('session_id');
+    const sessionId = urlParams.get("session_id");
 
     if (!sessionId) return;
     if (!loginToken) return;
@@ -1109,11 +1116,11 @@ useEffect(() => {
       try {
         await authService.syncSession(sessionId, loginToken);
       } catch (err) {
-        console.error('Stripe session sync failed', err);
+        console.error("Stripe session sync failed", err);
       } finally {
         localStorage.removeItem(STRIPE_PENDING_TOKEN_KEY);
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
         if (onGoToLogin) onGoToLogin();
         else onBack();
       }
@@ -1123,46 +1130,46 @@ useEffect(() => {
   }, [loginToken, onBack, onGoToLogin]);
 
   const showMobileInfoMessage = () => {
-  setShowMobileInfo(true);
+    setShowMobileInfo(true);
 
-  if (timerRef.current) {
-    clearTimeout(timerRef.current);
-  }
-
-  timerRef.current = setTimeout(() => {
-    setShowMobileInfo(false);
-  }, 5000);
-};
-
-const handleInputChange = (field: string, value: string) => {
-  setFormData((prev) => {
-    if (field === "country" && value !== "AU") {
-      return { ...prev, [field]: value, cityCode: "" };
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
     }
 
-    return { ...prev, [field]: value };
-  });
+    timerRef.current = setTimeout(() => {
+      setShowMobileInfo(false);
+    }, 5000);
+  };
 
-  if (field === "password") {
-    if (value.length > 0 && value.length < 8) {
-      setErrors((prev) => ({
-        ...prev,
-        password: "Password must be at least 8 characters",
-      }));
-    } else {
-      setErrors((prev) => ({
-        ...prev,
-        password: "",
-      }));
+  const handleInputChange = (field: string, value: string) => {
+    setFormData((prev) => {
+      if (field === "country" && value !== "AU") {
+        return { ...prev, [field]: value, cityCode: "" };
+      }
+
+      return { ...prev, [field]: value };
+    });
+
+    if (field === "password") {
+      if (value.length > 0 && value.length < 8) {
+        setErrors((prev) => ({
+          ...prev,
+          password: "Password must be at least 8 characters",
+        }));
+      } else {
+        setErrors((prev) => ({
+          ...prev,
+          password: "",
+        }));
+      }
+
+      return;
     }
 
-    return;
-  }
-
-  if (errors[field]) {
-    setErrors((prev) => ({ ...prev, [field]: "" }));
-  }
-};
+    if (errors[field]) {
+      setErrors((prev) => ({ ...prev, [field]: "" }));
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#03070b] text-white flex flex-col items-center">
@@ -1174,7 +1181,14 @@ const handleInputChange = (field: string, value: string) => {
             disabled={hasRegisteredSuccess}
             className={`flex items-center gap-2 transition-colors ${hasRegisteredSuccess ? "text-zinc-500 cursor-not-allowed" : "text-zinc-500 hover:text-white"}`}
           >
-            <ArrowLeft size={18} className={hasRegisteredSuccess ? "transition-transform" : "group-hover:-translate-x-1 transition-transform"} />
+            <ArrowLeft
+              size={18}
+              className={
+                hasRegisteredSuccess
+                  ? "transition-transform"
+                  : "group-hover:-translate-x-1 transition-transform"
+              }
+            />
           </button>
           <div className="flex items-center gap-2">
             <img src={logo} alt="Logo" className="h-16 w-auto" />
@@ -1192,12 +1206,13 @@ const handleInputChange = (field: string, value: string) => {
           {steps.map((s) => (
             <div
               key={s.id}
-              className={`flex items-center gap-2 pb-4 border-b-2 transition-all cursor-pointer z-10 ${step === s.id
+              className={`flex items-center gap-2 pb-4 border-b-2 transition-all cursor-pointer z-10 ${
+                step === s.id
                   ? "border-orange-500 text-orange-500"
                   : step > s.id
                     ? "border-emerald-500 text-emerald-500"
                     : "border-transparent text-zinc-600"
-                }`}
+              }`}
             >
               {step > s.id ? <Check size={16} /> : s.icon}
               <span className="text-xs font-black uppercase tracking-widest whitespace-nowrap">
@@ -1216,151 +1231,153 @@ const handleInputChange = (field: string, value: string) => {
         {step === 1 && (
           <div className="space-y-10">
             <div className="space-y-2">
-              <h2 className="text-4xl font-black tracking-tighter">Your Details</h2>
+              <h2 className="text-4xl font-black tracking-tighter">
+                Your Details
+              </h2>
               <p className="text-zinc-500 font-medium tracking-wide">
                 Tell us about yourself and your business.
               </p>
             </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-8">
-  <InputField
-    label="Your Name *"
-    value={formData.name}
-    icon={<User size={14} />}
-    placeholder="Jon Smith"
-    error={errors.name}
-    onChange={(v: string) => handleInputChange("name", v)}
-  />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-8">
+              <InputField
+                label="Your Name *"
+                value={formData.name}
+                icon={<User size={14} />}
+                placeholder="Jon Smith"
+                error={errors.name}
+                onChange={(v: string) => handleInputChange("name", v)}
+              />
 
-  <InputField
-    label="Company Name *"
-    value={formData.company}
-    icon={<Briefcase size={14} />}
-    placeholder="Jon's Plumbing"
-    error={errors.company}
-    onChange={(v: string) => handleInputChange("company", v)}
-  />
+              <InputField
+                label="Company Name *"
+                value={formData.company}
+                icon={<Briefcase size={14} />}
+                placeholder="Jon's Plumbing"
+                error={errors.company}
+                onChange={(v: string) => handleInputChange("company", v)}
+              />
 
-  <InputField
-    label="ACN (optional)"
-    value={formData.acn}
-    icon={<FileText size={14} />}
-    placeholder="123 456 789"
-    highlight
-    onChange={(v: string) => handleInputChange("acn", v)}
-  />
+              <InputField
+                label="ACN (optional)"
+                value={formData.acn}
+                icon={<FileText size={14} />}
+                placeholder="123 456 789"
+                highlight
+                onChange={(v: string) => handleInputChange("acn", v)}
+              />
 
-  <InputField
-    label="Email *"
-    value={formData.email}
-    icon={<Mail size={14} />}
-    placeholder="jon@plumbing.com.au"
-    error={errors.email}
-    onChange={(v: string) => handleInputChange("email", v)}
-  />
+              <InputField
+                label="Email *"
+                value={formData.email}
+                icon={<Mail size={14} />}
+                placeholder="jon@plumbing.com.au"
+                error={errors.email}
+                onChange={(v: string) => handleInputChange("email", v)}
+              />
 
-  <InputField
-    label="Password *"
-    type="password"
-    value={formData.password}
-    icon={<FileText size={14} />}
-    placeholder="••••••••"
-    error={errors.password}
-    onChange={(v: string) => handleInputChange("password", v)}
-  />
+              <InputField
+                label="Password *"
+                type="password"
+                value={formData.password}
+                icon={<FileText size={14} />}
+                placeholder="••••••••"
+                error={errors.password}
+                onChange={(v: string) => handleInputChange("password", v)}
+              />
 
-  {/* Notification Preference */}
-  <div className="space-y-3">
-    <label className="text-[10px] font-black uppercase tracking-widest text-orange-500">
-      Notification Preference
-    </label>
+              {/* Notification Preference */}
+              <div className="space-y-3">
+                <label className="text-[10px] font-black uppercase tracking-widest text-orange-500">
+                  Notification Preference
+                </label>
 
-    <select
-      value={formData.notificationPreference}
-      onChange={(e) =>
-        handleInputChange("notificationPreference", e.target.value)
-      }
-      className="w-full bg-[#12181e] border border-white/5 rounded-xl px-5 py-4 text-white"
-    >
-      <option value="email">Email</option>
-      <option value="sms">SMS</option>
-      <option value="both">Both</option>
-    </select>
-  </div>
+                <select
+                  value={formData.notificationPreference}
+                  onChange={(e) =>
+                    handleInputChange("notificationPreference", e.target.value)
+                  }
+                  className="w-full bg-[#12181e] border border-white/5 rounded-xl px-5 py-4 text-white"
+                >
+                  <option value="email">Email</option>
+                  <option value="sms">SMS</option>
+                  <option value="both">Both</option>
+                </select>
+              </div>
 
-  {/* Call Mode */}
-  <div className="space-y-3">
-    <div className="flex items-center gap-2">
-  <label className="text-[10px] font-black uppercase tracking-widest text-orange-500">
-    Call Received On
-  </label>
-{/* {formData.callReceivedOn === "mobile" && (
+              {/* Call Mode */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-orange-500">
+                    Call Received On
+                  </label>
+                  {/* {formData.callReceivedOn === "mobile" && (
   <Info size={14} className="text-orange-400" />
 )} */}
-{formData.callReceivedOn === "mobile" && (
-  <button
-    type="button"
-    onClick={showMobileInfoMessage}
-    className="text-orange-400 hover:text-orange-300"
-  >
-    <Info size={14} />
-  </button>
-)}
-</div>
+                  {formData.callReceivedOn === "mobile" && (
+                    <button
+                      type="button"
+                      onClick={showMobileInfoMessage}
+                      className="text-orange-400 hover:text-orange-300"
+                    >
+                      <Info size={14} />
+                    </button>
+                  )}
+                </div>
 
-    <select
-        value={formData.callReceivedOn}
-       onChange={(e) =>
-      handleInputChange("callReceivedOn", e.target.value)
-    }
-      className="w-full bg-[#12181e] border border-white/5 rounded-xl px-5 py-4 text-white"
-    >
-      <option value="mobile">Mobile</option>
-      <option value="landline">Landline</option>
-    </select>
-  </div>
-{showMobileInfo && (
-  <div className="mt-3 rounded-xl border border-orange-500/30 bg-orange-500/10 p-4 animate-in fade-in duration-300">
-    <p className="text-xs leading-6 text-orange-100 text-justify">
-      <span className="font-semibold">Note:</span> Mobile call forwarding uses
-      your network operator's USSD service. Most operators do not support USSD
-      call forwarding on prepaid mobile plans. If you have a prepaid SIM,
-      please switch to a postpaid plan or select <strong>Landline</strong>{" "}
-      instead.
-    </p>
-  </div>
-)}
-  {/* Country */}
-  <div className="space-y-3">
-    <label className="text-[10px] font-black uppercase tracking-widest text-orange-500">
-      Country
-    </label>
+                <select
+                  value={formData.callReceivedOn}
+                  onChange={(e) =>
+                    handleInputChange("callReceivedOn", e.target.value)
+                  }
+                  className="w-full bg-[#12181e] border border-white/5 rounded-xl px-5 py-4 text-white"
+                >
+                  <option value="mobile">Mobile</option>
+                  <option value="landline">Landline</option>
+                </select>
+              </div>
+              {showMobileInfo && (
+                <div className="mt-3 rounded-xl border border-orange-500/30 bg-orange-500/10 p-4 animate-in fade-in duration-300">
+                  <p className="text-xs leading-6 text-orange-100 text-justify">
+                    <span className="font-semibold">Note:</span> Mobile call
+                    forwarding uses your network operator's USSD service. Most
+                    operators do not support USSD call forwarding on prepaid
+                    mobile plans. If you have a prepaid SIM, please switch to a
+                    postpaid plan or select <strong>Landline</strong> instead.
+                  </p>
+                </div>
+              )}
+              {/* Country */}
+              <div className="space-y-3">
+                <label className="text-[10px] font-black uppercase tracking-widest text-orange-500">
+                  Country
+                </label>
 
-    <select
-      value={formData.country}
-      onChange={(e) => handleInputChange("country", e.target.value)}
-      className="w-full bg-[#12181e] border border-white/5 rounded-xl px-5 py-4 text-white"
-    >
-      <option value="AU">Australia</option>
-      <option value="NZ">New Zealand</option>
-    </select>
-  </div>
+                <select
+                  value={formData.country}
+                  onChange={(e) => handleInputChange("country", e.target.value)}
+                  className="w-full bg-[#12181e] border border-white/5 rounded-xl px-5 py-4 text-white"
+                >
+                  <option value="AU">Australia</option>
+                  <option value="NZ">New Zealand</option>
+                </select>
+              </div>
 
-  {formData.country === "AU" && (
-    <div className="space-y-3">
-      <div className="flex items-center gap-2">
-        <label className="text-[10px] font-black uppercase tracking-widest text-orange-500">
-          City
-        </label>
-        <button
-          type="button"
-          onClick={() => setShowCityInfo((prev) => !prev)}
-          className="text-orange-400 hover:text-orange-300"
-        >
-          <Info size={14} />
-        </button>
-      </div>
+              {formData.country === "AU" && (
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-orange-500">
+                      City
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => setShowCityInfo((prev) => !prev)}
+                      className="text-orange-400 hover:text-orange-300"
+                    >
+                      <Info size={14} />
+                    </button>
+                  </div>
 
-      {/* <select
+                  {/* <select
         value={formData.cityCode}
         onChange={(e) => handleInputChange("cityCode", e.target.value)}
         className="w-full bg-[#12181e] border border-white/5 rounded-xl px-5 py-4 text-white"
@@ -1378,82 +1395,90 @@ const handleInputChange = (field: string, value: string) => {
           </optgroup>
         ))}
       </select> */}
-      <Select
-  options={australianCityOptions.map((group) => ({
-    label: group.group,
-    options: group.options,
-  }))}
-  value={
-    australianCityOptions
-      .flatMap((g) => g.options)
-      .find((city) => city.label === formData.cityCode) || null
-  }
-  onChange={(selectedOption) =>
-    handleInputChange("cityCode", selectedOption?.label || "")
-  }
-  placeholder="Search or select a city..."
-  isSearchable
-  className="text-black"
-  styles={{
-    control: (base) => ({
-      ...base,
-      backgroundColor: "#12181e",
-      borderColor: "#2a2a2a",
-      minHeight: "56px",
-      borderRadius: "12px",
-      color: "white",
-    }),
-    singleValue: (base) => ({
-      ...base,
-      color: "white",
-    }),
-    input: (base) => ({
-      ...base,
-      color: "white",
-    }),
-    menu: (base) => ({
-      ...base,
-      backgroundColor: "#12181e",
-    }),
-    option: (base, state) => ({
-      ...base,
-      backgroundColor: state.isFocused ? "#f97316" : "#12181e",
-      color: "white",
-      cursor: "pointer",
-    }),
-    groupHeading: (base) => ({
-      ...base,
-      color: "#f97316",
-      fontWeight: "bold",
-      fontSize: "12px",
-      textTransform: "uppercase",
-    }),
-    placeholder: (base) => ({
-      ...base,
-      color: "#71717a",
-    }),
-  }}
-/>
+                  <Select
+                    options={australianCityOptions.map((group) => ({
+                      label: group.group,
+                      options: group.options,
+                    }))}
+                    value={
+                      australianCityOptions
+                        .flatMap((g) => g.options)
+                        .find((city) => city.label === formData.cityCode) ||
+                      null
+                    }
+                    onChange={(selectedOption) =>
+                      handleInputChange("cityCode", selectedOption?.label || "")
+                    }
+                    placeholder="Search or select a city..."
+                    isSearchable
+                    className="text-black"
+                    styles={{
+                      control: (base) => ({
+                        ...base,
+                        backgroundColor: "#12181e",
+                        borderColor: "#2a2a2a",
+                        minHeight: "56px",
+                        borderRadius: "12px",
+                        color: "white",
+                      }),
+                      singleValue: (base) => ({
+                        ...base,
+                        color: "white",
+                      }),
+                      input: (base) => ({
+                        ...base,
+                        color: "white",
+                      }),
+                      menu: (base) => ({
+                        ...base,
+                        backgroundColor: "#12181e",
+                      }),
+                      option: (base, state) => ({
+                        ...base,
+                        backgroundColor: state.isFocused
+                          ? "#f97316"
+                          : "#12181e",
+                        color: "white",
+                        cursor: "pointer",
+                      }),
+                      groupHeading: (base) => ({
+                        ...base,
+                        color: "#f97316",
+                        fontWeight: "bold",
+                        fontSize: "12px",
+                        textTransform: "uppercase",
+                      }),
+                      placeholder: (base) => ({
+                        ...base,
+                        color: "#71717a",
+                      }),
+                    }}
+                  />
 
-      {showCityInfo && (
-        <div className="rounded-xl border border-orange-500/30 bg-orange-500/10 p-4 animate-in fade-in duration-300">
-          <p className="text-xs leading-6 text-orange-100 text-justify">
-            <span className="font-semibold">Note:</span> If your city is not listed, please select the city closest to your location.
-          </p>
-        </div>
-      )}
-    </div>
-  )}
-</div>
+                  {showCityInfo && (
+                    <div className="rounded-xl border border-orange-500/30 bg-orange-500/10 p-4 animate-in fade-in duration-300">
+                      <p className="text-xs leading-6 text-orange-100 text-justify">
+                        <span className="font-semibold">Note:</span> If your
+                        city is not listed, please select the city closest to
+                        your location.
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         )}
 
         {step === 2 && (
           <div className="space-y-10 text-center sm:text-left">
             <div className="space-y-2">
-              <h2 className="text-3xl font-black tracking-tighter">What Trade Are You?</h2>
+              <h2 className="text-3xl font-black tracking-tighter">
+                What Trade Are You?
+              </h2>
               <p className="text-zinc-500 font-medium tracking-wide">
-                This helps Mia.Ai qualify callers and check they need the right trade.
+                This helps Mia.Ai qualify callers and check they need the right
+                trade.
               </p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -1461,13 +1486,21 @@ const handleInputChange = (field: string, value: string) => {
                 <button
                   key={t}
                   onClick={() => setFormData({ ...formData, trade: t })}
-                  className={`flex items-center justify-between p-5 rounded-2xl border-2 transition-all group ${formData.trade === t
+                  className={`flex items-center justify-between p-5 rounded-2xl border-2 transition-all group ${
+                    formData.trade === t
                       ? "border-orange-500 bg-orange-500/5 text-orange-500"
                       : "border-white/5 bg-[#090e14] text-zinc-500 hover:border-white/10"
-                    }`}
+                  }`}
                 >
                   <div className="flex items-center gap-4">
-                    <Hammer size={18} className={formData.trade === t ? "text-orange-500" : "text-zinc-700 group-hover:text-zinc-400"} />
+                    <Hammer
+                      size={18}
+                      className={
+                        formData.trade === t
+                          ? "text-orange-500"
+                          : "text-zinc-700 group-hover:text-zinc-400"
+                      }
+                    />
                     <span className="font-bold tracking-tight">{t}</span>
                   </div>
                   {formData.trade === t && <Check size={16} />}
@@ -1480,30 +1513,36 @@ const handleInputChange = (field: string, value: string) => {
         {step === 3 && (
           <div className="space-y-6">
             <div className="space-y-2">
-              <h2 className="text-3xl font-black tracking-tighter">Number Setup</h2>
+              <h2 className="text-3xl font-black tracking-tighter">
+                Number Setup
+              </h2>
               <p className="text-zinc-500 font-medium tracking-wide">
                 Enter your mobile number.
               </p>
             </div>
-           <InputField
-  label="Mobile Number *"
-  value={formData.mobile}
-  icon={<Phone size={14} />}
-          placeholder={
-            formData.country === "AU"
-              ? "+61 412 345 678"
-              : "+64 21 123 4567"
-          }
-  error={errors.mobile}
-  onChange={(v: string) =>
-            // allow digits, spaces and leading + for country code
-            handleInputChange("mobile", v.replace(/[^+\d\s]/g, ""))
-  }
-/>
-        <p className="mt-2 rounded-lg border border-white/5 bg-white/[0.03] px-3 py-2 text-xs text-zinc-400">
-          <span className="font-semibold text-orange-400">Note:</span>{" "}
-          Write your mobile number including the country code, for example {formData.country === "AU" ? "+61 412 345 678" : "+64 21 123 4567"}.
-        </p>
+            <InputField
+              label="Mobile Number *"
+              value={formData.mobile}
+              icon={<Phone size={14} />}
+              placeholder={
+                formData.country === "AU"
+                  ? "+61 412 345 678"
+                  : "+64 21 123 4567"
+              }
+              error={errors.mobile}
+              onChange={(v: string) =>
+                // allow digits, spaces and leading + for country code
+                handleInputChange("mobile", v.replace(/[^+\d\s]/g, ""))
+              }
+            />
+            <p className="mt-2 rounded-lg border border-white/5 bg-white/[0.03] px-3 py-2 text-xs text-zinc-400">
+              <span className="font-semibold text-orange-400">Note:</span> Write
+              your mobile number including the country code, for example{" "}
+              {formData.country === "AU"
+                ? "+61 412 345 678"
+                : "+64 21 123 4567"}
+              .
+            </p>
           </div>
         )}
 
@@ -1518,7 +1557,12 @@ const handleInputChange = (field: string, value: string) => {
             </div>
 
             <div
-              onClick={() => setFormData((prev) => ({ ...prev, setBusinessHours: !prev.setBusinessHours }))}
+              onClick={() =>
+                setFormData((prev) => ({
+                  ...prev,
+                  setBusinessHours: !prev.setBusinessHours,
+                }))
+              }
             >
               <CheckboxField
                 checked={formData.setBusinessHours}
@@ -1552,7 +1596,9 @@ const handleInputChange = (field: string, value: string) => {
         {step === 5 && (
           <div className="space-y-10">
             <div className="space-y-2">
-              <h2 className="text-4xl font-black tracking-tighter">Confirm & Sign Up</h2>
+              <h2 className="text-4xl font-black tracking-tighter">
+                Confirm & Sign Up
+              </h2>
               <p className="text-zinc-500 font-medium tracking-wide">
                 Review your details and accept the terms.
               </p>
@@ -1560,7 +1606,9 @@ const handleInputChange = (field: string, value: string) => {
 
             <div className="bg-[#090e14] border border-white/5 p-10 rounded-3xl space-y-2">
               <div className="flex items-center gap-2 text-zinc-600 mb-2 justify-center">
-                <span className="text-[10px] font-black uppercase tracking-[0.2em]">Your Details</span>
+                <span className="text-[10px] font-black uppercase tracking-[0.2em]">
+                  Your Details
+                </span>
               </div>
               <div className="space-y-4">
                 <SummaryItem label="Name" value={formData.name || "—"} />
@@ -1570,30 +1618,42 @@ const handleInputChange = (field: string, value: string) => {
                 <SummaryItem label="Mobile" value={formData.mobile || "—"} />
                 <SummaryItem
                   label="Hours"
-                  value={formData.setBusinessHours
-                    ? `${formData.openingTime} — ${formData.closingTime}`
-                    : "24/7 (No out of hours)"}
+                  value={
+                    formData.setBusinessHours
+                      ? `${formData.openingTime} — ${formData.closingTime}`
+                      : "24/7 (No out of hours)"
+                  }
                 />
               </div>
             </div>
 
             <div
               onClick={() => setAgreedToTerms(!agreedToTerms)}
-              className={`bg-[#090e14] border p-4 rounded-2xl flex items-start gap-4 transition-all group cursor-pointer ${agreedToTerms
+              className={`bg-[#090e14] border p-4 rounded-2xl flex items-start gap-4 transition-all group cursor-pointer ${
+                agreedToTerms
                   ? "border-orange-500/50 bg-orange-500/5 shadow-[0_0_20px_rgba(16,185,129,0.1)]"
                   : "border-white/5 hover:border-white/10"
-                }`}
+              }`}
             >
               <div
-                className={`w-6 h-6 rounded-md border-2 flex items-center justify-center shrink-0 transition-all ${agreedToTerms ? "bg-orange-500 border-orange-500" : "border-white/20 group-hover:border-white/40"
-                  }`}
+                className={`w-6 h-6 rounded-md border-2 flex items-center justify-center shrink-0 transition-all ${
+                  agreedToTerms
+                    ? "bg-orange-500 border-orange-500"
+                    : "border-white/20 group-hover:border-white/40"
+                }`}
               >
-                {agreedToTerms && <Check size={16} className="text-black stroke-[4]" />}
+                {agreedToTerms && (
+                  <Check size={16} className="text-black stroke-[4]" />
+                )}
               </div>
               <div className="space-y-2">
-                <p className="text-white font-bold text-sm">I agree to the Terms and Conditions</p>
+                <p className="text-white font-bold text-sm">
+                  I agree to the Terms and Conditions
+                </p>
                 <p className="text-zinc-500 text-[10px] leading-relaxed">
-                 Including payment terms for a recurring monthly subscription (your payment method will be charged automatically each month) and the Mia.Ai Service Agreement.
+                  Including payment terms for a recurring monthly subscription
+                  (your payment method will be charged automatically each month)
+                  and the Mia.Ai Service Agreement.
                 </p>
               </div>
             </div>
@@ -1604,9 +1664,12 @@ const handleInputChange = (field: string, value: string) => {
         {step === 6 && (
           <div className="space-y-10">
             <div className="space-y-2 text-center">
-              <h2 className="text-4xl font-black tracking-tighter">Verify Your Email</h2>
+              <h2 className="text-4xl font-black tracking-tighter">
+                Verify Your Email
+              </h2>
               <p className="text-zinc-500 font-medium tracking-wide">
-                We've sent a 6-digit code to <span className="text-white">{formData.email}</span>
+                We've sent a 6-digit code to{" "}
+                <span className="text-white">{formData.email}</span>
               </p>
             </div>
 
@@ -1620,7 +1683,11 @@ const handleInputChange = (field: string, value: string) => {
                 className="w-full max-w-xs bg-[#12181e] border border-white/5 rounded-2xl px-6 py-5 text-center text-4xl font-black tracking-[0.5em] text-orange-500 placeholder-zinc-800 focus:outline-none focus:border-orange-500 transition-all"
               />
 
-              {error && <p className="text-red-500 text-sm font-bold animate-in fade-in slide-in-from-top-2">{error}</p>}
+              {error && (
+                <p className="text-red-500 text-sm font-bold animate-in fade-in slide-in-from-top-2">
+                  {error}
+                </p>
+              )}
 
               <button
                 onClick={handleVerifyOtp}
@@ -1643,39 +1710,64 @@ const handleInputChange = (field: string, value: string) => {
             </div>
 
             <div className="space-y-4">
-              <h2 className="text-4xl sm:text-5xl font-black tracking-tighter">You're All Set!</h2>
+              <h2 className="text-4xl sm:text-5xl font-black tracking-tighter">
+                You're All Set!
+              </h2>
               <p className="text-zinc-500 text-sm sm:text-base max-w-md leading-relaxed font-medium">
                 In a real sign-up, you'd receive a confirmation email at <br />
-                <span className="text-white font-bold tracking-tight">{formData.email}</span>
+                <span className="text-white font-bold tracking-tight">
+                  {formData.email}
+                </span>
               </p>
             </div>
 
             <div className="w-full max-w-sm bg-[#090e14]/50 border border-white/5 p-8 rounded-3xl text-left space-y-4">
-              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-700">Summary</span>
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-700">
+                Summary
+              </span>
               <div className="space-y-3">
                 <div className="flex justify-between items-center text-xs">
-                  <span className="text-zinc-500 font-bold uppercase tracking-widest">Business:</span>
-                  <span className="text-white font-black">{formData.company}</span>
-                </div>
-                <div className="flex justify-between items-center text-xs">
-                  <span className="text-zinc-500 font-bold uppercase tracking-widest">Trade:</span>
-                  <span className="text-white font-black">{formData.trade}</span>
-                </div>
-                <div className="flex justify-between items-center text-xs">
-                  <span className="text-zinc-500 font-bold uppercase tracking-widest">Mobile:</span>
-                  <span className="text-white font-black">{formData.mobile}</span>
-                </div>
-                <div className="flex justify-between items-center text-xs">
-                  <span className="text-zinc-500 font-bold uppercase tracking-widest">Hours:</span>
+                  <span className="text-zinc-500 font-bold uppercase tracking-widest">
+                    Business:
+                  </span>
                   <span className="text-white font-black">
-                    {formData.setBusinessHours ? `${formData.openingTime} — ${formData.closingTime}` : "24/7"}
+                    {formData.company}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center text-xs">
+                  <span className="text-zinc-500 font-bold uppercase tracking-widest">
+                    Trade:
+                  </span>
+                  <span className="text-white font-black">
+                    {formData.trade}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center text-xs">
+                  <span className="text-zinc-500 font-bold uppercase tracking-widest">
+                    Mobile:
+                  </span>
+                  <span className="text-white font-black">
+                    {formData.mobile}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center text-xs">
+                  <span className="text-zinc-500 font-bold uppercase tracking-widest">
+                    Hours:
+                  </span>
+                  <span className="text-white font-black">
+                    {formData.setBusinessHours
+                      ? `${formData.openingTime} — ${formData.closingTime}`
+                      : "24/7"}
                   </span>
                 </div>
               </div>
             </div>
 
             <div className="flex flex-col sm:flex-row items-center gap-4 w-full justify-center">
-              <button onClick={onGoToLogin || onBack} className="w-full sm:w-auto bg-orange-500 hover:bg-orange-400 text-black px-8 py-4 rounded-xl text-lg font-black transition-all">
+              <button
+                onClick={onGoToLogin || onBack}
+                className="w-full sm:w-auto bg-orange-500 hover:bg-orange-400 text-black px-8 py-4 rounded-xl text-lg font-black transition-all"
+              >
                 Go to Login
               </button>
             </div>
@@ -1690,7 +1782,10 @@ const handleInputChange = (field: string, value: string) => {
               disabled={hasRegisteredSuccess}
               className={`flex items-center gap-2 text-sm font-black uppercase tracking-widest group transition-colors ${hasRegisteredSuccess ? "text-zinc-500 cursor-not-allowed" : "text-zinc-600 hover:text-white"}`}
             >
-              <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
+              <ArrowLeft
+                size={16}
+                className="group-hover:-translate-x-1 transition-transform"
+              />
               Back
             </button>
 
@@ -1698,13 +1793,16 @@ const handleInputChange = (field: string, value: string) => {
 
             <button
               onClick={step === 5 ? handleSignup : nextStep}
-              disabled={(step === 5 && (!agreedToTerms || isSubmitting)) || isSubmitting}
-              className={`flex items-center gap-2 px-10 py-3 rounded-2xl text-lg font-black transition-all duration-300 shadow-xl hover:scale-[1.03] active:scale-95 group ${step === 5
+              disabled={
+                (step === 5 && (!agreedToTerms || isSubmitting)) || isSubmitting
+              }
+              className={`flex items-center gap-2 px-10 py-3 rounded-2xl text-lg font-black transition-all duration-300 shadow-xl hover:scale-[1.03] active:scale-95 group ${
+                step === 5
                   ? agreedToTerms
                     ? "bg-orange-500 text-black shadow-[0_10px_30px_rgba(249,115,22,0.3)]"
                     : "bg-[#12181e] text-zinc-700 border border-white/5 cursor-not-allowed opacity-50"
                   : "bg-orange-500 text-black shadow-orange-500/20 hover:bg-orange-400"
-                }`}
+              }`}
             >
               {isSubmitting ? (
                 <span className="flex items-center gap-2">
@@ -1713,7 +1811,9 @@ const handleInputChange = (field: string, value: string) => {
                 </span>
               ) : (
                 <>
-                  {step === 5 ? <Check size={20} className="stroke-[3]" /> : null}
+                  {step === 5 ? (
+                    <Check size={20} className="stroke-[3]" />
+                  ) : null}
                   {step === 5 ? "Complete Sign Up" : "Next"}
                   {step !== 5 && (
                     <ArrowLeft className="w-5 h-5 rotate-180 transition-transform group-hover:translate-x-1" />
@@ -1745,7 +1845,9 @@ function InputField({
     <div className="space-y-3">
       <div className="flex items-center gap-2 text-orange-500">
         {icon}
-        <label className="text-[10px] font-black uppercase tracking-widest">{label}</label>
+        <label className="text-[10px] font-black uppercase tracking-widest">
+          {label}
+        </label>
       </div>
       <input
         type={type}
@@ -1753,17 +1855,22 @@ function InputField({
         onChange={(e) => onChange && onChange(e.target.value)}
         placeholder={placeholder}
         disabled={disabled}
-        className={`w-full bg-[#12181e] border rounded-xl px-5 py-4 text-white placeholder-zinc-700 focus:outline-none transition-all ${disabled
+        className={`w-full bg-[#12181e] border rounded-xl px-5 py-4 text-white placeholder-zinc-700 focus:outline-none transition-all ${
+          disabled
             ? "opacity-60 cursor-not-allowed border-white/10"
             : error
               ? "border-red-500"
               : highlight
                 ? "border-orange-500/30 shadow-[0_0_20px_rgba(249,115,22,0.05)]"
                 : "border-white/5"
-          }`}
+        }`}
       />
       {error && <p className="text-red-500 text-xs font-medium">{error}</p>}
-      {subLabel && <p className="text-zinc-600 text-[10px] font-medium leading-relaxed">{subLabel}</p>}
+      {subLabel && (
+        <p className="text-zinc-600 text-[10px] font-medium leading-relaxed">
+          {subLabel}
+        </p>
+      )}
     </div>
   );
 }
@@ -1772,8 +1879,9 @@ function CheckboxField({ checked, label, sub }: any) {
   return (
     <div className="bg-[#090e14] border border-white/5 p-6 rounded-2xl flex items-center gap-5 transition-all hover:border-white/10 group cursor-pointer">
       <div
-        className={`w-6 h-6 rounded-md flex items-center justify-center shrink-0 border-2 transition-colors ${checked ? "bg-orange-500 border-orange-500" : "border-white/10"
-          }`}
+        className={`w-6 h-6 rounded-md flex items-center justify-center shrink-0 border-2 transition-colors ${
+          checked ? "bg-orange-500 border-orange-500" : "border-white/10"
+        }`}
       >
         {checked && <Check size={16} className="text-black" />}
       </div>
@@ -1792,7 +1900,9 @@ function CheckboxField({ checked, label, sub }: any) {
 function SummaryItem({ label, value }: any) {
   return (
     <div className="flex items-center justify-between border-b border-white/5 pb-4">
-      <span className="text-zinc-600 text-xs font-bold uppercase tracking-widest">{label}:</span>
+      <span className="text-zinc-600 text-xs font-bold uppercase tracking-widest">
+        {label}:
+      </span>
       <span className="text-white font-black tracking-tight">{value}</span>
     </div>
   );
