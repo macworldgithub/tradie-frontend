@@ -33,6 +33,7 @@ function App() {
   const [initialLoginRole, setInitialLoginRole] = useState<'company' | 'admin'>('company');
   const [view, setView] = useState<'landing' | 'signup' | 'login' | 'forgot-password' | 'change-password' | 'voice-agent' | 'admin' | 'payment'>(() => {
     if (window.location.search.includes('admin=true')) return 'admin';
+    if (window.location.search.includes('session_id')) return 'signup';
     const savedUserStr = localStorage.getItem('user');
     const savedToken = localStorage.getItem('token');
     if (savedUserStr && savedToken) {
