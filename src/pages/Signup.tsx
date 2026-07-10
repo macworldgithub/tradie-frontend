@@ -312,8 +312,6 @@ export default function Signup({ onBack, onGoToLogin }: SignupProps) {
         const token = loginRes.accessToken;
         setLoginToken(token);
         localStorage.setItem(STRIPE_PENDING_TOKEN_KEY, token);
-        localStorage.setItem("token", token);
-        localStorage.setItem("user", JSON.stringify(loginRes.user));
         localStorage.setItem("signupFormData", JSON.stringify(formData));
         await processPaymentAndLogout(token);
       } else {
