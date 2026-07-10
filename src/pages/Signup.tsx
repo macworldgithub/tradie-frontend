@@ -26,21 +26,31 @@ export default function Signup({ onBack, onGoToLogin }: SignupProps) {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showMobileInfo, setShowMobileInfo] = useState(false);
   const [showCityInfo, setShowCityInfo] = useState(false);
-  const [formData, setFormData] = useState({
-    name: "",
-    company: "",
-    email: "",
-    password: "",
-    acn: "",
-    trade: "",
-    mobile: "",
-    setBusinessHours: true,
-    openingTime: "07:00", // 24-hour format
-    closingTime: "18:00", // 24-hour format
-    notificationPreference: "both",
-    callReceivedOn: "mobile",
-    country: "AU",
-    cityCode: "",
+  const [formData, setFormData] = useState(() => {
+    const saved = localStorage.getItem("signupFormData");
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        // ignore error
+      }
+    }
+    return {
+      name: "",
+      company: "",
+      email: "",
+      password: "",
+      acn: "",
+      trade: "",
+      mobile: "",
+      setBusinessHours: true,
+      openingTime: "07:00", // 24-hour format
+      closingTime: "18:00", // 24-hour format
+      notificationPreference: "both",
+      callReceivedOn: "mobile",
+      country: "AU",
+      cityCode: "",
+    };
   });
 
   const [agreedToTerms, setAgreedToTerms] = useState(false);
@@ -138,6 +148,10 @@ export default function Signup({ onBack, onGoToLogin }: SignupProps) {
   const STRIPE_PENDING_TOKEN_KEY = "pendingStripeAuthToken";
   const [hasRegisteredSuccess, setHasRegisteredSuccess] = useState(false);
   const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
+  const [isSyncingStripe, setIsSyncingStripe] = useState(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    return !!urlParams.get("session_id");
+  });
   const [loginToken, setLoginToken] = useState<string | null>(() => {
     return localStorage.getItem(STRIPE_PENDING_TOKEN_KEY);
   });
@@ -275,7 +289,6 @@ export default function Signup({ onBack, onGoToLogin }: SignupProps) {
     try {
       const res = await authService.verifyOtp(formData.email, otp);
       if (res.message === "Email verified successfully") {
-        setStep(7);
         await loginAfterSignup();
       } else {
         setError(res.message || "Invalid OTP");
@@ -301,6 +314,7 @@ export default function Signup({ onBack, onGoToLogin }: SignupProps) {
         localStorage.setItem(STRIPE_PENDING_TOKEN_KEY, token);
         localStorage.setItem("token", token);
         localStorage.setItem("user", JSON.stringify(loginRes.user));
+        localStorage.setItem("signupFormData", JSON.stringify(formData));
         await processPaymentAndLogout(token);
       } else {
         console.error("Login failed after signup", loginRes);
@@ -336,8 +350,17 @@ export default function Signup({ onBack, onGoToLogin }: SignupProps) {
     const urlParams = new URLSearchParams(window.location.search);
     const sessionId = urlParams.get("session_id");
 
-    if (!sessionId) return;
-    if (!loginToken) return;
+    if (!sessionId) {
+      setIsSyncingStripe(false);
+      return;
+    }
+    if (!loginToken) {
+      setIsSyncingStripe(false);
+      return;
+    }
+
+    // Clear session_id from URL to prevent re-running if other dependencies change
+    window.history.replaceState({}, document.title, window.location.pathname);
 
     const syncStripe = async () => {
       try {
@@ -348,8 +371,15 @@ export default function Signup({ onBack, onGoToLogin }: SignupProps) {
         localStorage.removeItem(STRIPE_PENDING_TOKEN_KEY);
         localStorage.removeItem("token");
         localStorage.removeItem("user");
-        if (onGoToLogin) onGoToLogin();
-        else onBack();
+        localStorage.removeItem("signupFormData");
+
+        setIsSyncingStripe(false);
+        setStep(7);
+
+        setTimeout(() => {
+          if (onGoToLogin) onGoToLogin();
+          else onBack();
+        }, 5000);
       }
     };
 
@@ -398,6 +428,15 @@ export default function Signup({ onBack, onGoToLogin }: SignupProps) {
     }
   };
 
+  if (isSyncingStripe) {
+    return (
+      <div className="min-h-screen bg-[#03070b] text-white flex flex-col items-center justify-center">
+        <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
+        <p className="mt-4 text-zinc-400 font-medium">Verifying payment...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#03070b] text-white flex flex-col items-center">
       {/* HEADER BAR */}
@@ -433,13 +472,12 @@ export default function Signup({ onBack, onGoToLogin }: SignupProps) {
           {steps.map((s) => (
             <div
               key={s.id}
-              className={`flex items-center gap-2 pb-4 border-b-2 transition-all cursor-pointer z-10 ${
-                step === s.id
-                  ? "border-orange-500 text-orange-500"
-                  : step > s.id
-                    ? "border-emerald-500 text-emerald-500"
-                    : "border-transparent text-zinc-600"
-              }`}
+              className={`flex items-center gap-2 pb-4 border-b-2 transition-all cursor-pointer z-10 ${step === s.id
+                ? "border-orange-500 text-orange-500"
+                : step > s.id
+                  ? "border-emerald-500 text-emerald-500"
+                  : "border-transparent text-zinc-600"
+                }`}
             >
               {step > s.id ? <Check size={16} /> : s.icon}
               <span className="text-xs font-black uppercase tracking-widest whitespace-nowrap">
@@ -507,7 +545,7 @@ export default function Signup({ onBack, onGoToLogin }: SignupProps) {
                 type="password"
                 value={formData.password}
                 icon={<FileText size={14} />}
-                placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
+                placeholder=""
                 error={errors.password}
                 onChange={(v: string) => handleInputChange("password", v)}
               />
@@ -699,11 +737,10 @@ export default function Signup({ onBack, onGoToLogin }: SignupProps) {
                 <button
                   key={t}
                   onClick={() => setFormData({ ...formData, trade: t })}
-                  className={`flex items-center justify-between p-5 rounded-2xl border-2 transition-all group ${
-                    formData.trade === t
-                      ? "border-orange-500 bg-orange-500/5 text-orange-500"
-                      : "border-white/5 bg-[#090e14] text-zinc-500 hover:border-white/10"
-                  }`}
+                  className={`flex items-center justify-between p-5 rounded-2xl border-2 transition-all group ${formData.trade === t
+                    ? "border-orange-500 bg-orange-500/5 text-orange-500"
+                    : "border-white/5 bg-[#090e14] text-zinc-500 hover:border-white/10"
+                    }`}
                 >
                   <div className="flex items-center gap-4">
                     <Hammer
@@ -845,18 +882,16 @@ export default function Signup({ onBack, onGoToLogin }: SignupProps) {
 
             <div
               onClick={() => setAgreedToTerms(!agreedToTerms)}
-              className={`bg-[#090e14] border p-4 rounded-2xl flex items-start gap-4 transition-all group cursor-pointer ${
-                agreedToTerms
-                  ? "border-orange-500/50 bg-orange-500/5 shadow-[0_0_20px_rgba(16,185,129,0.1)]"
-                  : "border-white/5 hover:border-white/10"
-              }`}
+              className={`bg-[#090e14] border p-4 rounded-2xl flex items-start gap-4 transition-all group cursor-pointer ${agreedToTerms
+                ? "border-orange-500/50 bg-orange-500/5 shadow-[0_0_20px_rgba(16,185,129,0.1)]"
+                : "border-white/5 hover:border-white/10"
+                }`}
             >
               <div
-                className={`w-6 h-6 rounded-md border-2 flex items-center justify-center shrink-0 transition-all ${
-                  agreedToTerms
-                    ? "bg-orange-500 border-orange-500"
-                    : "border-white/20 group-hover:border-white/40"
-                }`}
+                className={`w-6 h-6 rounded-md border-2 flex items-center justify-center shrink-0 transition-all ${agreedToTerms
+                  ? "bg-orange-500 border-orange-500"
+                  : "border-white/20 group-hover:border-white/40"
+                  }`}
               >
                 {agreedToTerms && (
                   <Check size={16} className="text-black stroke-[4]" />
@@ -1012,13 +1047,12 @@ export default function Signup({ onBack, onGoToLogin }: SignupProps) {
               disabled={
                 (step === 5 && (!agreedToTerms || isSubmitting)) || isSubmitting
               }
-              className={`flex items-center gap-2 px-10 py-3 rounded-2xl text-lg font-black transition-all duration-300 shadow-xl hover:scale-[1.03] active:scale-95 group ${
-                step === 5
-                  ? agreedToTerms
-                    ? "bg-orange-500 text-black shadow-[0_10px_30px_rgba(249,115,22,0.3)]"
-                    : "bg-[#12181e] text-zinc-700 border border-white/5 cursor-not-allowed opacity-50"
-                  : "bg-orange-500 text-black shadow-orange-500/20 hover:bg-orange-400"
-              }`}
+              className={`flex items-center gap-2 px-10 py-3 rounded-2xl text-lg font-black transition-all duration-300 shadow-xl hover:scale-[1.03] active:scale-95 group ${step === 5
+                ? agreedToTerms
+                  ? "bg-orange-500 text-black shadow-[0_10px_30px_rgba(249,115,22,0.3)]"
+                  : "bg-[#12181e] text-zinc-700 border border-white/5 cursor-not-allowed opacity-50"
+                : "bg-orange-500 text-black shadow-orange-500/20 hover:bg-orange-400"
+                }`}
             >
               {isSubmitting ? (
                 <span className="flex items-center gap-2">
@@ -1071,15 +1105,14 @@ function InputField({
         onChange={(e) => onChange && onChange(e.target.value)}
         placeholder={placeholder}
         disabled={disabled}
-        className={`w-full bg-[#12181e] border rounded-xl px-5 py-4 text-white placeholder-zinc-700 focus:outline-none transition-all ${
-          disabled
-            ? "opacity-60 cursor-not-allowed border-white/10"
-            : error
-              ? "border-red-500"
-              : highlight
-                ? "border-orange-500/30 shadow-[0_0_20px_rgba(249,115,22,0.05)]"
-                : "border-white/5"
-        }`}
+        className={`w-full bg-[#12181e] border rounded-xl px-5 py-4 text-white placeholder-zinc-700 focus:outline-none transition-all ${disabled
+          ? "opacity-60 cursor-not-allowed border-white/10"
+          : error
+            ? "border-red-500"
+            : highlight
+              ? "border-orange-500/30 shadow-[0_0_20px_rgba(249,115,22,0.05)]"
+              : "border-white/5"
+          }`}
       />
       {error && <p className="text-red-500 text-xs font-medium">{error}</p>}
       {subLabel && (
@@ -1095,9 +1128,8 @@ function CheckboxField({ checked, label, sub }: any) {
   return (
     <div className="bg-[#090e14] border border-white/5 p-6 rounded-2xl flex items-center gap-5 transition-all hover:border-white/10 group cursor-pointer">
       <div
-        className={`w-6 h-6 rounded-md flex items-center justify-center shrink-0 border-2 transition-colors ${
-          checked ? "bg-orange-500 border-orange-500" : "border-white/10"
-        }`}
+        className={`w-6 h-6 rounded-md flex items-center justify-center shrink-0 border-2 transition-colors ${checked ? "bg-orange-500 border-orange-500" : "border-white/10"
+          }`}
       >
         {checked && <Check size={16} className="text-black" />}
       </div>
