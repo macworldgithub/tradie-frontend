@@ -250,7 +250,12 @@ export default function AdminPanel({
   const handleUnmapDid = async () => {
     const didId = companyDetails?.did?._id;
     if (!didId || !selectedCompanyId) return;
-    if (!window.confirm("Are you sure you want to UNMAP this DID from assigned tradies?")) return;
+    if (
+      !window.confirm(
+        "Are you sure you want to UNMAP this DID from assigned tradies?",
+      )
+    )
+      return;
 
     setDidActionError(null);
     setIsUnmappingDid(true);
@@ -268,7 +273,12 @@ export default function AdminPanel({
   const handleRemapDid = async () => {
     const didId = companyDetails?.did?._id;
     if (!didId || !selectedCompanyId) return;
-    if (!window.confirm("Are you sure you want to REMAP this DID (transfer assigned -> unassigned)?")) return;
+    if (
+      !window.confirm(
+        "Are you sure you want to REMAP this DID (transfer assigned -> unassigned)?",
+      )
+    )
+      return;
 
     setDidActionError(null);
     setIsRemappingDid(true);
@@ -286,7 +296,12 @@ export default function AdminPanel({
   const handleRenewDid = async () => {
     const didId = companyDetails?.did?._id;
     if (!didId || !selectedCompanyId) return;
-    if (!window.confirm("Renew this DID subscription? This will add 30 days to the balance.")) return;
+    if (
+      !window.confirm(
+        "Renew this DID subscription? This will add 30 days to the balance.",
+      )
+    )
+      return;
 
     setDidActionError(null);
     setIsRenewingDid(true);
@@ -382,7 +397,10 @@ export default function AdminPanel({
     const companyName = d.companyName?.toString().toLowerCase() ?? "";
     const number = d.number?.toString() ?? "";
 
-    return number.includes(normalizedSearch) || companyName.includes(normalizedSearch);
+    return (
+      number.includes(normalizedSearch) ||
+      companyName.includes(normalizedSearch)
+    );
   });
 
   return (
@@ -429,10 +447,11 @@ export default function AdminPanel({
                 setActiveTab("dashboard");
                 setIsMobileSidebarOpen(false);
               }}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${activeTab === "dashboard"
-                ? "bg-orange-500 text-black"
-                : "text-zinc-400 hover:text-white hover:bg-white/5"
-                }`}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${
+                activeTab === "dashboard"
+                  ? "bg-orange-500 text-black"
+                  : "text-zinc-400 hover:text-white hover:bg-white/5"
+              }`}
             >
               <LayoutDashboard size={18} />
               Dashboard
@@ -444,10 +463,11 @@ export default function AdminPanel({
                 setIsMobileSidebarOpen(false);
                 setSearchQuery("");
               }}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${activeTab === "dids"
-                ? "bg-orange-500 text-black"
-                : "text-zinc-400 hover:text-white hover:bg-white/5"
-                }`}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${
+                activeTab === "dids"
+                  ? "bg-orange-500 text-black"
+                  : "text-zinc-400 hover:text-white hover:bg-white/5"
+              }`}
             >
               <Phone size={18} />
               DIDs
@@ -568,9 +588,7 @@ export default function AdminPanel({
                         {totalCompanies}
                       </p>
                     </div>
-                    <div
-                      className="bg-[#090e14] border border-white/5 hover:border-orange-500/20 cursor-pointer rounded-2xl p-6 relative overflow-hidden group transition-all"
-                    >
+                    <div className="bg-[#090e14] border border-white/5 hover:border-orange-500/20 cursor-pointer rounded-2xl p-6 relative overflow-hidden group transition-all">
                       <div className="absolute top-0 right-0 bg-orange-500/5 w-24 h-24 blur-xl rounded-full group-hover:bg-orange-500/10 transition-all" />
                       <div className="flex items-center gap-4 mb-4 relative z-10">
                         <div className="bg-orange-500/10 p-2.5 rounded-xl text-orange-500">
@@ -684,12 +702,15 @@ export default function AdminPanel({
                                   {company.companyName}
                                 </h3>
                                 <span
-                                  className={`shrink-0 text-[10px] font-bold px-2 py-0.5 rounded-full border ${company.isActive
-                                    ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
-                                    : "bg-red-500/10 text-red-400 border-red-500/20"
-                                    }`}
+                                  className={`shrink-0 text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+                                    company.isActive
+                                      ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                                      : "bg-red-500/10 text-red-400 border-red-500/20"
+                                  }`}
                                 >
-                                  {company.isActive ? "Authorized" : "Awaiting Payment"}
+                                  {company.isActive
+                                    ? "Authorized"
+                                    : "Awaiting Payment"}
                                 </span>
                               </div>
 
@@ -730,10 +751,11 @@ export default function AdminPanel({
                                   Days Remaining:
                                 </span>
                                 <span
-                                  className={`px-2 py-0.5 rounded font-bold ${company.daysRemaining > 0
-                                    ? "bg-[#f97316]/10 text-[#f97316]"
-                                    : "bg-zinc-800 text-zinc-400"
-                                    }`}
+                                  className={`px-2 py-0.5 rounded font-bold ${
+                                    company.daysRemaining > 0
+                                      ? "bg-[#f97316]/10 text-[#f97316]"
+                                      : "bg-zinc-800 text-zinc-400"
+                                  }`}
                                 >
                                   {company.daysRemaining} days left
                                 </span>
@@ -812,10 +834,11 @@ export default function AdminPanel({
                     >
                       <div className="flex items-center justify-between">
                         <span
-                          className={`text-[10px] font-bold px-2 py-0.5 rounded border ${did.status === "active"
-                            ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
-                            : "bg-red-500/10 text-red-400 border-red-500/20"
-                            }`}
+                          className={`text-[10px] font-bold px-2 py-0.5 rounded border ${
+                            did.status === "active"
+                              ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                              : "bg-red-500/10 text-red-400 border-red-500/20"
+                          }`}
                         >
                           {did.status.toUpperCase()}
                         </span>
@@ -1059,7 +1082,9 @@ export default function AdminPanel({
                         </div>
                         <div>
                           <span className="text-zinc-500 block">
-                            {companyDetails.company.country === "NZ" ? "NZBN" : "Aussie ACN"}
+                            {companyDetails.company.country === "NZ"
+                              ? "NZBN"
+                              : "Aussie ACN"}
                           </span>
                           <span className="text-white font-bold font-mono">
                             {companyDetails.company.acn || "Not Specified"}
@@ -1089,14 +1114,21 @@ export default function AdminPanel({
                             {companyDetails.company.email}
                           </span>
                           <span
-                            className={`inline-block text-[9px] font-extrabold mt-1 px-1.5 py-0.5 rounded uppercase tracking-wider ${companyDetails.company.emailVerified
-                              ? "bg-emerald-500/10 text-emerald-400"
-                              : "bg-red-500/10 text-red-400"
-                              }`}
+                            className={`inline-block text-[9px] font-extrabold mt-1 px-1.5 py-0.5 rounded uppercase tracking-wider ${
+                              companyDetails.company.emailVerified
+                                ? "bg-emerald-500/10 text-emerald-400"
+                                : "bg-red-500/10 text-red-400"
+                            }`}
                           >
                             {companyDetails.company.emailVerified
                               ? "Verified"
                               : "Pending Verification"}
+                          </span>
+                        </div>
+                        <div className="col-span-2">
+                          <span className="text-zinc-500 block">ID</span>
+                          <span className="text-white font-mono font-semibold break-all">
+                            {companyDetails.company._id}
                           </span>
                         </div>
                         <div className="col-span-2">
@@ -1233,25 +1265,31 @@ export default function AdminPanel({
                                 DID Assigned Tradie:
                               </span>
                               <span className="text-zinc-300 font-bold">
-                                {Array.isArray(companyDetails.did.assignedTradieIds)
+                                {Array.isArray(
+                                  companyDetails.did.assignedTradieIds,
+                                )
                                   ? companyDetails.tradies
-                                    .filter((t: any) =>
-                                      companyDetails.did.assignedTradieIds.includes(t._id)
-                                    )
-                                    .map((t: any) => t.name)
-                                    .join(", ") || "Unassigned"
+                                      .filter((t: any) =>
+                                        companyDetails.did.assignedTradieIds.includes(
+                                          t._id,
+                                        ),
+                                      )
+                                      .map((t: any) => t.name)
+                                      .join(", ") || "Unassigned"
                                   : companyDetails.tradies.find(
-                                    (t: any) =>
-                                      t._id ===
-                                      companyDetails.did.assignedTradieId,
-                                  )?.name || "Subscrip"}
+                                      (t: any) =>
+                                        t._id ===
+                                        companyDetails.did.assignedTradieId,
+                                    )?.name || "Subscrip"}
                               </span>
                             </div>
 
                             {/* DID Action Buttons */}
                             <div className="flex items-center gap-2 pt-3">
                               {didActionError && (
-                                <div className="text-red-500 text-xs font-bold mr-2">{didActionError}</div>
+                                <div className="text-red-500 text-xs font-bold mr-2">
+                                  {didActionError}
+                                </div>
                               )}
                               <button
                                 type="button"
@@ -1259,7 +1297,11 @@ export default function AdminPanel({
                                 disabled={isUnmappingDid}
                                 className="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold border border-white/5 text-red-400 hover:bg-white/5 disabled:opacity-50"
                               >
-                                {isUnmappingDid ? <span className="w-3.5 h-3.5 border-2 border-red-400 border-t-transparent rounded-full animate-spin" /> : 'Unmap'}
+                                {isUnmappingDid ? (
+                                  <span className="w-3.5 h-3.5 border-2 border-red-400 border-t-transparent rounded-full animate-spin" />
+                                ) : (
+                                  "Unmap"
+                                )}
                               </button>
 
                               {/* <button
@@ -1302,14 +1344,13 @@ export default function AdminPanel({
                         </h5>
 
                         <div className="flex items-center justify-between text-xs">
-                          <span className="text-zinc-400">
-                            Days Remaining:
-                          </span>
+                          <span className="text-zinc-400">Days Remaining:</span>
                           <span
-                            className={`px-2 py-0.5 rounded font-black text-xs ${companyDetails.daysRemaining > 0
-                              ? "bg-emerald-500/10 text-emerald-400"
-                              : "bg-red-500/10 text-red-400"
-                              }`}
+                            className={`px-2 py-0.5 rounded font-black text-xs ${
+                              companyDetails.daysRemaining > 0
+                                ? "bg-emerald-500/10 text-emerald-400"
+                                : "bg-red-500/10 text-red-400"
+                            }`}
                           >
                             {companyDetails.daysRemaining} Days Left
                           </span>
@@ -1432,11 +1473,14 @@ export default function AdminPanel({
                                 <button
                                   key={option.value}
                                   type="button"
-                                  onClick={() => setTradieCallReceivedOn(option.value)}
-                                  className={`flex-1 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all ${tradieCallReceivedOn === option.value
-                                    ? "bg-[#f97316] text-black"
-                                    : "bg-[#12181e] border border-white/5 text-zinc-400 hover:text-white"
-                                    }`}
+                                  onClick={() =>
+                                    setTradieCallReceivedOn(option.value)
+                                  }
+                                  className={`flex-1 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all ${
+                                    tradieCallReceivedOn === option.value
+                                      ? "bg-[#f97316] text-black"
+                                      : "bg-[#12181e] border border-white/5 text-zinc-400 hover:text-white"
+                                  }`}
                                 >
                                   {option.label}
                                 </button>
@@ -1482,8 +1526,11 @@ export default function AdminPanel({
                         const isTradieMapped =
                           tradie.isMapped ||
                           (Array.isArray(companyDetails?.did?.assignedTradieIds)
-                            ? companyDetails.did.assignedTradieIds.includes(tradie._id)
-                            : companyDetails?.did?.assignedTradieId === tradie._id);
+                            ? companyDetails.did.assignedTradieIds.includes(
+                                tradie._id,
+                              )
+                            : companyDetails?.did?.assignedTradieId ===
+                              tradie._id);
                         return (
                           <div
                             key={tradie._id}
@@ -1499,7 +1546,7 @@ export default function AdminPanel({
                                 )}
                               </p>
                               <p className="text-xs text-zinc-500 mt-1">
-                                Call Received On:  {"  "}
+                                Call Received On: {"  "}
                                 <span className="text-zinc-300 font-semibold uppercase">
                                   {tradie.callReceivedOn}
                                 </span>
