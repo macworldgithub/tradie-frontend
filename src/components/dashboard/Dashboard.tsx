@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Plus, UserPlus, RefreshCw, AlertTriangle, Users, CreditCard, ShieldCheck, ArrowRight, X } from "lucide-react";
+import { Plus, UserPlus, RefreshCw, AlertTriangle, Users, CreditCard, ShieldCheck, ArrowRight, X, Info } from "lucide-react";
 import axios from "axios";
 import { API_CONFIG } from "../../config/apiConfig";
 import ProfileCard from "./ProfileCard";
@@ -35,6 +35,7 @@ export default function Dashboard({ onRegisterClick }: DashboardProps) {
   const [companyDidNumber, setCompanyDidNumber] = useState<string | null>(null);
   const [isCreatingCheckout, setIsCreatingCheckout] = useState(false);
   const [isCancelingSubscription, setIsCancelingSubscription] = useState(false);
+  const [showCancelInfo, setShowCancelInfo] = useState(false);
 
   console.log(daysRemaining, "DAYS REMAINING");
   const fetchTradies = async () => {
@@ -177,6 +178,16 @@ export default function Dashboard({ onRegisterClick }: DashboardProps) {
     }
   }, []);
 
+  useEffect(() => {
+    if (!showCancelInfo) return;
+
+    const timer = window.setTimeout(() => {
+      setShowCancelInfo(false);
+    }, 4000);
+
+    return () => window.clearTimeout(timer);
+  }, [showCancelInfo]);
+
   // Handle Stripe session sync on redirect
   const syncAttemptedRef = useRef(false);
   
@@ -255,7 +266,7 @@ export default function Dashboard({ onRegisterClick }: DashboardProps) {
       <ProfileCard user={user} daysRemaining={daysRemaining} didNumber={companyDidNumber} />
 
       {/* Payment Summary Card */}
-      <div className="w-full bg-[#090e14]/50 border border-white/5 rounded-[32px] p-6 md:p-8 shadow-2xl relative overflow-hidden group hover:border-orange-500/30 transition-all duration-300">
+      <div className="w-full bg-[#090e14]/50 border border-white/5 rounded-[32px] p-6 md:p-8 shadow-2xl relative group hover:border-orange-500/30 transition-all duration-300">
         <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-40 h-40 rounded-full bg-orange-500/10 blur-3xl pointer-events-none" />
         <div className="relative z-10 grid gap-6 md:grid-cols-[1fr_auto] items-start">
           <div className="space-y-4">
@@ -287,35 +298,56 @@ export default function Dashboard({ onRegisterClick }: DashboardProps) {
             <div className="text-zinc-400 text-sm leading-relaxed">
               Stripe payment portal is now available.
             </div>
-           <div className="flex gap-3 flex-wrap">
-                         <button
-  type="button"
-  onClick={handleCancelSubscription}
-  disabled={isCancelingSubscription}
-  className={`inline-flex items-center justify-center gap-2 rounded-2xl md:px-3 sm:px-2 sm:text-xs py-3 md:text-sm font-black uppercase tracking-wider text-white transition-all ${
-    isCancelingSubscription
-      ? "bg-red-600 opacity-50 cursor-not-allowed border border-red-600/30"
-      : "bg-red-600/20 hover:bg-red-600/30 border border-red-600/40 hover:border-red-600/60 hover:translate-y-[-1px] active:scale-[0.98]"
-  }`}
->
-  {isCancelingSubscription ? "Canceling..." : "Cancel"}
-  {!isCancelingSubscription && <X size={16} />}
-</button>
-             <button
-  type="button"
-  onClick={handleCreateCheckout}
-  disabled={isCreatingCheckout}
-  className={`inline-flex items-center justify-center gap-2 rounded-2xl md:px-3 sm:px-2 sm:text-xs py-3 md:text-sm font-black uppercase tracking-wider text-black transition-all ${
-    isCreatingCheckout
-      ? "bg-orange-500 opacity-50 cursor-not-allowed"
-      : "bg-orange-500 hover:bg-orange-400 hover:translate-y-[-1px] active:scale-[0.98] shadow-[0_10px_25px_rgba(249,115,22,0.15)] hover:shadow-[0_10px_25px_rgba(249,115,22,0.3)]"
-  }`}
->
-  {isCreatingCheckout ? "Loading..." : "Manage Billing"}
-  {!isCreatingCheckout && <ArrowRight size={16} />}
-</button>
+           <div className="flex w-full flex-col items-end gap-3 sm:w-auto">
+             <div className="relative flex flex-wrap items-center justify-end gap-3">
+               <button
+                 type="button"
+                 onClick={handleCancelSubscription}
+                 disabled={isCancelingSubscription}
+                 className={`inline-flex items-center justify-center gap-2 rounded-2xl md:px-3 sm:px-2 sm:text-xs py-3 md:text-sm font-black uppercase tracking-wider text-white transition-all ${
+                   isCancelingSubscription
+                     ? "bg-red-600 opacity-50 cursor-not-allowed border border-red-600/30"
+                     : "bg-red-600/20 hover:bg-red-600/30 border border-red-600/40 hover:border-red-600/60 hover:translate-y-[-1px] active:scale-[0.98]"
+                 }`}
+               >
+                 {isCancelingSubscription ? "Canceling..." : "Cancel"}
+               </button>
+               <div className="relative inline-flex items-center">
+                 <button
+                   type="button"
+                   onClick={() => setShowCancelInfo((prev) => !prev)}
+                   className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-orange-400 transition hover:bg-white/10"
+                   aria-label="Show cancellation information"
+                   title="Cancellation information"
+                 >
+                   <Info size={16} />
+                 </button>
 
-
+                 {showCancelInfo && (
+                   <div className="absolute right-0 top-full z-20 mt-3 w-[280px] rounded-[28px] border border-orange-500/20 bg-zinc-950/95 p-4 text-sm text-zinc-300 shadow-[0_30px_70px_rgba(15,23,42,0.5)]">
+                     <div className="flex items-start gap-2">
+                       <Info size={15} className="mt-0.5 shrink-0 text-orange-400" />
+                       <p className="leading-relaxed">
+                         <span className="font-semibold text-white">Note:</span> Click this button if you want to cancel your monthly recurring subscription. Your subscription will remain active until the end of the current billing period. Please wait until your remaining subscription days have expired before clicking <em className="text-orange-300">Manage Billing</em> to subscribe again.
+                       </p>
+                     </div>
+                   </div>
+                 )}
+               </div>
+               <button
+                 type="button"
+                 onClick={handleCreateCheckout}
+                 disabled={isCreatingCheckout}
+                 className={`inline-flex items-center justify-center gap-2 rounded-2xl md:px-3 sm:px-2 sm:text-xs py-3 md:text-sm font-black uppercase tracking-wider text-black transition-all ${
+                   isCreatingCheckout
+                     ? "bg-orange-500 opacity-50 cursor-not-allowed"
+                     : "bg-orange-500 hover:bg-orange-400 hover:translate-y-[-1px] active:scale-[0.98] shadow-[0_10px_25px_rgba(249,115,22,0.15)] hover:shadow-[0_10px_25px_rgba(249,115,22,0.3)]"
+                 }`}
+               >
+                 {isCreatingCheckout ? "Loading..." : "Manage Billing"}
+                 {!isCreatingCheckout && <ArrowRight size={16} />}
+               </button>
+             </div>
            </div>
           </div>
         </div>
