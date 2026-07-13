@@ -1126,7 +1126,9 @@ export default function AdminPanel({
                           </span>
                         </div>
                         <div className="col-span-2">
-                          <span className="text-zinc-500 block">ID</span>
+                          <span className="text-zinc-500 block">
+                            Company ID
+                          </span>
                           <span className="text-white font-mono font-semibold break-all">
                             {companyDetails.company._id}
                           </span>
