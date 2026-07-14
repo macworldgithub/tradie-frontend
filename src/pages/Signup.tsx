@@ -3259,7 +3259,7 @@ export default function Signup({ onBack, onGoToLogin }: SignupProps) {
         wantsGeoNumber: false,
         geoNumberType: "NONE",
         wantsPortNumber: formData.wantsPortNumber,
-        isPorting: Boolean(formData.wantsPortNumber),
+        porting: Boolean(formData.wantsPortNumber),
         openingHours,
         paymentDetails: {},
         country: formData.country,
