@@ -2945,12 +2945,8 @@ const emptyPortDetails: PortDetails = {
 };
 
 const entityTypes = [
-  "Individual",
   "Company",
-  "Partnership",
-  "Trust",
-  "Sole Trader",
-  "Government",
+  "Business",
 ];
 
 export default function Signup({ onBack, onGoToLogin }: SignupProps) {
@@ -3263,6 +3259,7 @@ export default function Signup({ onBack, onGoToLogin }: SignupProps) {
         wantsGeoNumber: false,
         geoNumberType: "NONE",
         wantsPortNumber: formData.wantsPortNumber,
+        isPorting: Boolean(formData.wantsPortNumber),
         openingHours,
         paymentDetails: {},
         country: formData.country,
