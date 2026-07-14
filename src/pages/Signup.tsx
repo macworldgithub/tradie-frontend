@@ -4132,6 +4132,30 @@ export default function Signup({ onBack, onGoToLogin }: SignupProps) {
 /* ---------------------------------------------------------------------- */
 /* Port-an-existing-number sub-form (Step 3)                               */
 /* ---------------------------------------------------------------------- */
+// Format a local Australian phone number for display while typing.
+// - Mobile (starts with 04): 0412 345 678 (4-3-3)
+// - Landline (starts with 0 but not 04): 07 3123 4567 (2-4-4)
+function formatPortNumber(input: string) {
+  if (!input) return "";
+  const digits = input.replace(/\D+/g, "");
+  if (digits.startsWith("04")) {
+    // mobile: 4-3-3
+    const part1 = digits.slice(0, 4);
+    const part2 = digits.slice(4, 7);
+    const part3 = digits.slice(7, 10);
+    return [part1, part2, part3].filter(Boolean).join(" ");
+  }
+  if (digits.startsWith("0")) {
+    // landline: 2-4-4
+    const part1 = digits.slice(0, 2);
+    const part2 = digits.slice(2, 6);
+    const part3 = digits.slice(6, 10);
+    return [part1, part2, part3].filter(Boolean).join(" ");
+  }
+  // fallback: just chunk into groups of up to 4
+  return digits.replace(/(\d{1,4})(?=\d)/g, "$1 ");
+}
+
 function PortNumberForm({
   portDetails,
   errors,
@@ -4168,9 +4192,9 @@ function PortNumberForm({
             label="Number to Port *"
             value={portDetails.numberToPort}
             icon={<Phone size={14} />}
-            placeholder="e.g. 07 3123 4567"
+            placeholder="e.g. 0412 345 678"
             error={errors.port_numberToPort}
-            onChange={(v: string) => onFieldChange("numberToPort", v)}
+            onChange={(v: string) => onFieldChange("numberToPort", formatPortNumber(v))}
           />
         </div>
       </div>
