@@ -77,7 +77,7 @@ export default function ProfileCard({
                 <p
                   className={`text-sm font-medium mt-1 ${didNumber ? "text-white" : "text-zinc-400"}`}
                 >
-                  {didNumber || "you have already paid wait fot did porting"}
+                  {didNumber || "You have already paid, wait for DID Porting"}
                 </p>
               </div>
               {/* {typeof daysRemaining !== 'undefined' && daysRemaining !== null && ( */}
