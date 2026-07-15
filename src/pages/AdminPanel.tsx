@@ -866,7 +866,7 @@ export default function AdminPanel({
                           </span>
                         </p>
                         <p className="text-xs text-zinc-500 mt-0.5">
-                          Trial Status:{" "}
+                          Days Remaining:{" "}
                           <span className="text-zinc-300 font-semibold">
                             {did.daysRemaining} days left
                           </span>
