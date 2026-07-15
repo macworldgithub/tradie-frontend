@@ -23,9 +23,11 @@ import {
   Smartphone,
   ShieldCheck,
   CreditCard,
+  FileText,
 } from "lucide-react";
 import logo from "../assets/logo.png";
 import { adminService } from "../services/adminService";
+import { API_CONFIG } from "../config/apiConfig";
 
 export default function AdminPanel({
   token,
@@ -51,6 +53,7 @@ export default function AdminPanel({
 
   // Detail Modal States
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  const [showPortingModal, setShowPortingModal] = useState(false);
   const [selectedCompanyId, setSelectedCompanyId] = useState<string | null>(
     null,
   );
@@ -697,23 +700,35 @@ export default function AdminPanel({
                           >
                             <div className="space-y-4">
                               {/* Title and status */}
-                              <div className="flex items-start justify-between gap-2">
-                                <h3 className="font-black text-lg text-white group-hover:text-[#f97316] transition-colors truncate">
-                                  {company.companyName}
-                                </h3>
-                                <span
-                                  className={`shrink-0 text-[10px] font-bold px-2 py-0.5 rounded-full border ${
-                                    company.isActive
-                                      ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
-                                      : "bg-red-500/10 text-red-400 border-red-500/20"
-                                  }`}
-                                >
-                                  {company.isActive
-                                    ? "Authorized"
-                                    : "Awaiting Payment"}
-                                </span>
-                              </div>
+                              <div className="flex items-start justify-between gap-3">
+                                {/* Company Name */}
+                                <div className="min-w-0 flex-1">
+                                  <h3 className="font-black text-lg text-white group-hover:text-[#f97316] transition-colors truncate">
+                                    {company.companyName}
+                                  </h3>
+                                </div>
 
+                                {/* Status Badges */}
+                                <div className="flex items-center gap-2 flex-shrink-0">
+                                  {company.isPorting && (
+                                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full border bg-orange-500/10 text-orange-400 border-orange-500/20 whitespace-nowrap">
+                                      Porting Required
+                                    </span>
+                                  )}
+
+                                  <span
+                                    className={`text-[10px] font-bold px-2 py-0.5 rounded-full border whitespace-nowrap ${
+                                      company.isActive
+                                        ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                                        : "bg-red-500/10 text-red-400 border-red-500/20"
+                                    }`}
+                                  >
+                                    {company.isActive
+                                      ? "Active"
+                                      : "Awaiting Activation"}
+                                  </span>
+                                </div>
+                              </div>
                               {/* Email */}
                               <div className="flex items-center gap-2 text-xs text-zinc-400">
                                 <Mail
@@ -1113,17 +1128,30 @@ export default function AdminPanel({
                           <span className="text-white font-mono font-semibold break-all">
                             {companyDetails.company.email}
                           </span>
-                          <span
-                            className={`inline-block text-[9px] font-extrabold mt-1 px-1.5 py-0.5 rounded uppercase tracking-wider ${
-                              companyDetails.company.emailVerified
-                                ? "bg-emerald-500/10 text-emerald-400"
-                                : "bg-red-500/10 text-red-400"
-                            }`}
-                          >
-                            {companyDetails.company.emailVerified
-                              ? "Verified"
-                              : "Pending Verification"}
-                          </span>
+                          <div className="flex flex-wrap gap-2 mt-1">
+                            <span
+                              className={`inline-block text-[9px] font-extrabold px-1.5 py-0.5 rounded uppercase tracking-wider ${
+                                companyDetails.company.emailVerified
+                                  ? "bg-emerald-500/10 text-emerald-400"
+                                  : "bg-red-500/10 text-red-400"
+                              }`}
+                            >
+                              {companyDetails.company.emailVerified
+                                ? "Verified"
+                                : "Pending Verification"}
+                            </span>
+                            <span
+                              className={`inline-block text-[9px] font-extrabold px-1.5 py-0.5 rounded uppercase tracking-wider ${
+                                companyDetails.company.hasPaid
+                                  ? "bg-emerald-500/10 text-emerald-400"
+                                  : "bg-red-500/10 text-red-400"
+                              }`}
+                            >
+                              {companyDetails.company.hasPaid
+                                ? "Paid"
+                                : "Awaiting Payment"}
+                            </span>
+                          </div>
                         </div>
                         <div className="col-span-2">
                           <span className="text-zinc-500 block">
@@ -1141,11 +1169,21 @@ export default function AdminPanel({
                             {companyDetails.company.openingHours}
                           </span>
                         </div>
-                        <div className="col-span-2 pt-2 border-t border-white/5 text-[10px] text-zinc-500 flex items-center gap-1">
-                          <Calendar size={12} /> Created:{" "}
-                          {new Date(
-                            companyDetails.company.createdAt,
-                          ).toLocaleString()}
+                        <div className="col-span-2 pt-2 border-t border-white/5 text-[10px] text-zinc-500 flex items-center justify-between">
+                          <div className="flex items-center gap-1">
+                            <Calendar size={12} /> Created:{" "}
+                            {new Date(
+                              companyDetails.company.createdAt,
+                            ).toLocaleString()}
+                          </div>
+                          {companyDetails.portingInfo?.porting && (
+                            <button
+                              onClick={() => setShowPortingModal(true)}
+                              className="bg-orange-500/20 text-orange-400 font-bold px-3 py-1.5 rounded-lg hover:bg-orange-500/30 transition-colors uppercase tracking-wider shadow-lg shadow-orange-500/10"
+                            >
+                              View Porting Info
+                            </button>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -1725,6 +1763,167 @@ export default function AdminPanel({
                   "Delete"
                 )}
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Porting Details Modal */}
+      {showPortingModal && companyDetails?.portingInfo && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[70] flex items-center justify-center p-4">
+          <div className="bg-[#090e14] w-full max-w-2xl rounded-2xl shadow-2xl flex flex-col border border-white/10 animate-in zoom-in-95 duration-200">
+            {/* Header */}
+            <div className="flex justify-between items-center p-6 border-b border-white/5">
+              <h2 className="text-xl font-black text-orange-500 flex items-center gap-3">
+                <span className="w-8 h-8 rounded-xl bg-orange-500/20 flex items-center justify-center text-orange-500">
+                  <Phone size={16} />
+                </span>
+                Number Porting Details
+              </h2>
+              <button
+                onClick={() => setShowPortingModal(false)}
+                className="text-zinc-500 hover:text-white transition-colors"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Body */}
+            <div className="p-6 space-y-6">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-[#12181e] p-2 rounded-xl border border-white/5">
+                  <span className="text-[10px] text-zinc-500 uppercase tracking-wider block mb-1">
+                    Name
+                  </span>
+                  <span className="text-white font-mono">
+                    {companyDetails.portingInfo.displayName || "N/A"}
+                  </span>
+                </div>
+                <div className="bg-[#12181e] p-2 rounded-xl border border-white/5">
+                  <span className="text-[10px] text-zinc-500 uppercase tracking-wider block mb-1">
+                    Number To Port
+                  </span>
+                  <span className="text-white font-mono">
+                    {companyDetails.portingInfo.numberToPort || "N/A"}
+                  </span>
+                </div>
+
+                <div className="bg-[#12181e] p-2 rounded-xl border border-white/5">
+                  <span className="text-[10px] text-zinc-500 uppercase tracking-wider block mb-1">
+                    provider Name
+                  </span>
+                  <span className="text-zinc-300 font-mono">
+                    {companyDetails.portingInfo.providerName || "N/A"}
+                  </span>
+                </div>
+                <div className="bg-[#12181e] p-2 rounded-xl border border-white/5">
+                  <span className="text-[10px] text-zinc-500 uppercase tracking-wider block mb-1">
+                    Account Number
+                  </span>
+                  <span className="text-zinc-300">
+                    {companyDetails.portingInfo.accountNumber || "N/A"}
+                  </span>
+                </div>
+                <div className="bg-[#12181e] p-2 rounded-xl border border-white/5">
+                  <span className="text-[10px] text-zinc-500 uppercase tracking-wider block mb-1">
+                    Entity Type
+                  </span>
+                  <span className="text-zinc-300">
+                    {companyDetails.portingInfo.entityType || "N/A"}
+                  </span>
+                </div>
+                <div className="bg-[#12181e] p-2 rounded-xl border border-white/5">
+                  <span className="text-[10px] text-zinc-500 uppercase tracking-wider block mb-1">
+                    Identification Number
+                  </span>
+                  <span className="text-zinc-300">
+                    {companyDetails.portingInfo.identificationNumber || "N/A"}
+                  </span>
+                </div>
+                <div className="bg-[#12181e] p-2 rounded-xl border border-white/5">
+                  <span className="text-[10px] text-zinc-500 uppercase tracking-wider block mb-1">
+                    Address
+                  </span>
+                  <span className="text-zinc-300">
+                    {companyDetails.portingInfo.address || "N/A"}
+                  </span>
+                </div>
+                <div className="bg-[#12181e] p-2 rounded-xl border border-white/5">
+                  <span className="text-[10px] text-zinc-500 uppercase tracking-wider block mb-1">
+                    City
+                  </span>
+                  <span className="text-zinc-300">
+                    {companyDetails.portingInfo.city || "N/A"}
+                  </span>
+                </div>
+                <div className="bg-[#12181e] p-2 rounded-xl border border-white/5">
+                  <span className="text-[10px] text-zinc-500 uppercase tracking-wider block mb-1">
+                    State
+                  </span>
+                  <span className="text-zinc-300">
+                    {companyDetails.portingInfo.state || "N/A"}
+                  </span>
+                </div>
+                <div className="bg-[#12181e] p-2 rounded-xl border border-white/5">
+                  <span className="text-[10px] text-zinc-500 uppercase tracking-wider block mb-1">
+                    Postcode
+                  </span>
+                  <span className="text-zinc-300">
+                    {companyDetails.portingInfo.postcode || "N/A"}
+                  </span>
+                </div>
+                <div className="bg-[#12181e] p-2 rounded-xl border border-white/5">
+                  <span className="text-[10px] text-zinc-500 uppercase tracking-wider block mb-1">
+                    country
+                  </span>
+                  <span className="text-zinc-300">
+                    {companyDetails.portingInfo.country || "N/A"}
+                  </span>
+                </div>
+
+                {companyDetails.portingInfo.authorisedContact && (
+                  <div className="bg-[#12181e] p-2 rounded-xl border border-white/5">
+                    <span className="text-[10px] text-zinc-500 uppercase tracking-wider block mb-1">
+                      Authorised Contact
+                    </span>
+                    <span className="text-zinc-400 block">
+                      {
+                        companyDetails.portingInfo.authorisedContact.givenName
+                      }{" "}
+                    </span>
+                    <span className="text-zinc-400 block">
+                      {companyDetails.portingInfo.authorisedContact.familyName}
+                    </span>
+                    <span className="text-zinc-400 block">
+                      {
+                        companyDetails.portingInfo.authorisedContact
+                          .contactNumber
+                      }
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="p-6 border-t border-white/5 flex justify-end gap-3 bg-[#12181e]/50 rounded-b-2xl">
+              <button
+                onClick={() => setShowPortingModal(false)}
+                className="px-6 py-2 rounded-xl text-xs font-bold text-white bg-white/5 hover:bg-white/10 transition-all border border-white/10"
+              >
+                Close
+              </button>
+              {companyDetails.portingInfo.supportingDocumentPath && (
+                <a
+                  href={`${API_CONFIG.BASE_URL}${companyDetails.portingInfo.supportingDocumentPath.replace("/var/www/tradie-agent", "")}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-6 py-2 rounded-xl text-xs font-bold text-white bg-orange-500 hover:bg-orange-600 transition-all shadow-lg shadow-orange-500/25 flex items-center gap-2"
+                >
+                  <FileText size={14} />
+                  View Document
+                </a>
+              )}
             </div>
           </div>
         </div>
