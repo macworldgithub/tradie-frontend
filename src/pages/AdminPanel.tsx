@@ -427,7 +427,7 @@ export default function AdminPanel({
       {/* Sidebar - Desktop and Mobile (Drawer) */}
       <aside
         className={`
-        fixed inset-y-0 left-0 z-50 w-72 bg-[#090e14] border-r border-white/5 flex flex-col justify-between transition-transform duration-300 ease-in-out
+        fixed inset-y-0 left-0 z-50 w-64 bg-[#090e14] border-r border-white/5 flex flex-col justify-between transition-transform duration-300 ease-in-out
         md:translate-x-0 md:static md:h-screen shrink-0
         ${isMobileSidebarOpen ? "translate-x-0" : "-translate-x-full"}
       `}
@@ -707,7 +707,7 @@ export default function AdminPanel({
                                 </div>
 
                                 {/* Status Badges */}
-                                <div className="flex items-center gap-2 flex-shrink-0">
+                                <div className="flex items-center flex-wrap gap-1 flex-shrink-0 justify-end">
                                   {company.isPorting && (
                                     <span className="text-[10px] font-bold px-2 py-0.5 rounded-full border bg-orange-500/10 text-orange-400 border-orange-500/20 whitespace-nowrap">
                                       Porting Required
@@ -1032,15 +1032,15 @@ export default function AdminPanel({
           />
 
           {/* Modal Container */}
-          <div className="relative w-full max-w-4xl max-h-[85vh] bg-[#090e14] border border-white/10 rounded-2xl overflow-hidden shadow-2xl flex flex-col animate-in fade-in zoom-in-95 duration-200 z-50">
+          <div className="relative w-full max-w-4xl max-h-[90vh] sm:max-h-[85vh] bg-[#090e14] border border-white/10 rounded-2xl overflow-hidden shadow-2xl flex flex-col animate-in fade-in zoom-in-95 duration-200 z-50">
             {/* Modal Header */}
-            <div className="flex items-center justify-between px-6 py-5 border-b border-white/5 bg-[#05090e]">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-[#12181e] border border-white/5 flex items-center justify-center font-black text-[#f97316]">
+            <div className="flex items-center justify-between px-4 sm:px-6 py-4 sm:py-5 border-b border-white/5 bg-[#05090e]">
+              <div className="flex items-center gap-3 min-w-0 flex-1">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#12181e] border border-white/5 flex items-center justify-center font-black text-[#f97316] shrink-0">
                   {companyDetails?.company?.companyName?.charAt(0) || "C"}
                 </div>
-                <div>
-                  <h3 className="text-lg font-black text-white">
+                <div className="min-w-0 flex-1">
+                  <h3 className="text-base sm:text-lg font-black text-white truncate">
                     {companyDetails?.company?.companyName ||
                       "Loading Details..."}
                   </h3>
@@ -1058,7 +1058,7 @@ export default function AdminPanel({
             </div>
 
             {/* Modal Scroll Body */}
-            <div className="p-6 overflow-y-auto space-y-6 flex-1">
+            <div className="p-4 sm:p-6 overflow-y-auto space-y-6 flex-1">
               {isLoadingDetails ? (
                 <div className="flex flex-col items-center justify-center py-20 gap-4">
                   <span className="w-10 h-10 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
@@ -1073,7 +1073,7 @@ export default function AdminPanel({
                 </div>
               ) : companyDetails ? (
                 <>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                     {/* Left: Profile Information */}
                     <div className="bg-[#12181e] border border-white/5 rounded-xl p-5 space-y-4">
                       <h4 className="text-xs font-bold text-[#f97316] uppercase tracking-wider flex items-center gap-2 pb-2 border-b border-white/5">
@@ -1081,7 +1081,7 @@ export default function AdminPanel({
                         Registration Profile
                       </h4>
 
-                      <div className="grid grid-cols-2 gap-y-4 gap-x-2 text-xs">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-2 text-xs">
                         <div>
                           <span className="text-zinc-500 block">
                             Customer Name
@@ -1636,19 +1636,19 @@ export default function AdminPanel({
             </div>
 
             {/* Modal Footer */}
-            <div className="flex items-center justify-between gap-3 px-6 py-4 border-t border-white/5 bg-[#05090e]">
+            <div className="flex flex-wrap items-center justify-between gap-2 px-4 sm:px-6 py-3 sm:py-4 border-t border-white/5 bg-[#05090e]">
               <div className="flex items-center gap-2">
                 <button
                   onClick={handleDeleteCompany}
                   disabled={isDeletingCompany}
-                  className="px-5 py-2 border border-red-500/20 bg-red-500/10 hover:bg-red-500/20 text-red-500 font-bold rounded-xl text-xs transition-all disabled:opacity-50 flex items-center gap-2"
+                  className="px-4 sm:px-5 py-2 border border-red-500/20 bg-red-500/10 hover:bg-red-500/20 text-red-500 font-bold rounded-xl text-xs transition-all disabled:opacity-50 flex items-center gap-2"
                 >
                   Delete Company
                 </button>
               </div>
               <button
                 onClick={() => setIsDetailsModalOpen(false)}
-                className="px-5 py-2 border border-white/10 hover:bg-white/5 text-white font-bold rounded-xl text-xs transition-all"
+                className="px-4 sm:px-5 py-2 border border-white/10 hover:bg-white/5 text-white font-bold rounded-xl text-xs transition-all"
               >
                 Close Portal
               </button>
@@ -1761,27 +1761,27 @@ export default function AdminPanel({
 
       {/* Porting Details Modal */}
       {showPortingModal && companyDetails?.portingInfo && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[70] flex items-center justify-center p-4">
-          <div className="bg-[#090e14] w-full max-w-2xl rounded-2xl shadow-2xl flex flex-col border border-white/10 animate-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[70] flex items-center justify-center p-3 sm:p-4">
+          <div className="bg-[#090e14] w-full max-w-2xl rounded-2xl shadow-2xl flex flex-col border border-white/10 animate-in zoom-in-95 duration-200 max-h-[95vh] sm:max-h-[90vh]">
             {/* Header */}
-            <div className="flex justify-between items-center p-6 border-b border-white/5">
-              <h2 className="text-xl font-black text-orange-500 flex items-center gap-3">
-                <span className="w-8 h-8 rounded-xl bg-orange-500/20 flex items-center justify-center text-orange-500">
-                  <Phone size={16} />
+            <div className="flex justify-between items-center px-4 sm:px-6 py-4 sm:py-5 border-b border-white/5 shrink-0">
+              <h2 className="text-lg sm:text-xl font-black text-orange-500 flex items-center gap-2 sm:gap-3">
+                <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-orange-500/20 flex items-center justify-center text-orange-500 shrink-0">
+                  <Phone size={15} />
                 </span>
                 Number Porting Details
               </h2>
               <button
                 onClick={() => setShowPortingModal(false)}
-                className="text-zinc-500 hover:text-white transition-colors"
+                className="text-zinc-500 hover:text-white transition-colors p-1 rounded-lg hover:bg-white/5 shrink-0"
               >
                 <X size={20} />
               </button>
             </div>
 
             {/* Body */}
-            <div className="p-6 space-y-6">
-              <div className="grid grid-cols-2 gap-4">
+            <div className="p-4 sm:p-6 space-y-4 sm:space-y-6 overflow-y-auto flex-1">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div className="bg-[#12181e] p-2 rounded-xl border border-white/5">
                   <span className="text-[10px] text-zinc-500 uppercase tracking-wider block mb-1">
                     Display Name
@@ -1895,7 +1895,7 @@ export default function AdminPanel({
             </div>
 
             {/* Footer */}
-            <div className="p-6 border-t border-white/5 flex justify-end gap-3 bg-[#12181e]/50 rounded-b-2xl">
+            <div className="px-4 sm:px-6 py-3 sm:py-4 border-t border-white/5 flex flex-wrap justify-end gap-2 sm:gap-3 bg-[#12181e]/50 rounded-b-2xl shrink-0">
               <button
                 onClick={() => setShowPortingModal(false)}
                 className="px-6 py-2 rounded-xl text-xs font-bold text-white bg-white/5 hover:bg-white/10 transition-all border border-white/10"
