@@ -450,11 +450,10 @@ export default function AdminPanel({
                 setActiveTab("dashboard");
                 setIsMobileSidebarOpen(false);
               }}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${
-                activeTab === "dashboard"
-                  ? "bg-orange-500 text-black"
-                  : "text-zinc-400 hover:text-white hover:bg-white/5"
-              }`}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${activeTab === "dashboard"
+                ? "bg-orange-500 text-black"
+                : "text-zinc-400 hover:text-white hover:bg-white/5"
+                }`}
             >
               <LayoutDashboard size={18} />
               Dashboard
@@ -466,11 +465,10 @@ export default function AdminPanel({
                 setIsMobileSidebarOpen(false);
                 setSearchQuery("");
               }}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${
-                activeTab === "dids"
-                  ? "bg-orange-500 text-black"
-                  : "text-zinc-400 hover:text-white hover:bg-white/5"
-              }`}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${activeTab === "dids"
+                ? "bg-orange-500 text-black"
+                : "text-zinc-400 hover:text-white hover:bg-white/5"
+                }`}
             >
               <Phone size={18} />
               DIDs
@@ -717,11 +715,10 @@ export default function AdminPanel({
                                   )}
 
                                   <span
-                                    className={`text-[10px] font-bold px-2 py-0.5 rounded-full border whitespace-nowrap ${
-                                      company.isActive
-                                        ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
-                                        : "bg-red-500/10 text-red-400 border-red-500/20"
-                                    }`}
+                                    className={`text-[10px] font-bold px-2 py-0.5 rounded-full border whitespace-nowrap ${company.isActive
+                                      ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                                      : "bg-red-500/10 text-red-400 border-red-500/20"
+                                      }`}
                                   >
                                     {company.isActive
                                       ? "Active"
@@ -766,11 +763,10 @@ export default function AdminPanel({
                                   Days Remaining:
                                 </span>
                                 <span
-                                  className={`px-2 py-0.5 rounded font-bold ${
-                                    company.daysRemaining > 0
-                                      ? "bg-[#f97316]/10 text-[#f97316]"
-                                      : "bg-zinc-800 text-zinc-400"
-                                  }`}
+                                  className={`px-2 py-0.5 rounded font-bold ${company.daysRemaining > 0
+                                    ? "bg-[#f97316]/10 text-[#f97316]"
+                                    : "bg-zinc-800 text-zinc-400"
+                                    }`}
                                 >
                                   {company.daysRemaining} days left
                                 </span>
@@ -849,11 +845,10 @@ export default function AdminPanel({
                     >
                       <div className="flex items-center justify-between">
                         <span
-                          className={`text-[10px] font-bold px-2 py-0.5 rounded border ${
-                            did.status === "active"
-                              ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
-                              : "bg-red-500/10 text-red-400 border-red-500/20"
-                          }`}
+                          className={`text-[10px] font-bold px-2 py-0.5 rounded border ${did.status === "active"
+                            ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                            : "bg-red-500/10 text-red-400 border-red-500/20"
+                            }`}
                         >
                           {did.status.toUpperCase()}
                         </span>
@@ -1130,22 +1125,20 @@ export default function AdminPanel({
                           </span>
                           <div className="flex flex-wrap gap-2 mt-1">
                             <span
-                              className={`inline-block text-[9px] font-extrabold px-1.5 py-0.5 rounded uppercase tracking-wider ${
-                                companyDetails.company.emailVerified
-                                  ? "bg-emerald-500/10 text-emerald-400"
-                                  : "bg-red-500/10 text-red-400"
-                              }`}
+                              className={`inline-block text-[9px] font-extrabold px-1.5 py-0.5 rounded uppercase tracking-wider ${companyDetails.company.emailVerified
+                                ? "bg-emerald-500/10 text-emerald-400"
+                                : "bg-red-500/10 text-red-400"
+                                }`}
                             >
                               {companyDetails.company.emailVerified
                                 ? "Verified"
                                 : "Pending Verification"}
                             </span>
                             <span
-                              className={`inline-block text-[9px] font-extrabold px-1.5 py-0.5 rounded uppercase tracking-wider ${
-                                companyDetails.company.hasPaid
-                                  ? "bg-emerald-500/10 text-emerald-400"
-                                  : "bg-red-500/10 text-red-400"
-                              }`}
+                              className={`inline-block text-[9px] font-extrabold px-1.5 py-0.5 rounded uppercase tracking-wider ${companyDetails.company.hasPaid
+                                ? "bg-emerald-500/10 text-emerald-400"
+                                : "bg-red-500/10 text-red-400"
+                                }`}
                             >
                               {companyDetails.company.hasPaid
                                 ? "Paid"
@@ -1309,18 +1302,18 @@ export default function AdminPanel({
                                   companyDetails.did.assignedTradieIds,
                                 )
                                   ? companyDetails.tradies
-                                      .filter((t: any) =>
-                                        companyDetails.did.assignedTradieIds.includes(
-                                          t._id,
-                                        ),
-                                      )
-                                      .map((t: any) => t.name)
-                                      .join(", ") || "Unassigned"
+                                    .filter((t: any) =>
+                                      companyDetails.did.assignedTradieIds.includes(
+                                        t._id,
+                                      ),
+                                    )
+                                    .map((t: any) => t.name)
+                                    .join(", ") || "Unassigned"
                                   : companyDetails.tradies.find(
-                                      (t: any) =>
-                                        t._id ===
-                                        companyDetails.did.assignedTradieId,
-                                    )?.name || "Subscrip"}
+                                    (t: any) =>
+                                      t._id ===
+                                      companyDetails.did.assignedTradieId,
+                                  )?.name || "Subscrip"}
                               </span>
                             </div>
 
@@ -1386,11 +1379,10 @@ export default function AdminPanel({
                         <div className="flex items-center justify-between text-xs">
                           <span className="text-zinc-400">Days Remaining:</span>
                           <span
-                            className={`px-2 py-0.5 rounded font-black text-xs ${
-                              companyDetails.daysRemaining > 0
-                                ? "bg-emerald-500/10 text-emerald-400"
-                                : "bg-red-500/10 text-red-400"
-                            }`}
+                            className={`px-2 py-0.5 rounded font-black text-xs ${companyDetails.daysRemaining > 0
+                              ? "bg-emerald-500/10 text-emerald-400"
+                              : "bg-red-500/10 text-red-400"
+                              }`}
                           >
                             {companyDetails.daysRemaining} Days Left
                           </span>
@@ -1516,11 +1508,10 @@ export default function AdminPanel({
                                   onClick={() =>
                                     setTradieCallReceivedOn(option.value)
                                   }
-                                  className={`flex-1 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all ${
-                                    tradieCallReceivedOn === option.value
-                                      ? "bg-[#f97316] text-black"
-                                      : "bg-[#12181e] border border-white/5 text-zinc-400 hover:text-white"
-                                  }`}
+                                  className={`flex-1 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all ${tradieCallReceivedOn === option.value
+                                    ? "bg-[#f97316] text-black"
+                                    : "bg-[#12181e] border border-white/5 text-zinc-400 hover:text-white"
+                                    }`}
                                 >
                                   {option.label}
                                 </button>
@@ -1567,10 +1558,10 @@ export default function AdminPanel({
                           tradie.isMapped ||
                           (Array.isArray(companyDetails?.did?.assignedTradieIds)
                             ? companyDetails.did.assignedTradieIds.includes(
-                                tradie._id,
-                              )
+                              tradie._id,
+                            )
                             : companyDetails?.did?.assignedTradieId ===
-                              tradie._id);
+                            tradie._id);
                         return (
                           <div
                             key={tradie._id}
@@ -1793,7 +1784,7 @@ export default function AdminPanel({
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-[#12181e] p-2 rounded-xl border border-white/5">
                   <span className="text-[10px] text-zinc-500 uppercase tracking-wider block mb-1">
-                    Name
+                    Display Name
                   </span>
                   <span className="text-white font-mono">
                     {companyDetails.portingInfo.displayName || "N/A"}
@@ -1810,7 +1801,7 @@ export default function AdminPanel({
 
                 <div className="bg-[#12181e] p-2 rounded-xl border border-white/5">
                   <span className="text-[10px] text-zinc-500 uppercase tracking-wider block mb-1">
-                    provider Name
+                    Provider Name
                   </span>
                   <span className="text-zinc-300 font-mono">
                     {companyDetails.portingInfo.providerName || "N/A"}
@@ -1887,18 +1878,16 @@ export default function AdminPanel({
                       Authorised Contact
                     </span>
                     <span className="text-zinc-400 block">
-                      {
-                        companyDetails.portingInfo.authorisedContact.givenName
-                      }{" "}
+                      <span className="text-zinc-500 text-[14px]">Given Name:  </span>
+                      {companyDetails.portingInfo.authorisedContact.givenName}
                     </span>
                     <span className="text-zinc-400 block">
+                      <span className="text-zinc-500 text-[14px]">Family Name:  </span>
                       {companyDetails.portingInfo.authorisedContact.familyName}
                     </span>
                     <span className="text-zinc-400 block">
-                      {
-                        companyDetails.portingInfo.authorisedContact
-                          .contactNumber
-                      }
+                      <span className="text-zinc-500 text-[14px]">Contact Number:  </span>
+                      {companyDetails.portingInfo.authorisedContact.contactNumber}
                     </span>
                   </div>
                 )}
@@ -1915,7 +1904,7 @@ export default function AdminPanel({
               </button>
               {companyDetails.portingInfo.supportingDocumentPath && (
                 <a
-                  href={`${API_CONFIG.BASE_URL}${companyDetails.portingInfo.supportingDocumentPath.replace("/var/www/tradie-agent", "")}`}
+                  href={`${companyDetails.portingInfo.supportingDocumentPath.replace("/var/www/tradie-agent", "")}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="px-6 py-2 rounded-xl text-xs font-bold text-white bg-orange-500 hover:bg-orange-600 transition-all shadow-lg shadow-orange-500/25 flex items-center gap-2"
