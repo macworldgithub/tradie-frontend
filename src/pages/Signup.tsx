@@ -2892,6 +2892,7 @@ import {
 import { authService } from "../services/authService";
 import logo from "../assets/logo.png";
 import Select from "react-select";
+import { trackPixelEvent } from "../utils/pixel";
 
 interface SignupProps {
   onBack: () => void;
@@ -3303,6 +3304,10 @@ export default function Signup({ onBack, onGoToLogin }: SignupProps) {
       }
 
       if (res.userId) {
+        trackPixelEvent("CompleteRegistration", {
+          content_name: "Tradie Signup Initial Step",
+          status: "Registered",
+        });
         setHasRegisteredSuccess(true);
         setStep(6);
       } else {
@@ -3356,6 +3361,9 @@ export default function Signup({ onBack, onGoToLogin }: SignupProps) {
     setIsPaymentProcessing(true);
     setError(null);
     try {
+      trackPixelEvent("InitiateCheckout", {
+        content_name: "Tradie Subscription Checkout",
+      });
       const checkoutRes = await authService.createCheckout(token);
       const checkoutUrl = checkoutRes.url || checkoutRes.checkoutUrl;
       if (!checkoutUrl) {

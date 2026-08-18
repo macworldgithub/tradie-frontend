@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Send, CheckCircle, AlertTriangle } from "lucide-react";
 import axios from "axios";
 import { API_CONFIG } from "../../config/apiConfig";
+import { trackPixelEvent } from "../../utils/pixel";
 
 export default function ContactUs() {
   const [formData, setFormData] = useState({
@@ -32,6 +33,10 @@ export default function ContactUs() {
     try {
       await axios.post(`${API_CONFIG.BASE_URL}/contact-form`, formData, {
         headers: { "Content-Type": "application/json" },
+      });
+      trackPixelEvent("Lead", {
+        content_name: "Contact Us Inquiry",
+        email: formData.email,
       });
       setSubmitStatus("success");
       setSubmitMessage("Your message has been sent successfully!");

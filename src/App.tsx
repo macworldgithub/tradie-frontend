@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { trackPixelEvent } from "./utils/pixel";
 import Navbar from "./components/layout/Navbar";
 import Hero from "./components/home/Hero";
 import Problem from "./components/home/Problem";
@@ -47,6 +48,11 @@ function App() {
     }
     return 'landing';
   });
+
+  // Track Meta Pixel PageView on SPA view changes
+  useEffect(() => {
+    trackPixelEvent('PageView', { page_view_name: view });
+  }, [view]);
 
   const handleLoginSuccess = (userData: any, userToken: string) => {
     setUser(userData);
