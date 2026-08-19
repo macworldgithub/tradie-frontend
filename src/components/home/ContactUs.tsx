@@ -4,7 +4,7 @@ import axios from "axios";
 import { API_CONFIG } from "../../config/apiConfig";
 import { trackPixelEvent } from "../../utils/pixel";
 
-export default function ContactUs() {
+export default function ContactUs({ onThankYou }: { onThankYou?: () => void }) {
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -38,10 +38,14 @@ export default function ContactUs() {
         content_name: "Contact Us Inquiry",
         email: formData.email,
       });
-      setSubmitStatus("success");
-      setSubmitMessage("Your message has been sent successfully!");
       setFormData({ firstName: "", lastName: "", email: "", message: "" });
-      setTimeout(() => setSubmitStatus("idle"), 5000);
+      if (onThankYou) {
+        onThankYou();
+      } else {
+        setSubmitStatus("success");
+        setSubmitMessage("Your message has been sent successfully!");
+        setTimeout(() => setSubmitStatus("idle"), 5000);
+      }
     } catch (err: any) {
       setSubmitStatus("error");
       setSubmitMessage(

@@ -16,6 +16,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ChangePassword from "./pages/ChangePassword";
 import AdminPanel from "./pages/AdminPanel";
 import StripePayment from "./pages/StripePayment";
+import ThankYou from "./pages/ThankYou";
 import { Toaster } from "react-hot-toast";
 import "./App.css";
 
@@ -32,7 +33,8 @@ function App() {
 
   const [token, setToken] = useState<string | null>(() => localStorage.getItem('token'));
   const [initialLoginRole, setInitialLoginRole] = useState<'company' | 'admin'>('company');
-  const [view, setView] = useState<'landing' | 'signup' | 'login' | 'forgot-password' | 'change-password' | 'voice-agent' | 'admin' | 'payment'>(() => {
+  const [view, setView] = useState<'landing' | 'signup' | 'login' | 'forgot-password' | 'change-password' | 'voice-agent' | 'admin' | 'payment' | 'thank-you'>(() => {
+    if (window.location.pathname === '/thank-you') return 'thank-you';
     if (window.location.search.includes('admin=true')) return 'admin';
     if (window.location.search.includes('session_id')) return 'signup';
     const savedUserStr = localStorage.getItem('user');
@@ -138,7 +140,7 @@ function App() {
             onGetStarted={() => setView('signup')} 
             onWatchDemo={() => setView('voice-agent')}
           />
-          <ContactUs />
+          <ContactUs onThankYou={() => window.location.href = '/thank-you'} />
           <Footer />
         </>
       )}
@@ -181,6 +183,10 @@ function App() {
       {view === 'payment' && (
         <StripePayment onBack={() => setView('admin')} />
       )} */}
+
+      {view === 'thank-you' && (
+        <ThankYou onBack={() => window.location.href = '/'} />
+      )}
     </div>
   );
 }
