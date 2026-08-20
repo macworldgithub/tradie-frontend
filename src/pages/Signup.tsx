@@ -3399,11 +3399,7 @@ export default function Signup({ onBack, onGoToLogin }: SignupProps) {
         localStorage.removeItem("user");
         localStorage.removeItem("signupFormData");
         setIsSyncingStripe(false);
-        setStep(7);
-        setTimeout(() => {
-          if (onGoToLogin) onGoToLogin();
-          else onBack();
-        }, 5000);
+        window.location.href = "/thank-you1";
       }
     };
 
@@ -3540,13 +3536,12 @@ export default function Signup({ onBack, onGoToLogin }: SignupProps) {
           {steps.map((s) => (
             <div
               key={s.id}
-              className={`flex items-center gap-2 pb-4 border-b-2 transition-all cursor-pointer z-10 ${
-                step === s.id
-                  ? "border-orange-500 text-orange-500"
-                  : step > s.id
+              className={`flex items-center gap-2 pb-4 border-b-2 transition-all cursor-pointer z-10 ${step === s.id
+                ? "border-orange-500 text-orange-500"
+                : step > s.id
                   ? "border-emerald-500 text-emerald-500"
                   : "border-transparent text-zinc-600"
-              }`}
+                }`}
             >
               {step > s.id ? <Check size={16} /> : s.icon}
               <span className="text-xs font-black uppercase tracking-widest whitespace-nowrap">
@@ -3771,11 +3766,10 @@ export default function Signup({ onBack, onGoToLogin }: SignupProps) {
                 <button
                   key={t}
                   onClick={() => setFormData({ ...formData, trade: t })}
-                  className={`flex items-center justify-between p-5 rounded-2xl border-2 transition-all group ${
-                    formData.trade === t
-                      ? "border-orange-500 bg-orange-500/5 text-orange-500"
-                      : "border-white/5 bg-[#090e14] text-zinc-500 hover:border-white/10"
-                  }`}
+                  className={`flex items-center justify-between p-5 rounded-2xl border-2 transition-all group ${formData.trade === t
+                    ? "border-orange-500 bg-orange-500/5 text-orange-500"
+                    : "border-white/5 bg-[#090e14] text-zinc-500 hover:border-white/10"
+                    }`}
                 >
                   <div className="flex items-center gap-4">
                     <Hammer
@@ -3825,18 +3819,16 @@ export default function Signup({ onBack, onGoToLogin }: SignupProps) {
             {/* PORT AN EXISTING NUMBER TOGGLE */}
             <div
               onClick={togglePortNumber}
-              className={`mt-4 bg-[#090e14] border p-6 rounded-2xl flex items-center gap-5 transition-all cursor-pointer group ${
-                formData.wantsPortNumber
-                  ? "border-orange-500/50 bg-orange-500/5"
-                  : "border-white/5 hover:border-white/10"
-              }`}
+              className={`mt-4 bg-[#090e14] border p-6 rounded-2xl flex items-center gap-5 transition-all cursor-pointer group ${formData.wantsPortNumber
+                ? "border-orange-500/50 bg-orange-500/5"
+                : "border-white/5 hover:border-white/10"
+                }`}
             >
               <div
-                className={`w-6 h-6 rounded-md flex items-center justify-center shrink-0 border-2 transition-colors ${
-                  formData.wantsPortNumber
-                    ? "bg-orange-500 border-orange-500"
-                    : "border-white/10"
-                }`}
+                className={`w-6 h-6 rounded-md flex items-center justify-center shrink-0 border-2 transition-colors ${formData.wantsPortNumber
+                  ? "bg-orange-500 border-orange-500"
+                  : "border-white/10"
+                  }`}
               >
                 {formData.wantsPortNumber && (
                   <Check size={16} className="text-black stroke-[4]" />
@@ -3955,18 +3947,16 @@ export default function Signup({ onBack, onGoToLogin }: SignupProps) {
             </div>
             <div
               onClick={() => setAgreedToTerms(!agreedToTerms)}
-              className={`bg-[#090e14] border p-4 rounded-2xl flex items-start gap-4 transition-all group cursor-pointer ${
-                agreedToTerms
-                  ? "border-orange-500/50 bg-orange-500/5"
-                  : "border-white/5 hover:border-white/10"
-              }`}
+              className={`bg-[#090e14] border p-4 rounded-2xl flex items-start gap-4 transition-all group cursor-pointer ${agreedToTerms
+                ? "border-orange-500/50 bg-orange-500/5"
+                : "border-white/5 hover:border-white/10"
+                }`}
             >
               <div
-                className={`w-6 h-6 rounded-md border-2 flex items-center justify-center shrink-0 transition-all ${
-                  agreedToTerms
-                    ? "bg-orange-500 border-orange-500"
-                    : "border-white/20 group-hover:border-white/40"
-                }`}
+                className={`w-6 h-6 rounded-md border-2 flex items-center justify-center shrink-0 transition-all ${agreedToTerms
+                  ? "bg-orange-500 border-orange-500"
+                  : "border-white/20 group-hover:border-white/40"
+                  }`}
               >
                 {agreedToTerms && (
                   <Check size={16} className="text-black stroke-[4]" />
@@ -4085,11 +4075,10 @@ export default function Signup({ onBack, onGoToLogin }: SignupProps) {
             <button
               onClick={prevStep}
               disabled={hasRegisteredSuccess}
-              className={`flex items-center gap-2 text-sm font-black uppercase tracking-widest group transition-colors ${
-                hasRegisteredSuccess
-                  ? "text-zinc-500 cursor-not-allowed"
-                  : "text-zinc-600 hover:text-white"
-              }`}
+              className={`flex items-center gap-2 text-sm font-black uppercase tracking-widest group transition-colors ${hasRegisteredSuccess
+                ? "text-zinc-500 cursor-not-allowed"
+                : "text-zinc-600 hover:text-white"
+                }`}
             >
               <ArrowLeft
                 size={16}
@@ -4107,13 +4096,12 @@ export default function Signup({ onBack, onGoToLogin }: SignupProps) {
               disabled={
                 (step === 5 && (!agreedToTerms || isSubmitting)) || isSubmitting
               }
-              className={`flex items-center gap-2 px-10 py-3 rounded-2xl text-lg font-black transition-all duration-300 shadow-xl hover:scale-[1.03] active:scale-95 group ${
-                step === 5
-                  ? agreedToTerms
-                    ? "bg-orange-500 text-black shadow-[0_10px_30px_rgba(249,115,22,0.3)]"
-                    : "bg-[#12181e] text-zinc-700 border border-white/5 cursor-not-allowed opacity-50"
-                  : "bg-orange-500 text-black shadow-orange-500/20 hover:bg-orange-400"
-              }`}
+              className={`flex items-center gap-2 px-10 py-3 rounded-2xl text-lg font-black transition-all duration-300 shadow-xl hover:scale-[1.03] active:scale-95 group ${step === 5
+                ? agreedToTerms
+                  ? "bg-orange-500 text-black shadow-[0_10px_30px_rgba(249,115,22,0.3)]"
+                  : "bg-[#12181e] text-zinc-700 border border-white/5 cursor-not-allowed opacity-50"
+                : "bg-orange-500 text-black shadow-orange-500/20 hover:bg-orange-400"
+                }`}
             >
               {isSubmitting ? (
                 <span className="flex items-center gap-2">
@@ -4284,9 +4272,8 @@ function PortNumberForm({
             <select
               value={portDetails.entityType}
               onChange={(e) => onFieldChange("entityType", e.target.value)}
-              className={`w-full bg-[#12181e] border rounded-xl px-5 py-4 text-white ${
-                errors.port_entityType ? "border-red-500" : "border-white/5"
-              }`}
+              className={`w-full bg-[#12181e] border rounded-xl px-5 py-4 text-white ${errors.port_entityType ? "border-red-500" : "border-white/5"
+                }`}
             >
               <option value="">Select entity type</option>
               {entityTypes.map((t) => (
@@ -4353,9 +4340,8 @@ function PortNumberForm({
             <select
               value={portDetails.country}
               onChange={(e) => onFieldChange("country", e.target.value)}
-              className={`w-full bg-[#12181e] border rounded-xl px-5 py-4 text-white ${
-                errors.port_country ? "border-red-500" : "border-white/5"
-              }`}
+              className={`w-full bg-[#12181e] border rounded-xl px-5 py-4 text-white ${errors.port_country ? "border-red-500" : "border-white/5"
+                }`}
             >
               <option value="AU">Australia</option>
               <option value="NZ">New Zealand</option>
@@ -4391,11 +4377,10 @@ function PortNumberForm({
           </div>
         ) : (
           <label
-            className={`w-full flex items-center justify-center gap-2 border rounded-xl px-5 py-4 cursor-pointer transition-colors ${
-              errors.port_supportingDocument
-                ? "border-red-500 text-red-400"
-                : "border-white/10 text-zinc-400 hover:border-white/20"
-            }`}
+            className={`w-full flex items-center justify-center gap-2 border rounded-xl px-5 py-4 cursor-pointer transition-colors ${errors.port_supportingDocument
+              ? "border-red-500 text-red-400"
+              : "border-white/10 text-zinc-400 hover:border-white/20"
+              }`}
           >
             <UploadCloud size={16} />
             <span className="font-bold text-sm">Add Attachment</span>
@@ -4452,15 +4437,14 @@ function InputField({
         onChange={(e) => onChange && onChange(e.target.value)}
         placeholder={placeholder}
         disabled={disabled}
-        className={`w-full bg-[#12181e] border rounded-xl px-5 py-4 text-white placeholder-zinc-700 focus:outline-none transition-all ${
-          disabled
-            ? "opacity-60 cursor-not-allowed border-white/10"
-            : error
+        className={`w-full bg-[#12181e] border rounded-xl px-5 py-4 text-white placeholder-zinc-700 focus:outline-none transition-all ${disabled
+          ? "opacity-60 cursor-not-allowed border-white/10"
+          : error
             ? "border-red-500"
             : highlight
-            ? "border-orange-500/30 shadow-[0_0_20px_rgba(249,115,22,0.05)]"
-            : "border-white/5"
-        }`}
+              ? "border-orange-500/30 shadow-[0_0_20px_rgba(249,115,22,0.05)]"
+              : "border-white/5"
+          }`}
       />
       {error && <p className="text-red-500 text-xs font-medium">{error}</p>}
       {subLabel && (
@@ -4476,9 +4460,8 @@ function CheckboxField({ checked, label, sub }: any) {
   return (
     <div className="bg-[#090e14] border border-white/5 p-6 rounded-2xl flex items-center gap-5 transition-all hover:border-white/10 group cursor-pointer">
       <div
-        className={`w-6 h-6 rounded-md flex items-center justify-center shrink-0 border-2 transition-colors ${
-          checked ? "bg-orange-500 border-orange-500" : "border-white/10"
-        }`}
+        className={`w-6 h-6 rounded-md flex items-center justify-center shrink-0 border-2 transition-colors ${checked ? "bg-orange-500 border-orange-500" : "border-white/10"
+          }`}
       >
         {checked && <Check size={16} className="text-black" />}
       </div>

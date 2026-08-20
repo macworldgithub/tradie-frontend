@@ -17,6 +17,7 @@ import ChangePassword from "./pages/ChangePassword";
 import AdminPanel from "./pages/AdminPanel";
 import StripePayment from "./pages/StripePayment";
 import ThankYou from "./pages/ThankYou";
+import ThankYou1 from "./pages/ThankYou1";
 import { Toaster } from "react-hot-toast";
 import "./App.css";
 
@@ -33,7 +34,8 @@ function App() {
 
   const [token, setToken] = useState<string | null>(() => localStorage.getItem('token'));
   const [initialLoginRole, setInitialLoginRole] = useState<'company' | 'admin'>('company');
-  const [view, setView] = useState<'landing' | 'signup' | 'login' | 'forgot-password' | 'change-password' | 'voice-agent' | 'admin' | 'payment' | 'thank-you'>(() => {
+  const [view, setView] = useState<'landing' | 'signup' | 'login' | 'forgot-password' | 'change-password' | 'voice-agent' | 'admin' | 'payment' | 'thank-you' | 'thank-you1'>(() => {
+    if (window.location.pathname === '/thank-you1') return 'thank-you1';
     if (window.location.pathname === '/thank-you') return 'thank-you';
     if (window.location.search.includes('admin=true')) return 'admin';
     if (window.location.search.includes('session_id')) return 'signup';
@@ -186,6 +188,19 @@ function App() {
 
       {view === 'thank-you' && (
         <ThankYou onBack={() => window.location.href = '/'} />
+      )}
+
+      {view === 'thank-you1' && (
+        <ThankYou1 
+          onGoToLogin={() => {
+            window.history.replaceState({}, document.title, '/');
+            setView('login');
+          }}
+          onBack={() => {
+            window.history.replaceState({}, document.title, '/');
+            setView('landing');
+          }}
+        />
       )}
     </div>
   );

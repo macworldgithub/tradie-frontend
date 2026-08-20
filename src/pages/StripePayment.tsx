@@ -343,4 +343,4 @@ const StripePayment = () => {
   )
 }
 
-export default StripePayment
+export default StripePayment;
