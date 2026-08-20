@@ -16,6 +16,7 @@ interface NavbarProps {
   onLogin?: (role: "company" | "admin") => void;
   isLoggedIn?: boolean;
   onLogout?: () => void;
+  showLogin?: boolean;
 }
 
 export default function Navbar({
@@ -23,6 +24,7 @@ export default function Navbar({
   onLogin,
   isLoggedIn,
   onLogout,
+  showLogin = true,
 }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [showLoginDropdown, setShowLoginDropdown] = useState(false);
@@ -77,7 +79,7 @@ export default function Navbar({
                   Logout
                 </button>
               </div>
-            ) : (
+            ) : showLogin ? (
               <div className="relative">
                 <button
                   onClick={() => setShowLoginDropdown(!showLoginDropdown)}
@@ -120,7 +122,7 @@ export default function Navbar({
                   </>
                 )}
               </div>
-            )}
+            ) : null}
           </div>
         </div>
 
@@ -183,27 +185,31 @@ export default function Navbar({
               </div>
             ) : (
               <>
-                <button
-                  onClick={() => {
-                    onLogin && onLogin("company");
-                    setIsOpen(false);
-                  }}
-                  className="border border-white/10 w-full p-4 rounded-xl text-white font-bold hover:bg-white/5 transition-all flex items-center justify-center gap-2"
-                >
-                  <Building2 size={16} className="text-[#f97316]" />
-                  Log In as Company
-                </button>
+                {showLogin && (
+                  <>
+                    <button
+                      onClick={() => {
+                        onLogin && onLogin("company");
+                        setIsOpen(false);
+                      }}
+                      className="border border-white/10 w-full p-4 rounded-xl text-white font-bold hover:bg-white/5 transition-all flex items-center justify-center gap-2"
+                    >
+                      <Building2 size={16} className="text-[#f97316]" />
+                      Log In as Company
+                    </button>
 
-                <button
-                  onClick={() => {
-                    onLogin && onLogin("admin");
-                    setIsOpen(false);
-                  }}
-                  className="border border-orange-500/20 hover:border-orange-500/50 w-full p-4 rounded-xl text-orange-500 font-bold hover:bg-orange-500/10 transition-all flex items-center justify-center gap-2"
-                >
-                  <Shield size={16} className="text-[#f97316]" />
-                  Log In as Admin
-                </button>
+                    <button
+                      onClick={() => {
+                        onLogin && onLogin("admin");
+                        setIsOpen(false);
+                      }}
+                      className="border border-orange-500/20 hover:border-orange-500/50 w-full p-4 rounded-xl text-orange-500 font-bold hover:bg-orange-500/10 transition-all flex items-center justify-center gap-2"
+                    >
+                      <Shield size={16} className="text-[#f97316]" />
+                      Log In as Admin
+                    </button>
+                  </>
+                )}
 
                 <button
                   onClick={() => {

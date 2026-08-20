@@ -18,6 +18,7 @@ import AdminPanel from "./pages/AdminPanel";
 import StripePayment from "./pages/StripePayment";
 import ThankYou from "./pages/ThankYou";
 import ThankYou1 from "./pages/ThankYou1";
+import AiVoiceAgentLanding from "./pages/AiVoiceAgentLanding";
 import { Toaster } from "react-hot-toast";
 import "./App.css";
 
@@ -34,9 +35,11 @@ function App() {
 
   const [token, setToken] = useState<string | null>(() => localStorage.getItem('token'));
   const [initialLoginRole, setInitialLoginRole] = useState<'company' | 'admin'>('company');
-  const [view, setView] = useState<'landing' | 'signup' | 'login' | 'forgot-password' | 'change-password' | 'voice-agent' | 'admin' | 'payment' | 'thank-you' | 'thank-you1'>(() => {
-    if (window.location.pathname === '/thank-you1') return 'thank-you1';
-    if (window.location.pathname === '/thank-you') return 'thank-you';
+  const [view, setView] = useState<'landing' | 'lp-ai-voice-agent' | 'signup' | 'login' | 'forgot-password' | 'change-password' | 'voice-agent' | 'admin' | 'payment' | 'thank-you' | 'thank-you1'>(() => {
+    const currentPath = window.location.pathname.replace(/\/+$/, '');
+    if (currentPath === '/lp/ai-voice-agent') return 'lp-ai-voice-agent';
+    if (currentPath === '/thank-you1') return 'thank-you1';
+    if (currentPath === '/thank-you') return 'thank-you';
     if (window.location.search.includes('admin=true')) return 'admin';
     if (window.location.search.includes('session_id')) return 'signup';
     const savedUserStr = localStorage.getItem('user');
@@ -145,6 +148,16 @@ function App() {
           <ContactUs onThankYou={() => window.location.href = '/thank-you'} />
           <Footer />
         </>
+      )}
+
+      {view === 'lp-ai-voice-agent' && (
+        <AiVoiceAgentLanding
+          onGetStarted={() => setView('signup')}
+          onWatchDemo={() => setView('voice-agent')}
+          onLogin={handleLoginClick}
+          isLoggedIn={!!user}
+          onLogout={handleLogout}
+        />
       )}
 
       {view === 'signup' && (
