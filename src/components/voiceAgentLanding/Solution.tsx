@@ -9,7 +9,11 @@ import {
     ArrowRight,
 } from "lucide-react";
 
-export default function Solution() {
+interface SolutionProps {
+    onContactClick?: () => void;
+}
+
+export default function Solution({ onContactClick }: SolutionProps) {
     const features = [
         {
             icon: <Mic size={20} />,
@@ -112,7 +116,7 @@ export default function Solution() {
             </div>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-6">
                 <button
-                    // onClick={onGetStarted}
+                    onClick={onContactClick}
                     className="w-full sm:w-auto flex items-center justify-center gap-3 bg-orange-500 hover:bg-orange-400 text-black px-6 py-3 rounded-2xl text-lg font-black transition-all duration-300 shadow-[0_10px_30px_rgba(249,115,22,0.3)] hover:scale-105 active:scale-95"
                 >
                     Get Mia AI Receptionist

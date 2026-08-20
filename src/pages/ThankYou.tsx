@@ -1,15 +1,24 @@
-﻿import { useEffect } from "react";
+import { useEffect } from "react";
 import { CheckCircle, ArrowLeft } from "lucide-react";
 import logo from "../assets/logo.png";
 
 interface ThankYouProps {
   onBack: () => void;
+  backUrl?: string;
 }
 
-export default function ThankYou({ onBack }: ThankYouProps) {
+export default function ThankYou({ onBack, backUrl }: ThankYouProps) {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
+
+  const handleBack = () => {
+    if (backUrl) {
+      window.location.href = backUrl;
+    } else {
+      onBack();
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#03070b] text-white flex flex-col overflow-hidden relative">
@@ -19,9 +28,11 @@ export default function ThankYou({ onBack }: ThankYouProps) {
       </div>
 
       <header className="relative z-10 w-full px-6 py-6 border-b border-white/5 flex items-center justify-between">
-        <button onClick={onBack} className="flex items-center gap-2 text-zinc-500 hover:text-white transition-colors group">
+        <button onClick={handleBack} className="flex items-center gap-2 text-zinc-500 hover:text-white transition-colors group">
           <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform duration-200" />
-          <span className="text-xs font-black uppercase tracking-widest">Back to Home</span>
+          <span className="text-xs font-black uppercase tracking-widest">
+            {backUrl === '/lp/ai-voice-agent' ? 'Back' : 'Back to Home'}
+          </span>
         </button>
         <img src={logo} alt="Logo" className="h-14 w-auto" />
       </header>
@@ -32,15 +43,15 @@ export default function ThankYou({ onBack }: ThankYouProps) {
             <div className="relative">
               <div className="absolute inset-0 rounded-full bg-orange-500/10 animate-ping" />
               <div className="absolute -inset-6 bg-orange-500/10 blur-2xl rounded-full" />
-              <div className="relative w-28 h-28 rounded-full border-2 border-orange-500 bg-orange-500/10 flex items-center justify-center shadow-[0_0_60px_rgba(249,115,22,0.25)]">
-                <CheckCircle size={52} className="text-orange-500" strokeWidth={1.5} />
+              <div className="relative w-18 h-18 rounded-full border-2 border-orange-500 bg-orange-500/10 flex items-center justify-center shadow-[0_0_60px_rgba(249,115,22,0.25)]">
+                <CheckCircle size={42} className="text-orange-500" strokeWidth={1.5} />
               </div>
             </div>
           </div>
           <div className="space-y-5">
             <span className="inline-block text-[10px] font-black tracking-[0.25em] text-orange-500 uppercase">Message Received</span>
-            <h1 className="text-5xl sm:text-6xl font-black tracking-tighter leading-tight">Thank You!</h1>
-            <p className="text-zinc-400 text-base sm:text-lg font-medium leading-relaxed max-w-lg mx-auto">
+            <h1 className="text-xl md:text-3xl lg:text-4xl font-black tracking-tighter leading-tight mb-5">Thank You!</h1>
+            <p className="text-zinc-400 text-base sm:text-md font-medium leading-relaxed max-w-lg mx-auto">
               Thank you for submitting the form. Our team has received your details and will be in touch with you soon.
             </p>
           </div>

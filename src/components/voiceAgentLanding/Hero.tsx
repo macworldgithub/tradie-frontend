@@ -1,11 +1,19 @@
 import { ArrowRight } from "lucide-react";
 
 interface HeroProps {
-    onGetStarted: () => void;
-    onWatchDemo: () => void;
+    onGetStarted?: () => void;
+    onWatchDemo?: () => void;
+    onContactClick?: () => void;
 }
 
-export default function Hero({ onGetStarted }: HeroProps) {
+export default function Hero({ onGetStarted, onContactClick }: HeroProps) {
+    const handleButtonClick = () => {
+        if (onContactClick) {
+            onContactClick();
+        } else if (onGetStarted) {
+            onGetStarted();
+        }
+    };
     return (
         <section className="relative w-full pt-12 flex flex-col items-center xl:items-start justify-center pb-20 px-6 sm:px-12 xl:px-24 overflow-hidden bg-[#03070b]">
             {/* BACKGROUND ELEMENTS */}
@@ -82,7 +90,7 @@ export default function Hero({ onGetStarted }: HeroProps) {
           </button> */}
 
                     <button
-                        onClick={onGetStarted}
+                        onClick={handleButtonClick}
                         className="w-full sm:w-auto flex items-center justify-center gap-3 border border-zinc-800 hover:border-orange-500/50 text-orange-500 px-6 py-4 rounded-xl text-lg font-black transition-all group"
                     >
                         Get Your Voice Agent

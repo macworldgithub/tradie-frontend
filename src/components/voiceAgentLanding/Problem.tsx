@@ -1,7 +1,11 @@
 import manIllustration from "../../assets/man.png";
 import { PhoneOff, TrendingDown, ArrowRight } from "lucide-react";
 
-export default function Problem() {
+interface ProblemProps {
+    onContactClick?: () => void;
+}
+
+export default function Problem({ onContactClick }: ProblemProps) {
     return (
         <section className="bg-[#03070b] py-16 sm:py-24 px-6 sm:px-12 lg:px-24 border-t border-white/5">
             <div className="max-w-7xl mx-auto flex flex-col xl:flex-row items-center gap-12 lg:gap-20">
@@ -84,7 +88,7 @@ export default function Problem() {
             </div>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-6">
                 <button
-                    // onClick={onGetStarted}
+                    onClick={onContactClick}
                     className="w-full sm:w-auto flex items-center justify-center gap-3 bg-orange-500 hover:bg-orange-400 text-black px-6 py-3 rounded-2xl text-lg font-black transition-all duration-300 shadow-[0_10px_30px_rgba(249,115,22,0.3)] hover:scale-105 active:scale-95"
                 >
                     Deploy My Voice Agent

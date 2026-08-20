@@ -200,7 +200,13 @@ function App() {
       )} */}
 
       {view === 'thank-you' && (
-        <ThankYou onBack={() => window.location.href = '/'} />
+        <ThankYou 
+          backUrl={new URLSearchParams(window.location.search).get('from') || '/'}
+          onBack={() => {
+            const from = new URLSearchParams(window.location.search).get('from') || '/';
+            window.location.href = from;
+          }} 
+        />
       )}
 
       {view === 'thank-you1' && (

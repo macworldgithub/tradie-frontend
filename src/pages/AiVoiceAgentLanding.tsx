@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Navbar from "../components/layout/Navbar";
 import ContactUs from "../components/voiceAgentLanding/ContactUs";
 import Pricing from "../components/voiceAgentLanding/Pricing";
@@ -7,6 +8,7 @@ import Solution from "../components/voiceAgentLanding/Solution";
 import Problem from "../components/voiceAgentLanding/Problem";
 import Mindset from "../components/voiceAgentLanding/Mindset";
 import Footer from "../components/layout/Footer";
+import ContactModal from "../components/voiceAgentLanding/ContactModal";
 
 interface AiVoiceAgentLandingProps {
   onGetStarted: () => void;
@@ -23,6 +25,8 @@ export default function AiVoiceAgentLanding({
   isLoggedIn,
   onLogout,
 }: AiVoiceAgentLandingProps) {
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+
   return (
     <>
       <Navbar
@@ -36,17 +40,24 @@ export default function AiVoiceAgentLanding({
       <Hero
         onGetStarted={onGetStarted}
         onWatchDemo={onWatchDemo}
+        onContactClick={() => setIsContactModalOpen(true)}
       />
-      <Problem />
-      <Solution />
-      <Pricing onGetStarted={onGetStarted} />
-      <HowItWorks onGetStarted={onGetStarted} />
+      <Problem onContactClick={() => setIsContactModalOpen(true)} />
+      <Solution onContactClick={() => setIsContactModalOpen(true)} />
+      <Pricing onGetStarted={() => setIsContactModalOpen(true)} />
+      <HowItWorks onGetStarted={() => setIsContactModalOpen(true)} />
       <Mindset
-        onGetStarted={onGetStarted}
+        onGetStarted={() => setIsContactModalOpen(true)}
         onWatchDemo={onWatchDemo}
       />
-      <ContactUs onThankYou={() => (window.location.href = "/thank-you")} />
+      <ContactUs onThankYou={() => (window.location.href = "/thank-you?from=/lp/ai-voice-agent")} />
       <Footer />
+
+      <ContactModal
+        isOpen={isContactModalOpen}
+        onClose={() => setIsContactModalOpen(false)}
+        onThankYou={() => (window.location.href = "/thank-you?from=/lp/ai-voice-agent")}
+      />
     </>
   );
 }
