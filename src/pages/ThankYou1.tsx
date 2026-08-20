@@ -32,7 +32,7 @@ export default function ThankYou1({ onGoToLogin }: ThankYou1Props) {
       {/* Background glowing gradients */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[700px] bg-orange-500/10 rounded-full blur-[140px] animate-pulse" />
-        <div className="absolute bottom-10 left-1/3 w-96 h-96 bg-emerald-500/5 rounded-full blur-[120px]" />
+        <div className="absolute bottom-10 left-1/3 w-96 h-96 bg-orange-500/5 rounded-full blur-[120px]" />
       </div>
 
       {/* Header */}
@@ -40,13 +40,7 @@ export default function ThankYou1({ onGoToLogin }: ThankYou1Props) {
         <div className="flex items-center gap-3">
           <img src={logo} alt="Logo" className="h-12 w-auto object-contain" />
         </div>
-        <button
-          onClick={onGoToLogin}
-          className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-zinc-400 hover:text-orange-400 transition-colors group"
-        >
-          <span>Go to Login</span>
-          <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform duration-200" />
-        </button>
+
       </header>
 
       {/* Main Content */}
@@ -55,10 +49,10 @@ export default function ThankYou1({ onGoToLogin }: ThankYou1Props) {
           {/* Animated Success Badge */}
           <div className="flex justify-center">
             <div className="relative">
-              <div className="absolute inset-0 rounded-full bg-emerald-500/20 animate-ping duration-1000" />
-              <div className="absolute -inset-6 bg-gradient-to-tr from-emerald-500/20 to-orange-500/20 blur-2xl rounded-full" />
-              <div className="relative w-28 h-28 rounded-full border-2 border-emerald-500/80 bg-emerald-950/40 backdrop-blur-md flex items-center justify-center shadow-[0_0_60px_rgba(16,185,129,0.3)]">
-                <CheckCircle size={56} className="text-emerald-400" strokeWidth={1.75} />
+              <div className="absolute inset-0 rounded-full bg-orange-500/20 animate-ping duration-1000" />
+              <div className="absolute -inset-6 bg-gradient-to-tr from-orange-500/20 to-orange-500/20 blur-2xl rounded-full" />
+              <div className="relative w-16 h-16 rounded-full border-2 border-orange-500/80 bg-orange-950/40 backdrop-blur-md flex items-center justify-center shadow-[0_0_60px_rgba(16,185,129,0.3)]">
+                <CheckCircle size={56} className="text-orange-400" strokeWidth={1.75} />
               </div>
             </div>
           </div>
@@ -70,11 +64,11 @@ export default function ThankYou1({ onGoToLogin }: ThankYou1Props) {
               <span>Payment & Account Sync Complete</span>
             </div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tighter leading-tight text-white">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tighter leading-tight text-white">
               Thank You!
             </h1>
 
-            <p className="text-zinc-400 text-base sm:text-lg font-medium leading-relaxed max-w-md mx-auto">
+            <p className="text-zinc-400 text-sm sm:text-md font-medium leading-relaxed max-w-md mx-auto">
               Your account has been created and your subscription is active. You are all set to start using your AI receptionist.
             </p>
           </div>
@@ -86,7 +80,7 @@ export default function ThankYou1({ onGoToLogin }: ThankYou1Props) {
                 {countdown}
               </div>
               <p className="text-xs sm:text-sm font-semibold text-zinc-300">
-                Redirecting to login in <span className="text-orange-400 font-bold">{countdown}s</span>...
+                Redirecting to login in <span className="text-orange-400 font-bold">{countdown}sec</span>
               </p>
             </div>
 
