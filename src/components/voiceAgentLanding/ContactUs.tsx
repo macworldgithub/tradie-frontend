@@ -5,10 +5,14 @@ import { API_CONFIG } from "../../config/apiConfig";
 import { trackPixelEvent } from "../../utils/pixel";
 
 export default function ContactUs({ onThankYou }: { onThankYou?: () => void }) {
+    const defaultPhoneCode = Intl.DateTimeFormat().resolvedOptions().timeZone.includes("Auckland") || Intl.DateTimeFormat().resolvedOptions().timeZone.includes("Pacific") ? "+64" : "+61";
+
     const [formData, setFormData] = useState({
         firstName: "",
         lastName: "",
         email: "",
+        phoneCode: defaultPhoneCode,
+        phoneNumber: "",
         message: "",
     });
 
@@ -19,7 +23,7 @@ export default function ContactUs({ onThankYou }: { onThankYou?: () => void }) {
     const [submitMessage, setSubmitMessage] = useState("");
 
     const handleChange = (
-        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
     ) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
@@ -38,7 +42,7 @@ export default function ContactUs({ onThankYou }: { onThankYou?: () => void }) {
                 content_name: "Contact Us Inquiry",
                 email: formData.email,
             });
-            setFormData({ firstName: "", lastName: "", email: "", message: "" });
+            setFormData({ firstName: "", lastName: "", email: "", phoneCode: defaultPhoneCode, phoneNumber: "", message: "" });
             if (onThankYou) {
                 onThankYou();
             } else {
@@ -157,14 +161,39 @@ export default function ContactUs({ onThankYou }: { onThankYou?: () => void }) {
 
                             <div className="space-y-2 text-left">
                                 <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider">
-                                    Message
+                                    Phone Number
+                                </label>
+                                <div className="flex gap-2">
+                                    <select
+                                        name="phoneCode"
+                                        value={formData.phoneCode}
+                                        onChange={handleChange}
+                                        className="bg-[#12181e] border border-white/5 rounded-xl px-2 py-3 text-white focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/50 transition-all w-[90px] sm:w-[100px]"
+                                    >
+                                        <option value="+61">+61</option>
+                                        <option value="+64">+64</option>
+                                    </select>
+                                    <input
+                                        type="tel"
+                                        name="phoneNumber"
+                                        value={formData.phoneNumber}
+                                        onChange={handleChange}
+                                        required
+                                        placeholder="412 345 678"
+                                        className="flex-1 bg-[#12181e] border border-white/5 rounded-xl px-4 py-3 text-white placeholder:text-zinc-600 focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/50 transition-all"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="space-y-2 text-left">
+                                <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider">
+                                    Message <span className="normal-case font-normal text-zinc-500">(Optional)</span>
                                 </label>
                                 <textarea
                                     rows={4}
                                     name="message"
                                     value={formData.message}
                                     onChange={handleChange}
-                                    required
                                     placeholder="How can we help you?"
                                     className="w-full bg-[#12181e] border border-white/5 rounded-xl px-4 py-3 text-white placeholder:text-zinc-600 focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/50 transition-all resize-none"
                                 />

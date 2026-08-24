@@ -9,6 +9,7 @@ export default function ContactUs({ onThankYou }: { onThankYou?: () => void }) {
     firstName: "",
     lastName: "",
     email: "",
+    phoneNumber: "",
     message: "",
   });
 
@@ -38,7 +39,7 @@ export default function ContactUs({ onThankYou }: { onThankYou?: () => void }) {
         content_name: "Contact Us Inquiry",
         email: formData.email,
       });
-      setFormData({ firstName: "", lastName: "", email: "", message: "" });
+      setFormData({ firstName: "", lastName: "", email: "", phoneNumber: "", message: "" });
       if (onThankYou) {
         onThankYou();
       } else {
@@ -50,7 +51,7 @@ export default function ContactUs({ onThankYou }: { onThankYou?: () => void }) {
       setSubmitStatus("error");
       setSubmitMessage(
         err.response?.data?.message ||
-          "Failed to send message. Please try again.",
+        "Failed to send message. Please try again.",
       );
     } finally {
       setIsSubmitting(false);
@@ -157,14 +158,13 @@ export default function ContactUs({ onThankYou }: { onThankYou?: () => void }) {
 
               <div className="space-y-2 text-left">
                 <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider">
-                  Message
+                  Message <span className="normal-case font-normal text-zinc-500">(Optional)</span>
                 </label>
                 <textarea
                   rows={4}
                   name="message"
                   value={formData.message}
                   onChange={handleChange}
-                  required
                   placeholder="How can we help you?"
                   className="w-full bg-[#12181e] border border-white/5 rounded-xl px-4 py-3 text-white placeholder:text-zinc-600 focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/50 transition-all resize-none"
                 />
@@ -172,11 +172,10 @@ export default function ContactUs({ onThankYou }: { onThankYou?: () => void }) {
 
               {submitStatus !== "idle" && (
                 <div
-                  className={`flex items-center gap-2 text-sm font-bold p-4 rounded-xl ${
-                    submitStatus === "success"
-                      ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                      : "bg-rose-500/10 text-rose-400 border border-rose-500/20"
-                  }`}
+                  className={`flex items-center gap-2 text-sm font-bold p-4 rounded-xl ${submitStatus === "success"
+                    ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+                    : "bg-rose-500/10 text-rose-400 border border-rose-500/20"
+                    }`}
                 >
                   {submitStatus === "success" ? (
                     <CheckCircle size={16} />
