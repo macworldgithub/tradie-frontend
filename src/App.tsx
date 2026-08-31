@@ -37,6 +37,17 @@ function App() {
   const [initialLoginRole, setInitialLoginRole] = useState<'company' | 'admin'>('company');
   const [view, setView] = useState<'landing' | 'lp-ai-voice-agent' | 'signup' | 'login' | 'forgot-password' | 'change-password' | 'voice-agent' | 'admin' | 'payment' | 'thank-you' | 'thank-you1'>(() => {
     const currentPath = window.location.pathname.replace(/\/+$/, '');
+    const homePaths = [
+      '',
+      '/',
+      '/lp/ai-receptionist',
+      '/lp/ai-tradie',
+      '/lp/ai-phone-agent',
+      '/lp/ai-call-answering',
+      '/lp/ai-virtual-receptionist',
+      '/lp/mia-ai-voice-agent'
+    ];
+    if (homePaths.includes(currentPath)) return 'landing';
     if (currentPath === '/lp/ai-voice-agent') return 'lp-ai-voice-agent';
     if (currentPath === '/thank-you1') return 'thank-you1';
     if (currentPath === '/thank-you') return 'thank-you';
@@ -50,7 +61,7 @@ function App() {
         if (savedUser && savedUser.email === 'burhanfani92@gmail.com') {
           return 'admin';
         }
-      } catch (e) {}
+      } catch (e) { }
       return 'voice-agent';
     }
     return 'landing';
@@ -88,8 +99,8 @@ function App() {
 
   return (
     <div className="bg-[#03070b] overflow-x-hidden min-h-screen">
-      <Toaster 
-        position="top-center" 
+      <Toaster
+        position="top-center"
         toastOptions={{
           style: {
             background: '#090e14',
@@ -126,23 +137,23 @@ function App() {
       />
       {view === 'landing' && (
         <>
-          <Navbar 
-            onGetStarted={() => setView('signup')} 
+          <Navbar
+            onGetStarted={() => setView('signup')}
             onWatchDemo={() => setView('voice-agent')}
             onLogin={handleLoginClick}
             isLoggedIn={!!user}
             onLogout={handleLogout}
           />
-          <Hero 
-            onGetStarted={() => setView('signup')} 
+          <Hero
+            onGetStarted={() => setView('signup')}
             onWatchDemo={() => setView('voice-agent')}
           />
           <Problem />
           <Solution />
           <Pricing onGetStarted={() => setView('signup')} />
           <HowItWorks onGetStarted={() => setView('signup')} />
-          <Mindset 
-            onGetStarted={() => setView('signup')} 
+          <Mindset
+            onGetStarted={() => setView('signup')}
             onWatchDemo={() => setView('voice-agent')}
           />
           <ContactUs onThankYou={() => window.location.href = '/thank-you'} />
@@ -169,8 +180,8 @@ function App() {
       )}
 
       {view === 'login' && (
-        <Login 
-          onBack={() => setView('landing')} 
+        <Login
+          onBack={() => setView('landing')}
           onSuccess={handleLoginSuccess}
           onForgotPassword={() => setView('forgot-password')}
           onSignup={() => setView('signup')}
@@ -187,30 +198,30 @@ function App() {
       )}
 
       {view === 'admin' && token && (
-        <AdminPanel 
+        <AdminPanel
           token={token}
           onLogout={() => {
             handleLogout();
           }}
         />
       )}
-{/* 
+      {/* 
       {view === 'payment' && (
         <StripePayment onBack={() => setView('admin')} />
       )} */}
 
       {view === 'thank-you' && (
-        <ThankYou 
+        <ThankYou
           backUrl={new URLSearchParams(window.location.search).get('from') || '/'}
           onBack={() => {
             const from = new URLSearchParams(window.location.search).get('from') || '/';
             window.location.href = from;
-          }} 
+          }}
         />
       )}
 
       {view === 'thank-you1' && (
-        <ThankYou1 
+        <ThankYou1
           onGoToLogin={() => {
             window.history.replaceState({}, document.title, '/');
             setView('login');
